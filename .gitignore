@@ -5,8 +5,8 @@ node_modules/
 # Environment variables (never commit these)
 backend/.env
 
-# Database
-backend/data/
+# Database file only (not videos.json or other static data)
+backend/data/*.db
 
 # Build output
 frontend/dist/
