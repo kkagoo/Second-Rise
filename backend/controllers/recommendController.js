@@ -1,5 +1,6 @@
 const db = require('../db/database');
-const { generateRecommendation, generateAlternativeWorkout } = require('../services/claudeService');
+const { generateRecommendation } = require('../services/claudeService');
+const { getFilteredVideos, getVideoById } = require('../services/videoLibrary');
 
 async function getRecommendation(req, res, next) {
   try {
@@ -36,8 +37,29 @@ async function getRecommendation(req, res, next) {
       secondary_flags: checkin.secondary_flags ? JSON.parse(checkin.secondary_flags) : {},
     };
 
-    const claudeResult = await generateRecommendation(profile, parsedCheckin, checkin.computed_readiness, priorFeedback);
-    const { primary, alternatives } = claudeResult;
+    const availableVideos = getFilteredVideos(
+      checkin.layer1_time_avail,
+      checkin.computed_readiness,
+      parsedCheckin.body_map_flags,
+      parsedCheckin.secondary_flags,
+      profile
+    );
+
+    const { primary, alternatives } = await generateRecommendation(
+      profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos
+    );
+
+    // Store video selection in primary_workout as JSON
+    const primaryWorkout = {
+      type:        'video',
+      id:          primary.id,
+      youtube_id:  primary.youtube_id,
+      title:       primary.title,
+      creator:     primary.creator,
+      duration_min: primary.duration_min,
+      weight_note: primary.weight_note,
+      session_type: primary.session_type,
+    };
 
     const result = db.prepare(`
       INSERT INTO recommendations
@@ -49,27 +71,38 @@ async function getRecommendation(req, res, next) {
       req.userId,
       primary.session_type,
       primary.reasoning,
-      JSON.stringify(primary.workout),
-      alternatives[0]?.session_type ?? null,
+      JSON.stringify(primaryWorkout),
+      alternatives[0]?.id ?? null,
       alternatives[0]?.reasoning ?? null,
-      alternatives[1]?.session_type ?? null,
+      alternatives[1]?.id ?? null,
       alternatives[1]?.reasoning ?? null,
-      alternatives[2]?.session_type ?? null,
+      alternatives[2]?.id ?? null,
       alternatives[2]?.reasoning ?? null,
     );
 
     res.json({
-      rec_id: result.lastInsertRowid,
+      rec_id:               result.lastInsertRowid,
       primary_session_type: primary.session_type,
-      primary_reasoning: primary.reasoning,
-      primary_workout: primary.workout,
-      duration_min: primary.duration_min,
-      alt_1_type: alternatives[0]?.session_type,
-      alt_1_reasoning: alternatives[0]?.reasoning,
-      alt_2_type: alternatives[1]?.session_type,
-      alt_2_reasoning: alternatives[1]?.reasoning,
-      alt_3_type: alternatives[2]?.session_type,
-      alt_3_reasoning: alternatives[2]?.reasoning,
+      primary_reasoning:    primary.reasoning,
+      primary_workout:      primaryWorkout,
+      alt_1_type:           alternatives[0]?.id,
+      alt_1_title:          alternatives[0]?.title,
+      alt_1_creator:        alternatives[0]?.creator,
+      alt_1_youtube_id:     alternatives[0]?.youtube_id,
+      alt_1_duration_min:   alternatives[0]?.duration_min,
+      alt_1_reasoning:      alternatives[0]?.reasoning,
+      alt_2_type:           alternatives[1]?.id,
+      alt_2_title:          alternatives[1]?.title,
+      alt_2_creator:        alternatives[1]?.creator,
+      alt_2_youtube_id:     alternatives[1]?.youtube_id,
+      alt_2_duration_min:   alternatives[1]?.duration_min,
+      alt_2_reasoning:      alternatives[1]?.reasoning,
+      alt_3_type:           alternatives[2]?.id,
+      alt_3_title:          alternatives[2]?.title,
+      alt_3_creator:        alternatives[2]?.creator,
+      alt_3_youtube_id:     alternatives[2]?.youtube_id,
+      alt_3_duration_min:   alternatives[2]?.duration_min,
+      alt_3_reasoning:      alternatives[2]?.reasoning,
     });
   } catch (err) {
     next(err);
@@ -88,30 +121,4 @@ function selectSession(req, res, next) {
   }
 }
 
-async function getAlternativeWorkout(req, res, next) {
-  try {
-    const { rec_id, session_type } = req.body;
-    if (!rec_id || !session_type) return res.status(400).json({ error: 'rec_id and session_type required' });
-
-    const rec = db.prepare(
-      'SELECT * FROM recommendations WHERE rec_id = ? AND user_id = ?'
-    ).get(rec_id, req.userId);
-    if (!rec) return res.status(404).json({ error: 'Recommendation not found' });
-
-    const checkin = db.prepare('SELECT * FROM daily_checkins WHERE checkin_id = ?').get(rec.checkin_id);
-    const profile = db.prepare('SELECT * FROM user_profiles WHERE user_id = ?').get(req.userId);
-
-    const parsedCheckin = {
-      ...checkin,
-      body_map_flags: checkin.body_map_flags ? JSON.parse(checkin.body_map_flags) : [],
-      secondary_flags: checkin.secondary_flags ? JSON.parse(checkin.secondary_flags) : {},
-    };
-
-    const workout = await generateAlternativeWorkout(profile, parsedCheckin, checkin.computed_readiness, session_type);
-    res.json(workout);
-  } catch (err) {
-    next(err);
-  }
-}
-
-module.exports = { getRecommendation, selectSession, getAlternativeWorkout };
+module.exports = { getRecommendation, selectSession };
