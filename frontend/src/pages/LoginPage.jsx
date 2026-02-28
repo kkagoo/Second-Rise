@@ -27,84 +27,90 @@ export default function LoginPage() {
     }
   }
 
+  async function handleDemo() {
+    setError('');
+    setLoading(true);
+    try {
+      let res;
+      try {
+        res = await client.post('/auth/signup', { email: 'demo@secondrise.app', password: 'demo1234' });
+      } catch (signupErr) {
+        if (signupErr.response?.status === 409) {
+          res = await client.post('/auth/login', { email: 'demo@secondrise.app', password: 'demo1234' });
+        } else {
+          throw signupErr;
+        }
+      }
+      login(res.data.token);
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Demo login failed — is the server running?');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const inputClass = 'w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-400 transition-colors';
+
   return (
     <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5 safe-bottom">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-earth-900">Second Rise</h1>
-          <p className="text-earth-500 mt-2 text-sm">Movement built for where you are now.</p>
+
+        {/* Logo / wordmark */}
+        <div className="mb-10">
+          <h1 className="text-2xl font-semibold text-stone-900">Second Rise</h1>
+          <p className="text-stone-500 mt-1 text-sm">Movement built for where you are now.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <div>
-            <label className="block text-sm font-semibold text-earth-700 mb-1">Email</label>
+            <label className="block text-xs font-medium text-stone-500 mb-1.5 uppercase tracking-widest">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-2xl border-2 border-earth-100 bg-white px-4 py-3 text-earth-900 focus:outline-none focus:border-sunrise-500 transition-colors"
+              className={inputClass}
               placeholder="you@example.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-earth-700 mb-1">Password</label>
+            <label className="block text-xs font-medium text-stone-500 mb-1.5 uppercase tracking-widest">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-2xl border-2 border-earth-100 bg-white px-4 py-3 text-earth-900 focus:outline-none focus:border-sunrise-500 transition-colors"
+              className={inputClass}
               placeholder="••••••••"
             />
           </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <Button type="submit" disabled={loading} className="w-full mt-2">
+          <Button type="submit" disabled={loading} className="w-full mt-1">
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-earth-500 mt-6">
-          No account yet?{' '}
-          <Link to="/signup" className="text-sunrise-600 font-semibold">
+        <p className="text-center text-sm text-stone-500 mt-5">
+          No account?{' '}
+          <Link to="/signup" className="text-stone-900 font-semibold underline underline-offset-2">
             Sign up
           </Link>
         </p>
 
-        <div className="mt-4 pt-4 border-t border-earth-100 text-center">
-          <p className="text-xs text-earth-400 mb-2">Testing / demo</p>
+        <div className="mt-6 pt-5 border-t border-stone-200 text-center">
+          <p className="text-xs text-stone-400 mb-2">Try without an account</p>
           <button
-            onClick={async () => {
-              setError('');
-              setLoading(true);
-              try {
-                let res;
-                try {
-                  res = await client.post('/auth/signup', { email: 'demo@secondrise.app', password: 'demo1234' });
-                } catch (signupErr) {
-                  if (signupErr.response?.status === 409) {
-                    // Account already exists — just log in
-                    res = await client.post('/auth/login', { email: 'demo@secondrise.app', password: 'demo1234' });
-                  } else {
-                    throw signupErr;
-                  }
-                }
-                login(res.data.token);
-                navigate('/');
-              } catch (err) {
-                setError(err.response?.data?.error || 'Demo login failed — is the server running?');
-              } finally {
-                setLoading(false);
-              }
-            }}
-            className="text-sm text-earth-500 underline tap-target"
+            onClick={handleDemo}
             disabled={loading}
+            className="text-sm font-medium text-stone-600 hover:text-stone-900 tap-target transition-colors underline underline-offset-2"
           >
-            Continue as demo user →
+            Continue as demo user
           </button>
         </div>
+
       </div>
     </div>
   );

@@ -4,40 +4,40 @@ const ZONES = [
   {
     label: 'Upper body',
     regions: [
-      { id: 'Neck',         emoji: '🫙', label: 'Neck' },
-      { id: 'Shoulders',    emoji: '💪', label: 'Shoulders' },
-      { id: 'Upper Back',   emoji: '🔙', label: 'Upper Back' },
+      { id: 'Neck',         label: 'Neck' },
+      { id: 'Shoulders',    label: 'Shoulders' },
+      { id: 'Upper Back',   label: 'Upper back' },
     ],
   },
   {
     label: 'Core & back',
     regions: [
-      { id: 'Core/Abdominal', emoji: '🫁', label: 'Core / Abs' },
-      { id: 'Low Back',       emoji: '🔄', label: 'Low Back' },
+      { id: 'Core/Abdominal', label: 'Core / abs' },
+      { id: 'Low Back',       label: 'Low back' },
     ],
   },
   {
     label: 'Lower body',
     regions: [
-      { id: 'Hips',         emoji: '🦋', label: 'Hips' },
-      { id: 'Knees',        emoji: '🦵', label: 'Knees' },
-      { id: 'Feet/Ankles',  emoji: '🦶', label: 'Feet / Ankles' },
+      { id: 'Hips',         label: 'Hips' },
+      { id: 'Knees',        label: 'Knees' },
+      { id: 'Feet/Ankles',  label: 'Feet & ankles' },
     ],
   },
   {
     label: 'Arms & hands',
     regions: [
-      { id: 'Wrists/Hands', emoji: '✋', label: 'Wrists / Hands' },
+      { id: 'Wrists/Hands', label: 'Wrists & hands' },
     ],
   },
 ];
 
 export default function BodyMapSVG({ selected, onToggle }) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       {ZONES.map((zone) => (
         <div key={zone.label}>
-          <p className="text-xs font-semibold text-earth-400 uppercase tracking-widest mb-2">
+          <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-2">
             {zone.label}
           </p>
           <div className="grid grid-cols-3 gap-2">
@@ -47,14 +47,13 @@ export default function BodyMapSVG({ selected, onToggle }) {
                 <button
                   key={r.id}
                   onClick={() => onToggle(r.id)}
-                  className={`flex flex-col items-center gap-1.5 rounded-2xl py-4 px-2 tap-target border-2 transition-all duration-150 ${
+                  className={`rounded-xl py-3 px-2 tap-target text-center text-sm font-medium border transition-all duration-150 ${
                     isSelected
-                      ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                      : 'border-earth-100 bg-white text-earth-600 hover:border-sunrise-200'
+                      ? 'bg-stone-900 border-stone-900 text-white'
+                      : 'bg-white border-stone-200 text-stone-700 hover:border-stone-400'
                   }`}
                 >
-                  <span className="text-2xl">{r.emoji}</span>
-                  <span className="text-xs font-semibold leading-tight text-center">{r.label}</span>
+                  {r.label}
                 </button>
               );
             })}
@@ -63,7 +62,7 @@ export default function BodyMapSVG({ selected, onToggle }) {
       ))}
 
       {selected.length > 0 && (
-        <p className="text-xs text-earth-400 text-center">Tap again to deselect</p>
+        <p className="text-xs text-stone-400 text-center">Tap again to deselect</p>
       )}
     </div>
   );
