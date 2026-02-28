@@ -76,9 +76,15 @@ export default function HomePage() {
                 </p>
                 <span className="text-2xl font-semibold text-stone-900">{todayCheckin.computed_readiness}</span>
               </div>
-              <Button onClick={() => navigate('/recommend')} className="w-full">
+              <Button onClick={() => navigate('/recommend')} className="w-full mb-3">
                 View my workout
               </Button>
+              <button
+                onClick={() => navigate('/checkin')}
+                className="w-full text-sm text-stone-400 hover:text-stone-700 tap-target transition-colors underline underline-offset-2"
+              >
+                Redo check-in
+              </button>
             </div>
           ) : (
             <div>
