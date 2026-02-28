@@ -72,6 +72,35 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
+
+        <div className="mt-4 pt-4 border-t border-earth-100 text-center">
+          <p className="text-xs text-earth-400 mb-2">Testing / demo</p>
+          <button
+            onClick={async () => {
+              setError('');
+              setLoading(true);
+              try {
+                // Create or login demo account
+                let res;
+                try {
+                  res = await client.post('/auth/signup', { email: 'demo@secondrise.app', password: 'demo1234' });
+                } catch {
+                  res = await client.post('/auth/login', { email: 'demo@secondrise.app', password: 'demo1234' });
+                }
+                login(res.data.token);
+                navigate('/');
+              } catch (err) {
+                setError('Demo login failed.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="text-sm text-earth-500 underline tap-target"
+            disabled={loading}
+          >
+            Continue as demo user →
+          </button>
+        </div>
       </div>
     </div>
   );

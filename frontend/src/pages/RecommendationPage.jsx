@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
 import PrimaryCard from '../components/recommendation/PrimaryCard';
 import AlternativeCard from '../components/recommendation/AlternativeCard';
 
 export default function RecommendationPage() {
-  const [rec, setRec]         = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location              = useLocation();
+  const [rec, setRec]         = useState(location.state?.rec || null);
+  const [loading, setLoading] = useState(!location.state?.rec);
   const [altLoading, setAltLoading] = useState(null);
   const [error, setError]     = useState('');
   const navigate              = useNavigate();
 
   useEffect(() => {
+    if (location.state?.rec) return; // already have data from checkin page
     client.get('/recommend')
       .then((res) => setRec(res.data))
       .catch((err) => setError(err.response?.data?.error || 'Could not load recommendation.'))

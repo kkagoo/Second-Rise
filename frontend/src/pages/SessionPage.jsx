@@ -127,13 +127,14 @@ export default function SessionPage() {
                 currentSet={current.set}
                 isWarmup={current.type === 'warmup'}
                 isCooldown={current.type === 'cooldown'}
+                onTimerComplete={advance}
               />
             )}
           </motion.div>
         </AnimatePresence>
 
-        {/* Action buttons */}
-        {current.type !== 'rest' && (
+        {/* Action buttons — hidden for timed steps (timer auto-advances) */}
+        {current.type !== 'rest' && current.type !== 'warmup' && current.type !== 'cooldown' && (
           <div className="flex gap-3">
             <Button onClick={advance} className="flex-1">
               {stepIdx === steps.length - 1 ? 'Finish ✓' : 'Done ✓'}
@@ -142,6 +143,13 @@ export default function SessionPage() {
               Skip →
             </Button>
           </div>
+        )}
+
+        {/* Manual advance for timed steps */}
+        {(current.type === 'warmup' || current.type === 'cooldown') && (
+          <Button variant="secondary" onClick={advance} className="w-full">
+            Skip →
+          </Button>
         )}
       </div>
     </div>
