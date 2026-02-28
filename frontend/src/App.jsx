@@ -5,7 +5,6 @@ import { CheckinProvider } from './context/CheckinContext';
 
 import LoginPage            from './pages/LoginPage';
 import SignupPage           from './pages/SignupPage';
-import OnboardingPage       from './pages/OnboardingPage';
 import HomePage             from './pages/HomePage';
 import CheckinPage          from './pages/CheckinPage';
 import RecommendationPage   from './pages/RecommendationPage';
@@ -28,15 +27,6 @@ function AuthGuard({ children }) {
   return children;
 }
 
-function OnboardingGuard({ children }) {
-  const { profile, loading } = useAuth();
-  if (loading) return null;
-  if (profile && !profile.onboarding_complete) {
-    return <Navigate to="/onboarding" replace />;
-  }
-  return children;
-}
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -47,36 +37,15 @@ export default function App() {
             <Route path="/login"  element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
 
-            {/* Onboarding (auth required, no onboarding guard) */}
-            <Route path="/onboarding" element={
-              <AuthGuard><OnboardingPage /></AuthGuard>
-            } />
-
-            {/* Protected + onboarding complete */}
-            <Route path="/" element={
-              <AuthGuard><OnboardingGuard><HomePage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/checkin" element={
-              <AuthGuard><OnboardingGuard><CheckinPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/recommend" element={
-              <AuthGuard><OnboardingGuard><RecommendationPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/session" element={
-              <AuthGuard><OnboardingGuard><SessionPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/feedback" element={
-              <AuthGuard><OnboardingGuard><FeedbackPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/history" element={
-              <AuthGuard><OnboardingGuard><HistoryPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/reflection" element={
-              <AuthGuard><OnboardingGuard><WeeklyReflectionPage /></OnboardingGuard></AuthGuard>
-            } />
-            <Route path="/profile" element={
-              <AuthGuard><OnboardingGuard><ProfilePage /></OnboardingGuard></AuthGuard>
-            } />
+            {/* Protected */}
+            <Route path="/"           element={<AuthGuard><HomePage /></AuthGuard>} />
+            <Route path="/checkin"    element={<AuthGuard><CheckinPage /></AuthGuard>} />
+            <Route path="/recommend"  element={<AuthGuard><RecommendationPage /></AuthGuard>} />
+            <Route path="/session"    element={<AuthGuard><SessionPage /></AuthGuard>} />
+            <Route path="/feedback"   element={<AuthGuard><FeedbackPage /></AuthGuard>} />
+            <Route path="/history"    element={<AuthGuard><HistoryPage /></AuthGuard>} />
+            <Route path="/reflection" element={<AuthGuard><WeeklyReflectionPage /></AuthGuard>} />
+            <Route path="/profile"    element={<AuthGuard><ProfilePage /></AuthGuard>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

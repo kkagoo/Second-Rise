@@ -11,47 +11,6 @@ const STEPS = [
         key: 'age_range', label: 'Age range',
         options: ['40-44', '45-49', '50-54', '55-60'],
       },
-      {
-        key: 'menopause_stage', label: 'Where are you in your menopause journey?',
-        options: [
-          { value: 'perimenopause',  label: 'Perimenopause' },
-          { value: 'postmenopause',  label: 'Postmenopause' },
-          { value: 'surgical',       label: 'Surgical menopause' },
-          { value: 'unsure',         label: 'Not sure' },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Health history',
-    fields: [
-      {
-        key: 'bone_health', label: 'Bone health status',
-        options: [
-          { value: 'normal',       label: 'Normal' },
-          { value: 'osteopenia',   label: 'Osteopenia' },
-          { value: 'osteoporosis', label: 'Osteoporosis' },
-          { value: 'unknown',      label: 'I don\'t know' },
-        ],
-      },
-      {
-        key: 'pelvic_floor_history', label: 'Any pelvic floor history? (leakage, prolapse, pelvic pain)',
-        options: [
-          { value: true,  label: 'Yes' },
-          { value: false, label: 'No' },
-        ],
-        boolean: true,
-      },
-    ],
-  },
-  {
-    title: 'Joint concerns',
-    fields: [
-      {
-        key: 'chronic_joints', label: 'Any chronic joint concerns? (select all that apply)',
-        options: ['Knees', 'Hips', 'Low Back', 'Shoulders', 'Neck', 'Wrists/Hands', 'Feet/Ankles', 'Upper Back'],
-        multi: true,
-      },
     ],
   },
   {
@@ -68,31 +27,8 @@ const STEPS = [
       },
       {
         key: 'equipment_available', label: 'Equipment you have access to',
-        options: ['dumbbells', 'resistance bands', 'mat', 'gym', 'chair', 'bodyweight only'],
+        options: ['dumbbells', 'resistance bands', 'bodyweight only'],
         multi: true,
-      },
-    ],
-  },
-  {
-    title: 'Preferences',
-    fields: [
-      {
-        key: 'preferred_time', label: 'When do you prefer to work out?',
-        options: [
-          { value: 'morning', label: 'Morning' },
-          { value: 'midday',  label: 'Midday' },
-          { value: 'evening', label: 'Evening' },
-          { value: 'varies',  label: 'It varies' },
-        ],
-      },
-      {
-        key: 'dinner_cooks_interest',
-        label: 'Interested in quick "Train While Dinner Cooks" sessions? (15 min)',
-        options: [
-          { value: true,  label: 'Yes, love the idea!' },
-          { value: false, label: 'Not really' },
-        ],
-        boolean: true,
       },
     ],
   },
