@@ -80,17 +80,21 @@ export default function LoginPage() {
               setError('');
               setLoading(true);
               try {
-                // Create or login demo account
                 let res;
                 try {
                   res = await client.post('/auth/signup', { email: 'demo@secondrise.app', password: 'demo1234' });
-                } catch {
-                  res = await client.post('/auth/login', { email: 'demo@secondrise.app', password: 'demo1234' });
+                } catch (signupErr) {
+                  if (signupErr.response?.status === 409) {
+                    // Account already exists — just log in
+                    res = await client.post('/auth/login', { email: 'demo@secondrise.app', password: 'demo1234' });
+                  } else {
+                    throw signupErr;
+                  }
                 }
                 login(res.data.token);
                 navigate('/');
               } catch (err) {
-                setError('Demo login failed.');
+                setError(err.response?.data?.error || 'Demo login failed — is the server running?');
               } finally {
                 setLoading(false);
               }
