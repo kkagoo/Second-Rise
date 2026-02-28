@@ -7,11 +7,14 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    background-color: #f8f7f5;
+    background-color: #ffffff;
     min-height: 100svh;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  input, textarea, select {
+    font-size: 16px; /* prevent iOS zoom */
   }
 }
 

@@ -63,33 +63,33 @@ export default function CheckinPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream px-5 pt-12 pb-8 safe-bottom">
+    <div className="min-h-screen bg-white px-5 pt-14 pb-28">
       <div className="max-w-md mx-auto">
 
         <div className="mb-8">
-          <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-1">
+          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">
             Daily check-in
           </p>
-          <h1 className="text-xl font-semibold text-stone-900">
+          <h1 className="text-2xl font-bold text-gray-900">
             {layer === 1 ? 'How are you today?' : 'Tell us more'}
           </h1>
         </div>
 
         {submitting ? (
           <div className="flex flex-col items-center justify-center py-24 gap-5">
-            <div className="w-8 h-8 border-2 border-stone-200 border-t-stone-700 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-blue-100 border-t-blue-400 rounded-full animate-spin" />
             <div className="text-center">
-              <p className="text-stone-700 font-medium text-sm">
+              <p className="text-gray-700 font-medium text-sm">
                 {LOADING_MESSAGES[loadingMsg]}
               </p>
-              <p className="text-stone-400 text-xs mt-1">About 10 seconds</p>
+              <p className="text-gray-400 text-xs mt-1">About 10 seconds</p>
             </div>
             <div className="flex gap-1.5">
               {LOADING_MESSAGES.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 rounded-full transition-all duration-500 ${
-                    i <= loadingMsg ? 'bg-stone-700 w-5' : 'bg-stone-200 w-1.5'
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i <= loadingMsg ? 'bg-blue-400 w-5' : 'bg-gray-200 w-2'
                   }`}
                 />
               ))}

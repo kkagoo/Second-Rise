@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CheckinProvider } from './context/CheckinContext';
+import AppLayout from './components/ui/AppLayout';
 
 import LoginPage            from './pages/LoginPage';
 import SignupPage           from './pages/SignupPage';
@@ -18,13 +19,13 @@ function AuthGuard({ children }) {
   const { token, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-sunrise-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
   if (!token) return <Navigate to="/login" replace />;
-  return children;
+  return <AppLayout>{children}</AppLayout>;
 }
 
 export default function App() {
@@ -37,7 +38,7 @@ export default function App() {
             <Route path="/login"  element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
 
-            {/* Protected */}
+            {/* Protected — all wrapped in AuthGuard + AppLayout */}
             <Route path="/"          element={<AuthGuard><HomePage /></AuthGuard>} />
             <Route path="/checkin"   element={<AuthGuard><CheckinPage /></AuthGuard>} />
             <Route path="/recommend" element={<AuthGuard><RecommendationPage /></AuthGuard>} />

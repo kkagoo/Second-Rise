@@ -2,36 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import Button from '../components/ui/Button';
 
-function IconHistory() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 8v4l3 3" /><circle cx="12" cy="12" r="9" />
-    </svg>
-  );
-}
-
-function IconReflect() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-    </svg>
-  );
-}
-
-function IconProfile() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
+const CATEGORIES = [
+  { label: 'Strength',  color: 'bg-blue-400',   text: 'text-white' },
+  { label: 'Yoga',      color: 'bg-orange-400',  text: 'text-white' },
+  { label: 'Mobility',  color: 'bg-sky-card border border-blue-200', text: 'text-blue-500' },
+  { label: 'Cardio',    color: 'bg-gray-100',    text: 'text-gray-700' },
+];
 
 export default function HomePage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [todayCheckin, setTodayCheckin] = useState(undefined);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     client.get('/checkin/today')
@@ -41,84 +24,168 @@ export default function HomePage() {
 
   const loading = todayCheckin === undefined;
 
-  const quickLinks = [
-    { label: 'History',  Icon: IconHistory,  path: '/history' },
-    { label: 'Reflect',  Icon: IconReflect,  path: '/reflection' },
-    { label: 'Profile',  Icon: IconProfile,  path: '/profile' },
-  ];
-
   return (
-    <div className="min-h-screen bg-cream px-5 pt-12 pb-8 safe-bottom">
-      <div className="max-w-md mx-auto flex flex-col gap-6">
-
-        {/* Header */}
-        <div>
-          <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-1">Second Rise</p>
-          <h1 className="text-2xl font-semibold text-stone-900 leading-tight">
-            Movement built for<br />where you are now.
-          </h1>
+    <div className="min-h-screen bg-white pb-28">
+      {/* Header */}
+      <div className="px-5 pt-14 pb-4">
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">Welcome back</p>
+            <h1 className="text-2xl font-bold text-gray-900">Second Rise</h1>
+          </div>
+          {/* Avatar placeholder */}
+          <button
+            onClick={() => navigate('/profile')}
+            className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center tap-target"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4BA3E3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            </svg>
+          </button>
         </div>
 
-        {/* Main CTA card */}
-        <div className="bg-white rounded-xl border border-stone-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-700 mt-3 mb-4">
+          Find your workout
+        </h2>
+
+        {/* Search bar */}
+        <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-4 py-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search workouts…"
+            className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="px-5 flex flex-col gap-5">
+        {/* Today's activity card */}
+        <div className="bg-sky-card rounded-3xl p-5">
           {loading ? (
             <div className="flex justify-center py-4">
-              <div className="w-5 h-5 border-2 border-stone-300 border-t-stone-700 rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-blue-300 border-t-blue-400 rounded-full animate-spin" />
             </div>
           ) : todayCheckin ? (
             <div>
-              <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-3">
-                Check-in complete
-              </p>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-stone-600">
-                  Readiness score
-                </p>
-                <span className="text-2xl font-semibold text-stone-900">{todayCheckin.computed_readiness}</span>
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-0.5">
+                    Today's activity
+                  </p>
+                  <p className="text-gray-700 text-sm font-medium">Check-in complete</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BA3E3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="2"/>
+                  </svg>
+                </div>
               </div>
-              <Button onClick={() => navigate('/recommend')} className="w-full mb-3">
-                View my workout
-              </Button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-white rounded-2xl px-4 py-2 flex items-center gap-2 shadow-sm">
+                  <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
+                  <span className="text-xs text-gray-400 font-medium">readiness</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/recommend')}
+                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3.5 transition-colors text-sm"
+              >
+                View my workout →
+              </button>
               <button
                 onClick={() => navigate('/checkin')}
-                className="w-full text-sm text-stone-400 hover:text-stone-700 tap-target transition-colors underline underline-offset-2"
+                className="w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-2 tap-target transition-colors"
               >
                 Redo check-in
               </button>
             </div>
           ) : (
             <div>
-              <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-3">
-                Ready when you are
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-0.5">
+                    Today's activity
+                  </p>
+                  <p className="text-gray-700 text-sm font-medium">Ready when you are</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+                  {/* Sneaker icon */}
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BA3E3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 18h20v2H2z"/><path d="M4 18l2-8h8l4 5 2 3"/><path d="M12 10l2 4"/>
+                  </svg>
+                </div>
+              </div>
+              <p className="text-gray-500 text-sm mb-4 leading-relaxed">
+                A quick check-in helps us build a session around how you feel today.
               </p>
-              <h2 className="text-lg font-semibold text-stone-900 mb-2">Start with a quick check-in</h2>
-              <p className="text-stone-500 text-sm mb-5 leading-relaxed">
-                A few questions and we'll build your session around how you feel today.
-              </p>
-              <Button onClick={() => navigate('/checkin')} className="w-full">
-                Begin check-in
-              </Button>
+              <button
+                onClick={() => navigate('/checkin')}
+                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3.5 transition-colors text-sm"
+              >
+                Begin check-in →
+              </button>
             </div>
           )}
         </div>
 
-        {/* Quick links */}
-        <div className="grid grid-cols-3 gap-2">
-          {quickLinks.map(({ label, Icon, path }) => (
-            <button
-              key={path}
-              onClick={() => navigate(path)}
-              className="flex flex-col items-center gap-2 bg-white rounded-xl py-5 border border-stone-200 tap-target hover:bg-stone-50 transition-colors duration-150"
-            >
-              <span className="text-stone-500"><Icon /></span>
-              <span className="text-xs font-medium text-stone-600">{label}</span>
-            </button>
-          ))}
+        {/* Category pills */}
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-3">Browse by type</p>
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+            {CATEGORIES.map(({ label, color, text }) => (
+              <button
+                key={label}
+                onClick={() => navigate('/history')}
+                className={`flex-shrink-0 ${color} ${text} text-sm font-semibold rounded-2xl px-5 py-2.5 tap-target transition-opacity hover:opacity-80`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
+        {/* Recent sessions teaser */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold text-gray-700">Recent sessions</p>
+            <button
+              onClick={() => navigate('/history')}
+              className="text-xs text-blue-400 font-semibold tap-target"
+            >
+              See all
+            </button>
+          </div>
+          <button
+            onClick={() => navigate('/history')}
+            className="w-full flex items-center gap-4 bg-gray-50 hover:bg-gray-100 rounded-2xl p-4 transition-colors text-left"
+          >
+            <div className="w-14 h-14 rounded-xl bg-blue-100 flex-shrink-0 flex items-center justify-center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4BA3E3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-800 text-sm">Your workout history</p>
+              <p className="text-xs text-gray-400 mt-0.5">Track progress over time</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Sign out — low prominence */}
         <button
           onClick={() => { logout(); navigate('/login'); }}
-          className="text-center text-xs text-stone-400 hover:text-stone-600 tap-target transition-colors"
+          className="text-center text-xs text-gray-300 hover:text-gray-500 tap-target transition-colors mt-2"
         >
           Sign out
         </button>

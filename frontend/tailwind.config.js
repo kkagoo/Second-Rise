@@ -4,62 +4,93 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Refined terracotta accent — deeper, more muted than the original orange
-        accent: {
-          50:  '#fdf3ee',
-          100: '#fbe4d5',
-          200: '#f6c7aa',
-          300: '#efa177',
-          400: '#e6794a',
-          500: '#c45c38',  // primary accent
-          600: '#a8492a',
-          700: '#8a3921',
-          800: '#6e2d1b',
-          900: '#4f2015',
+        // Primary blue
+        blue: {
+          50:  '#eff8ff',
+          100: '#dbeffe',
+          200: '#b9e0fd',
+          300: '#7bc8fb',
+          400: '#4BA3E3',  // primary CTA
+          500: '#2e8ecf',
+          600: '#1a72b3',
+          700: '#145a8f',
+          800: '#124b77',
+          900: '#0e3d5e',
         },
-        // Neutral warm grays — replaces "earth"
+        // Accent orange
+        orange: {
+          50:  '#fff6f0',
+          100: '#ffe8d6',
+          200: '#fecfae',
+          300: '#fdae7d',
+          400: '#F4874B',  // accent
+          500: '#f0692a',
+          600: '#e04f18',
+          700: '#b73d14',
+          800: '#913215',
+          900: '#6e2b13',
+        },
+        // Neutral grays
+        gray: {
+          50:  '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
+        },
+        // Light blue surface for cards
+        'sky-card': '#EBF5FD',
+        // Keep legacy aliases so existing pages don't break
+        cream: '#ffffff',
+        accent: {
+          50:  '#fff6f0',
+          500: '#F4874B',
+          600: '#f0692a',
+        },
+        sunrise: {
+          50:  '#fff6f0',
+          200: '#fecfae',
+          500: '#F4874B',
+          600: '#f0692a',
+          700: '#b73d14',
+        },
+        earth: {
+          50:  '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
+        },
         stone: {
           50:  '#fafaf9',
-          100: '#f4f3f1',
-          200: '#e6e3de',
-          300: '#ccc8c1',
-          400: '#a8a39a',
-          500: '#857f76',
-          600: '#635e57',
-          700: '#4a4540',
-          800: '#302d29',
-          900: '#1c1a17',
+          100: '#f5f5f4',
+          200: '#e7e5e4',
+          300: '#d6d3d1',
+          400: '#a8a29e',
+          500: '#78716c',
+          600: '#57534e',
+          700: '#44403c',
+          800: '#292524',
+          900: '#1c1917',
         },
-        // Keep sunrise alias pointing to accent for backward compatibility
-        sunrise: {
-          50:  '#fdf3ee',
-          100: '#fbe4d5',
-          200: '#f6c7aa',
-          300: '#efa177',
-          400: '#e6794a',
-          500: '#c45c38',
-          600: '#a8492a',
-          700: '#8a3921',
-          800: '#6e2d1b',
-          900: '#4f2015',
-        },
-        // Keep earth alias for backward compat
-        earth: {
-          50:  '#fafaf9',
-          100: '#f4f3f1',
-          200: '#e6e3de',
-          300: '#ccc8c1',
-          400: '#a8a39a',
-          500: '#857f76',
-          600: '#635e57',
-          700: '#4a4540',
-          800: '#302d29',
-          900: '#1c1a17',
-        },
-        cream: '#f8f7f5',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
       },
       minHeight: {
         screen: '100svh',

@@ -1,10 +1,10 @@
 import React from 'react';
 
 const OPTIONS = [
-  { value: 20, label: 'Wrecked',  sub: 'need rest' },
-  { value: 40, label: 'Low',      sub: 'take it easy' },
-  { value: 65, label: 'Good',     sub: 'ready to move' },
-  { value: 85, label: 'Strong',   sub: 'let\'s go' },
+  { value: 20, label: 'Wrecked', sub: 'need rest' },
+  { value: 40, label: 'Low',     sub: 'take it easy' },
+  { value: 65, label: 'Good',    sub: 'ready to move' },
+  { value: 85, label: 'Strong',  sub: "let's go" },
 ];
 
 export default function EmojiPicker({ value, onChange }) {
@@ -16,16 +16,16 @@ export default function EmojiPicker({ value, onChange }) {
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
-            className={`flex flex-col items-start gap-0.5 rounded-xl px-4 py-4 tap-target text-left transition-all duration-150 border ${
+            className={`flex flex-col items-start gap-0.5 rounded-2xl px-4 py-4 tap-target text-left transition-all duration-150 border-2 ${
               selected
-                ? 'bg-stone-900 border-stone-900 text-white'
-                : 'bg-white border-stone-200 text-stone-800 hover:border-stone-400'
+                ? 'bg-blue-400 border-blue-400 text-white'
+                : 'bg-white border-gray-200 text-gray-800 hover:border-blue-300'
             }`}
           >
-            <span className={`text-sm font-semibold ${selected ? 'text-white' : 'text-stone-900'}`}>
+            <span className={`text-sm font-bold ${selected ? 'text-white' : 'text-gray-900'}`}>
               {opt.label}
             </span>
-            <span className={`text-xs ${selected ? 'text-stone-300' : 'text-stone-400'}`}>
+            <span className={`text-xs ${selected ? 'text-blue-100' : 'text-gray-400'}`}>
               {opt.sub}
             </span>
           </button>

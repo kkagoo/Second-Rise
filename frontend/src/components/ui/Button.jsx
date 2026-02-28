@@ -1,14 +1,14 @@
 import React from 'react';
 
 export default function Button({ children, variant = 'primary', className = '', disabled, ...props }) {
-  const base = 'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-150 tap-target px-6 py-3 text-sm tracking-tight focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center rounded-2xl font-semibold transition-colors duration-150 tap-target px-6 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
 
   const variants = {
-    primary:   'bg-stone-900 text-white hover:bg-stone-800 active:scale-[0.98]',
-    secondary: 'bg-stone-100 text-stone-900 hover:bg-stone-200 active:scale-[0.98]',
-    ghost:     'bg-transparent text-stone-600 hover:bg-stone-100 active:scale-[0.98]',
-    outline:   'border border-stone-300 text-stone-800 hover:bg-stone-50 active:scale-[0.98]',
-    accent:    'bg-accent-500 text-white hover:bg-accent-600 active:scale-[0.98]',
+    primary:   'bg-blue-400 text-white hover:bg-blue-500 active:scale-[0.98]',
+    secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200 active:scale-[0.98]',
+    ghost:     'bg-transparent text-gray-500 hover:bg-gray-100 active:scale-[0.98]',
+    outline:   'border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-[0.98]',
+    accent:    'bg-orange-400 text-white hover:bg-orange-500 active:scale-[0.98]',
   };
 
   return (

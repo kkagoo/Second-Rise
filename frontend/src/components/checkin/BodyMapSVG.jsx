@@ -37,7 +37,7 @@ export default function BodyMapSVG({ selected, onToggle }) {
     <div className="flex flex-col gap-4">
       {ZONES.map((zone) => (
         <div key={zone.label}>
-          <p className="text-xs font-medium text-stone-400 uppercase tracking-widest mb-2">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-2">
             {zone.label}
           </p>
           <div className="grid grid-cols-3 gap-2">
@@ -49,8 +49,8 @@ export default function BodyMapSVG({ selected, onToggle }) {
                   onClick={() => onToggle(r.id)}
                   className={`rounded-xl py-3 px-2 tap-target text-center text-sm font-medium border transition-all duration-150 ${
                     isSelected
-                      ? 'bg-stone-900 border-stone-900 text-white'
-                      : 'bg-white border-stone-200 text-stone-700 hover:border-stone-400'
+                      ? 'bg-blue-400 border-blue-400 text-white'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-400'
                   }`}
                 >
                   {r.label}
@@ -62,7 +62,7 @@ export default function BodyMapSVG({ selected, onToggle }) {
       ))}
 
       {selected.length > 0 && (
-        <p className="text-xs text-stone-400 text-center">Tap again to deselect</p>
+        <p className="text-xs text-gray-400 text-center">Tap again to deselect</p>
       )}
     </div>
   );

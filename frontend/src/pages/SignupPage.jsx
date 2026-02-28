@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import Button from '../components/ui/Button';
 
 export default function SignupPage() {
   const [email, setEmail]       = useState('');
@@ -23,7 +22,7 @@ export default function SignupPage() {
     try {
       const res = await client.post('/auth/signup', { email, password });
       login(res.data.token);
-      navigate('/onboarding');
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Sign up failed. Please try again.');
     } finally {
@@ -32,47 +31,53 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5 safe-bottom">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 safe-bottom">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-earth-900">Second Rise</h1>
-          <p className="text-earth-500 mt-2 text-sm">Let's set up your profile.</p>
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">Create account</h1>
+          <p className="text-gray-400 text-sm mt-1">Join Second Rise — it's free.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            placeholder="Email address"
+            className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
           <div>
-            <label className="block text-sm font-semibold text-earth-700 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-2xl border-2 border-earth-100 bg-white px-4 py-3 text-earth-900 focus:outline-none focus:border-sunrise-500 transition-colors"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-earth-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-2xl border-2 border-earth-100 bg-white px-4 py-3 text-earth-900 focus:outline-none focus:border-sunrise-500 transition-colors"
-              placeholder="At least 8 characters"
+              autoComplete="new-password"
+              placeholder="Password (8+ characters)"
+              className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && (
+            <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
 
-          <Button type="submit" disabled={loading} className="w-full mt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 mt-1 transition-colors disabled:opacity-60"
+          >
             {loading ? 'Creating account…' : 'Create account'}
-          </Button>
+          </button>
         </form>
 
-        <p className="text-center text-sm text-earth-500 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-sunrise-600 font-semibold">
+          <Link to="/login" className="text-blue-400 font-semibold">
             Sign in
           </Link>
         </p>
