@@ -125,9 +125,17 @@ export default function RecommendationPage() {
               </div>
             )}
 
-            <button onClick={() => navigate('/')} className="text-center text-sm text-earth-400 underline tap-target">
-              Skip today
-            </button>
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={() => navigate('/checkin')}
+                className="text-sm text-earth-500 underline tap-target"
+              >
+                Redo check-in
+              </button>
+              <button onClick={() => navigate('/')} className="text-sm text-earth-300 tap-target">
+                Skip today
+              </button>
+            </div>
           </>
         )}
       </div>

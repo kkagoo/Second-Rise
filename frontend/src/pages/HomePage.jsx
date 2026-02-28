@@ -52,6 +52,12 @@ export default function HomePage() {
               <Button onClick={() => navigate('/recommend')} className="w-full">
                 View my workout →
               </Button>
+              <button
+                onClick={() => navigate('/checkin')}
+                className="w-full text-center text-sm text-earth-400 underline tap-target mt-2"
+              >
+                Redo check-in
+              </button>
             </div>
           ) : (
             <div>
