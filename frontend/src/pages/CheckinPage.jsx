@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import Layer1Form from '../components/checkin/Layer1Form';
 import Layer2BodyMap from '../components/checkin/Layer2BodyMap';
@@ -22,7 +21,6 @@ export default function CheckinPage() {
   const [loadingMsg, setLoadingMsg] = useState(0);
   const [rec, setRec] = useState(null);
   const [error, setError] = useState('');
-  const { profile } = useAuth();
   const navigate = useNavigate();
 
   function handleLayer1Complete(data) {
@@ -124,7 +122,6 @@ export default function CheckinPage() {
             ) : (
               <Layer2BodyMap
                 energy={layer1Data?.energy}
-                hasPelvicHistory={!!profile?.pelvic_floor_history}
                 onComplete={handleLayer2Complete}
               />
             )}
