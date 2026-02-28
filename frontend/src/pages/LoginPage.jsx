@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import { YogaIllustration } from '../components/ui/Illustrations';
+import { WomanWorkoutIllustration } from '../components/ui/Illustrations';
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('');
@@ -54,9 +54,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white flex flex-col">
       {/* Hero section */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
-        {/* Circular illustration container */}
-        <div className="w-52 h-52 rounded-full bg-sky-card flex items-center justify-center mb-8">
-          <YogaIllustration size={130} />
+        {/* Hero illustration */}
+        <div className="flex justify-center mb-6">
+          <WomanWorkoutIllustration size={200} />
         </div>
 
         <h1 className="text-3xl font-bold text-gray-900 text-center leading-tight mb-2">
