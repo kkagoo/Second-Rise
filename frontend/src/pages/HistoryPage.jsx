@@ -42,17 +42,13 @@ export default function HistoryPage() {
 
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-6">
             <Card className="text-center">
-              <p className="text-2xl font-bold text-blue-400">{stats.total_sessions}</p>
-              <p className="text-xs text-gray-400 mt-1">Sessions</p>
+              <p className="text-3xl font-bold text-blue-400">{stats.completed_sessions}</p>
+              <p className="text-xs text-gray-400 mt-1">Workouts done</p>
             </Card>
             <Card className="text-center">
-              <p className="text-2xl font-bold text-blue-400">{stats.completed_sessions}</p>
-              <p className="text-xs text-gray-400 mt-1">Completed</p>
-            </Card>
-            <Card className="text-center">
-              <p className="text-2xl font-bold text-blue-400">{stats.avg_readiness}</p>
+              <p className="text-3xl font-bold text-blue-400">{stats.avg_readiness}</p>
               <p className="text-xs text-gray-400 mt-1">Avg energy</p>
             </Card>
           </div>
