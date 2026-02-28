@@ -11,6 +11,7 @@ const recommendRoutes  = require('./routes/recommendRoutes');
 const feedbackRoutes   = require('./routes/feedbackRoutes');
 const reflectionRoutes = require('./routes/reflectionRoutes');
 const historyRoutes    = require('./routes/historyRoutes');
+const videoRoutes      = require('./routes/videoRoutes');
 const errorHandler     = require('./middleware/errorHandler');
 
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api/recommend',  recommendRoutes);
 app.use('/api/feedback',   feedbackRoutes);
 app.use('/api/reflection', reflectionRoutes);
 app.use('/api/history',    historyRoutes);
+app.use('/api/videos',     videoRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

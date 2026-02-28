@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
+import { YogaIllustration } from '../components/ui/Illustrations';
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('');
@@ -55,18 +56,7 @@ export default function LoginPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
         {/* Circular illustration container */}
         <div className="w-52 h-52 rounded-full bg-sky-card flex items-center justify-center mb-8">
-          <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
-            {/* Simple dumbbell / movement illustration */}
-            <circle cx="50" cy="38" r="22" fill="#4BA3E3" opacity="0.15" />
-            <circle cx="50" cy="38" r="14" fill="#4BA3E3" opacity="0.25" />
-            {/* Dumbbell shape */}
-            <rect x="30" y="35" width="40" height="6" rx="3" fill="#4BA3E3" />
-            <rect x="22" y="29" width="10" height="18" rx="4" fill="#4BA3E3" />
-            <rect x="68" y="29" width="10" height="18" rx="4" fill="#4BA3E3" />
-            {/* Person silhouette */}
-            <circle cx="50" cy="68" r="5" fill="#F4874B" />
-            <path d="M44 78 Q50 73 56 78 L58 90 H42 L44 78z" fill="#F4874B" opacity="0.7" />
-          </svg>
+          <YogaIllustration size={130} />
         </div>
 
         <h1 className="text-3xl font-bold text-gray-900 text-center leading-tight mb-2">

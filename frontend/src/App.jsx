@@ -14,6 +14,7 @@ import FeedbackPage         from './pages/FeedbackPage';
 import HistoryPage          from './pages/HistoryPage';
 import WeeklyReflectionPage from './pages/WeeklyReflectionPage';
 import ProfilePage          from './pages/ProfilePage';
+import VideoLibraryPage     from './pages/VideoLibraryPage';
 
 function AuthGuard({ children }) {
   const { token, loading } = useAuth();
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/session"   element={<AuthGuard><SessionPage /></AuthGuard>} />
             <Route path="/feedback"  element={<AuthGuard><FeedbackPage /></AuthGuard>} />
             <Route path="/history"   element={<AuthGuard><HistoryPage /></AuthGuard>} />
+            <Route path="/videos"    element={<AuthGuard><VideoLibraryPage /></AuthGuard>} />
             <Route path="/reflection" element={<AuthGuard><WeeklyReflectionPage /></AuthGuard>} />
             <Route path="/profile"   element={<AuthGuard><ProfilePage /></AuthGuard>} />
 

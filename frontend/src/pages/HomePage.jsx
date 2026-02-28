@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
+import { StrengthIllustration, RunIllustration } from '../components/ui/Illustrations';
 
 const CATEGORIES = [
-  { label: 'Strength',  color: 'bg-blue-400',   text: 'text-white' },
-  { label: 'Yoga',      color: 'bg-orange-400',  text: 'text-white' },
-  { label: 'Mobility',  color: 'bg-sky-card border border-blue-200', text: 'text-blue-500' },
-  { label: 'Cardio',    color: 'bg-gray-100',    text: 'text-gray-700' },
+  { label: 'Strength',  type: 'strength',          color: 'bg-blue-400',   text: 'text-white' },
+  { label: 'Yoga',      type: 'yoga',              color: 'bg-orange-400', text: 'text-white' },
+  { label: 'Mobility',  type: 'mobility',          color: 'bg-sky-card border border-blue-200', text: 'text-blue-500' },
+  { label: 'Cardio',    type: 'low_impact_cardio', color: 'bg-gray-100',   text: 'text-gray-700' },
 ];
 
 export default function HomePage() {
@@ -123,6 +124,9 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
+              <div className="flex justify-center mb-3">
+                <StrengthIllustration size={72} />
+              </div>
               <p className="text-gray-500 text-sm mb-4 leading-relaxed">
                 A quick check-in helps us build a session around how you feel today.
               </p>
@@ -140,10 +144,10 @@ export default function HomePage() {
         <div>
           <p className="text-sm font-semibold text-gray-700 mb-3">Browse by type</p>
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
-            {CATEGORIES.map(({ label, color, text }) => (
+            {CATEGORIES.map(({ label, type, color, text }) => (
               <button
                 key={label}
-                onClick={() => navigate('/history')}
+                onClick={() => navigate('/videos', { state: { type } })}
                 className={`flex-shrink-0 ${color} ${text} text-sm font-semibold rounded-2xl px-5 py-2.5 tap-target transition-opacity hover:opacity-80`}
               >
                 {label}

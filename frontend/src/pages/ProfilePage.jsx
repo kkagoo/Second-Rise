@@ -1,24 +1,156 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Card from '../components/ui/Card';
+import client from '../api/client';
+import { ProfileIllustration } from '../components/ui/Illustrations';
 
-function ProfileRow({ label, value }) {
-  if (!value && value !== false) return null;
-  const display = Array.isArray(value) ? value.join(', ') : String(value);
+/* ── helpers ──────────────────────────────────────────────── */
+function Section({ title, subtitle, children }) {
   return (
-    <div className="flex justify-between py-3 border-b border-gray-50">
-      <span className="text-sm text-gray-400">{label}</span>
-      <span className="text-sm font-medium text-gray-800 text-right max-w-[55%]">{display || '—'}</span>
+    <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm flex flex-col gap-4">
+      <div>
+        <h2 className="font-bold text-gray-900 text-base">{title}</h2>
+        {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+      </div>
+      {children}
     </div>
   );
 }
 
+function Chips({ options, value, onChange, multi = false }) {
+  function toggle(v) {
+    if (multi) {
+      const arr = value || [];
+      onChange(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+    } else {
+      onChange(value === v ? null : v);
+    }
+  }
+  const isSelected = (v) => multi ? (value || []).includes(v) : value === v;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map(({ label, value: v }) => (
+        <button
+          key={v}
+          type="button"
+          onClick={() => toggle(v)}
+          className={`rounded-2xl px-4 py-2.5 text-sm font-semibold border-2 tap-target transition-all duration-150 ${
+            isSelected(v)
+              ? 'bg-blue-400 border-blue-400 text-white'
+              : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ── option data ──────────────────────────────────────────── */
+const AGE_RANGES = [
+  { label: '40–44', value: '40-44' },
+  { label: '45–49', value: '45-49' },
+  { label: '50–54', value: '50-54' },
+  { label: '55–60', value: '55-60' },
+];
+
+const MENO_STAGES = [
+  { label: 'Perimenopause',  value: 'perimenopause' },
+  { label: 'Postmenopause',  value: 'postmenopause' },
+  { label: 'Surgical',       value: 'surgical' },
+  { label: 'Not sure',       value: 'unsure' },
+];
+
+const HRT_OPTIONS = [
+  { label: 'Systemic HRT',       value: 'systemic' },
+  { label: 'Local only',         value: 'local' },
+  { label: 'None',               value: 'none' },
+  { label: 'Prefer not to say',  value: 'prefer_not_to_say' },
+];
+
+const BONE_HEALTH = [
+  { label: 'Normal',      value: 'normal' },
+  { label: 'Osteopenia',  value: 'osteopenia' },
+  { label: 'Osteoporosis',value: 'osteoporosis' },
+  { label: 'Unknown',     value: 'unknown' },
+];
+
+const ACTIVITY = [
+  { label: 'Sedentary',  value: 'sedentary' },
+  { label: 'Light',      value: 'light' },
+  { label: 'Moderate',   value: 'moderate' },
+  { label: 'Active',     value: 'active' },
+];
+
+const EQUIPMENT = [
+  { label: 'Dumbbells',          value: 'dumbbells' },
+  { label: 'Resistance bands',   value: 'bands' },
+  { label: 'Bodyweight only',    value: 'bodyweight' },
+];
+
+const JOINTS = [
+  { label: 'Knees',      value: 'knees' },
+  { label: 'Hips',       value: 'hips' },
+  { label: 'Shoulders',  value: 'shoulders' },
+  { label: 'Wrists',     value: 'wrists' },
+  { label: 'Ankles',     value: 'ankles' },
+  { label: 'Low back',   value: 'low back' },
+  { label: 'Upper back', value: 'upper back' },
+  { label: 'Neck',       value: 'neck' },
+];
+
+/* ── page ─────────────────────────────────────────────────── */
 export default function ProfilePage() {
-  const { profile, logout } = useAuth();
+  const { profile, logout, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
-  if (!profile) {
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved]   = useState(false);
+  const [error, setError]   = useState('');
+
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        age_range:            profile.age_range || null,
+        menopause_stage:      profile.menopause_stage || null,
+        hrt_status:           profile.hrt_status || null,
+        bone_health:          profile.bone_health || null,
+        pelvic_floor_history: profile.pelvic_floor_history === 1 ? true
+                            : profile.pelvic_floor_history === 0 ? false
+                            : null,
+        chronic_joints:       Array.isArray(profile.chronic_joints) ? profile.chronic_joints : [],
+        activity_baseline:    profile.activity_baseline || null,
+        equipment_available:  Array.isArray(profile.equipment_available) ? profile.equipment_available : [],
+      });
+    }
+  }, [profile]);
+
+  function set(key, val) {
+    setForm((f) => ({ ...f, [key]: val }));
+    setSaved(false);
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    setError('');
+    try {
+      await client.put('/profile', {
+        ...form,
+        pelvic_floor_history: form.pelvic_floor_history,
+      });
+      await refreshProfile();
+      setSaved(true);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Could not save. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!form) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
@@ -27,44 +159,137 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white px-5 pt-14 pb-28">
-      <div className="max-w-md mx-auto flex flex-col gap-6">
-        <div className="mb-2">
-          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">Account</p>
-          <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-        </div>
+    <div className="min-h-screen bg-white pb-28">
+      {/* Header */}
+      <div className="px-5 pt-14 pb-6">
+        <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">Account</p>
+        <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
+        <p className="text-sm text-gray-400 mt-1">All fields are optional — share what feels right.</p>
+      </div>
 
-        {/* Avatar */}
-        <div className="flex flex-col items-center gap-3 py-4">
-          <div className="w-20 h-20 rounded-full bg-sky-card flex items-center justify-center">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4BA3E3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            </svg>
+      {/* Avatar illustration */}
+      <div className="flex flex-col items-center pb-6">
+        <ProfileIllustration size={100} />
+        <p className="text-gray-500 text-sm font-medium mt-3">Second Rise member</p>
+      </div>
+
+      <div className="px-5 flex flex-col gap-4">
+
+        {/* Age range */}
+        <Section title="Age range" subtitle="Helps us calibrate intensity over time">
+          <Chips
+            options={AGE_RANGES}
+            value={form.age_range}
+            onChange={(v) => set('age_range', v)}
+          />
+        </Section>
+
+        {/* Menopause stage */}
+        <Section title="Where are you in your journey?" subtitle="Used to personalise session types and intensity">
+          <Chips
+            options={MENO_STAGES}
+            value={form.menopause_stage}
+            onChange={(v) => set('menopause_stage', v)}
+          />
+        </Section>
+
+        {/* HRT */}
+        <Section title="HRT / hormone therapy" subtitle="Affects recovery time and intensity recommendations">
+          <Chips
+            options={HRT_OPTIONS}
+            value={form.hrt_status}
+            onChange={(v) => set('hrt_status', v)}
+          />
+        </Section>
+
+        {/* Bone health */}
+        <Section title="Bone health" subtitle="Avoids high-impact exercises if needed">
+          <Chips
+            options={BONE_HEALTH}
+            value={form.bone_health}
+            onChange={(v) => set('bone_health', v)}
+          />
+        </Section>
+
+        {/* Pelvic floor */}
+        <Section title="Pelvic floor history" subtitle="We'll avoid breath-holding and high-intra-abdominal-pressure moves">
+          <div className="flex gap-3">
+            {[{ label: 'Yes, I have a history', value: true }, { label: 'No', value: false }].map(({ label, value: v }) => (
+              <button
+                key={String(v)}
+                type="button"
+                onClick={() => set('pelvic_floor_history', v)}
+                className={`flex-1 rounded-2xl py-3 text-sm font-semibold border-2 tap-target transition-all duration-150 ${
+                  form.pelvic_floor_history === v
+                    ? 'bg-blue-400 border-blue-400 text-white'
+                    : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-          <p className="text-gray-400 text-sm">Second Rise member</p>
-        </div>
+        </Section>
 
-        <Card>
-          <h2 className="font-semibold text-gray-800 mb-2 text-sm">Your profile</h2>
-          <ProfileRow label="Age range"          value={profile.age_range} />
-          <ProfileRow label="Menopause stage"    value={profile.menopause_stage} />
-          <ProfileRow label="HRT status"         value={profile.hrt_status} />
-          <ProfileRow label="Bone health"        value={profile.bone_health} />
-          <ProfileRow label="Pelvic floor history" value={profile.pelvic_floor_history ? 'Yes' : 'No'} />
-          <ProfileRow label="Chronic joints"     value={profile.chronic_joints} />
-          <ProfileRow label="Activity baseline"  value={profile.activity_baseline} />
-          <ProfileRow label="Equipment"          value={profile.equipment_available} />
-          <ProfileRow label="Preferred time"     value={profile.preferred_time} />
-        </Card>
+        {/* Chronic joints */}
+        <Section title="Any ongoing joint issues?" subtitle="Select all that apply — we'll work around them">
+          <Chips
+            options={JOINTS}
+            value={form.chronic_joints}
+            onChange={(v) => set('chronic_joints', v)}
+            multi
+          />
+          {form.chronic_joints?.length > 0 && (
+            <button
+              type="button"
+              onClick={() => set('chronic_joints', [])}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors text-left"
+            >
+              Clear selection
+            </button>
+          )}
+        </Section>
 
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={() => { logout(); navigate('/login'); }}
-            className="w-full text-sm font-semibold text-gray-400 hover:text-gray-600 tap-target transition-colors border border-gray-200 rounded-2xl py-3.5"
-          >
-            Sign out
-          </button>
-        </div>
+        {/* Activity baseline */}
+        <Section title="How active are you usually?" subtitle="Sets the starting intensity for your sessions">
+          <Chips
+            options={ACTIVITY}
+            value={form.activity_baseline}
+            onChange={(v) => set('activity_baseline', v)}
+          />
+        </Section>
+
+        {/* Equipment */}
+        <Section title="Equipment you have access to" subtitle="Claude will only recommend exercises you can do">
+          <Chips
+            options={EQUIPMENT}
+            value={form.equipment_available}
+            onChange={(v) => set('equipment_available', v)}
+            multi
+          />
+        </Section>
+
+        {/* Save */}
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">{error}</div>
+        )}
+
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="w-full bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl py-4 transition-colors disabled:opacity-50 tap-target text-base"
+        >
+          {saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save profile'}
+        </button>
+
+        <button
+          onClick={() => { logout(); navigate('/login'); }}
+          className="w-full text-sm font-semibold text-gray-400 hover:text-gray-600 tap-target transition-colors border border-gray-200 rounded-2xl py-3.5"
+        >
+          Sign out
+        </button>
+
+        <div className="h-4" />
       </div>
     </div>
   );

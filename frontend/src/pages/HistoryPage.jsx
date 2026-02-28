@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import client from '../api/client';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
+import { EmptyStateIllustration } from '../components/ui/Illustrations';
 
 const ENERGY_LABEL = { 20: 'Wrecked', 40: 'Low', 65: 'Good', 85: 'Strong' };
 const EFFORT_COLOR = {
@@ -52,7 +53,7 @@ export default function HistoryPage() {
             </Card>
             <Card className="text-center">
               <p className="text-2xl font-bold text-blue-400">{stats.avg_readiness}</p>
-              <p className="text-xs text-gray-400 mt-1">Avg score</p>
+              <p className="text-xs text-gray-400 mt-1">Avg energy</p>
             </Card>
           </div>
         )}
@@ -62,7 +63,13 @@ export default function HistoryPage() {
             <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : sessions.length === 0 ? (
-          <p className="text-gray-400 text-center py-10">No sessions yet. Complete a check-in to get started!</p>
+          <div className="flex flex-col items-center py-12 gap-4">
+            <EmptyStateIllustration size={100} />
+            <div className="text-center">
+              <p className="font-semibold text-gray-700">No sessions yet</p>
+              <p className="text-sm text-gray-400 mt-1">Complete a check-in to get started!</p>
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
             {sessions.map((s) => (
