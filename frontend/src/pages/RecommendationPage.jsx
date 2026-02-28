@@ -132,7 +132,7 @@ export default function RecommendationPage() {
               >
                 Redo check-in
               </button>
-              <button onClick={() => navigate('/')} className="text-sm text-earth-300 tap-target">
+              <button onClick={() => navigate('/')} className="text-sm text-earth-500 tap-target">
                 Skip today
               </button>
             </div>

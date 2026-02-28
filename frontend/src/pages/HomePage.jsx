@@ -25,7 +25,7 @@ export default function HomePage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-earth-900">Second Rise</h1>
-            <p className="text-sm text-earth-400">Movement built for where you are now.</p>
+            <p className="text-sm text-earth-600">Movement built for where you are now.</p>
           </div>
           <button
             onClick={() => navigate('/profile')}
@@ -54,7 +54,7 @@ export default function HomePage() {
               </Button>
               <button
                 onClick={() => navigate('/checkin')}
-                className="w-full text-center text-sm text-earth-400 underline tap-target mt-2"
+                className="w-full text-center text-sm text-earth-600 underline tap-target mt-2"
               >
                 Redo check-in
               </button>
@@ -95,7 +95,7 @@ export default function HomePage() {
 
         <button
           onClick={() => { logout(); navigate('/login'); }}
-          className="text-center text-xs text-earth-300 underline tap-target"
+          className="text-center text-xs text-earth-500 underline tap-target"
         >
           Sign out
         </button>

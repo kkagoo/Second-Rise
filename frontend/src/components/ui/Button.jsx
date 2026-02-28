@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Button({ children, variant = 'primary', className = '', disabled, ...props }) {
-  const base = 'inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-150 tap-target px-6 py-3 text-base focus:outline-none focus:ring-2 focus:ring-sunrise-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-150 tap-target px-6 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-sunrise-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]';
 
   const variants = {
     primary:   'bg-sunrise-500 text-white hover:bg-sunrise-600 active:scale-95',
