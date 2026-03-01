@@ -5,19 +5,16 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
-    font-size: 16px;
   }
   body {
-    background-color: #fdf8f0;
+    background-color: #ffffff;
     min-height: 100svh;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: #2e1f0e; /* earth-900 — ensures base text always passes contrast */
-    line-height: 1.6;
+    -moz-osx-font-smoothing: grayscale;
   }
-  /* Ensure inputs are never smaller than 16px (prevents iOS zoom) */
   input, textarea, select {
-    font-size: 16px;
+    font-size: 16px; /* prevent iOS zoom */
   }
 }
 

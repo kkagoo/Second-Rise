@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import Button from '../components/ui/Button';
 
 export default function SignupPage() {
   const [email, setEmail]       = useState('');
@@ -31,46 +30,34 @@ export default function SignupPage() {
     }
   }
 
-  const inputClass = 'w-full rounded-2xl border-2 border-earth-200 bg-white px-4 py-3.5 text-base text-earth-900 placeholder:text-earth-300 focus:outline-none focus:border-sunrise-500 transition-colors';
-  const labelClass = 'block text-sm font-semibold text-earth-700 mb-1.5';
-
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5 safe-bottom">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 safe-bottom">
       <div className="w-full max-w-sm">
-
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-earth-900 mb-2">Create your account</h1>
-          <p className="text-earth-600 text-base leading-relaxed">
-            Free to use. No subscription. Just check in and move.
-          </p>
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">Create account</h1>
+          <p className="text-gray-400 text-sm mt-1">Join Second Rise — it's free.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            placeholder="Email address"
+            className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
           <div>
-            <label className={labelClass}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={inputClass}
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className={inputClass}
-              placeholder="At least 8 characters"
               autoComplete="new-password"
+              placeholder="Password (8+ characters)"
+              className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
-            <p className="text-xs text-earth-500 mt-1.5 ml-1">Minimum 8 characters</p>
           </div>
 
           {error && (
@@ -79,20 +66,21 @@ export default function SignupPage() {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full py-4 text-base mt-1">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 mt-1 transition-colors disabled:opacity-60"
+          >
             {loading ? 'Creating account…' : 'Create account'}
-          </Button>
+          </button>
         </form>
 
-        <div className="mt-4">
-          <Link
-            to="/login"
-            className="flex items-center justify-center w-full rounded-2xl border-2 border-earth-200 bg-white py-3.5 text-base font-semibold text-earth-800 hover:border-sunrise-400 transition-colors tap-target"
-          >
-            Already have an account? Sign in
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-400 font-semibold">
+            Sign in
           </Link>
-        </div>
-
+        </p>
       </div>
     </div>
   );

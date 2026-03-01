@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import Button from '../components/ui/Button';
+import { WomanWorkoutIllustration } from '../components/ui/Illustrations';
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('');
@@ -50,47 +50,42 @@ export default function LoginPage() {
     }
   }
 
-  const inputClass = 'w-full rounded-2xl border-2 border-earth-200 bg-white px-4 py-3.5 text-base text-earth-900 placeholder:text-earth-300 focus:outline-none focus:border-sunrise-500 transition-colors';
-  const labelClass = 'block text-sm font-semibold text-earth-700 mb-1.5';
-
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5 safe-bottom">
-      <div className="w-full max-w-sm">
-
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-earth-900 mb-2">Second Rise</h1>
-          <p className="text-earth-600 text-base leading-relaxed">
-            Workouts built around how you actually feel — not a generic plan.
-          </p>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Hero section */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
+        {/* Hero illustration */}
+        <div className="flex justify-center mb-6">
+          <WomanWorkoutIllustration size={200} />
         </div>
 
-        {/* Sign in form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className={labelClass}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={inputClass}
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={inputClass}
-              placeholder="Your password"
-              autoComplete="current-password"
-            />
-          </div>
+        <h1 className="text-3xl font-bold text-gray-900 text-center leading-tight mb-2">
+          Best workouts<br />for you
+        </h1>
+        <p className="text-gray-400 text-sm text-center mb-10">
+          Movement built for where you are now.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            placeholder="Email address"
+            className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+            placeholder="Password"
+            className="w-full rounded-2xl bg-gray-100 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
 
           {error && (
             <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">
@@ -98,33 +93,35 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full py-4 text-base mt-1">
-            {loading ? 'Signing in…' : 'Sign in'}
-          </Button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 mt-1 transition-colors disabled:opacity-60"
+          >
+            {loading ? 'Signing in…' : 'Get started'}
+          </button>
         </form>
 
-        {/* Sign up */}
-        <div className="mt-4">
-          <Link
-            to="/signup"
-            className="flex items-center justify-center w-full rounded-2xl border-2 border-earth-200 bg-white py-3.5 text-base font-semibold text-earth-800 hover:border-sunrise-400 transition-colors tap-target"
-          >
-            Create an account
+        <p className="text-sm text-gray-500 mt-5">
+          No account?{' '}
+          <Link to="/signup" className="text-blue-400 font-semibold">
+            Sign up
           </Link>
-        </div>
+        </p>
+      </div>
 
-        {/* Demo */}
-        <div className="mt-6 pt-6 border-t border-earth-100 text-center">
-          <p className="text-sm text-earth-500 mb-3">Just want to explore?</p>
+      {/* Demo user footer */}
+      <div className="px-6 pb-10 safe-bottom text-center">
+        <div className="border-t border-gray-100 pt-5">
+          <p className="text-xs text-gray-400 mb-2">Try without an account</p>
           <button
             onClick={handleDemo}
             disabled={loading}
-            className="w-full rounded-2xl border-2 border-dashed border-earth-200 py-3.5 text-base font-semibold text-earth-600 hover:border-sunrise-400 hover:text-sunrise-700 transition-colors tap-target disabled:opacity-50"
+            className="text-sm font-semibold text-orange-400 hover:text-orange-500 transition-colors tap-target"
           >
-            {loading ? 'Loading…' : 'Try the demo →'}
+            Continue as demo user →
           </button>
         </div>
-
       </div>
     </div>
   );

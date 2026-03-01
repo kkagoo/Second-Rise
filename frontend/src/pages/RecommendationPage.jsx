@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
-import Card from '../components/ui/Card';
-import Badge from '../components/ui/Badge';
-import Button from '../components/ui/Button';
 
-function VideoThumb({ youtubeId, title, small }) {
+function VideoThumb({ youtubeId, title }) {
   return (
-    <div className={`rounded-2xl overflow-hidden bg-earth-100 ${small ? 'aspect-video' : 'aspect-video'}`}>
+    <div className="w-full aspect-video rounded-2xl overflow-hidden bg-gray-100 relative">
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
         alt={title}
         className="w-full h-full object-cover"
       />
+      {/* Play overlay */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#4BA3E3">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }
@@ -46,17 +51,28 @@ export default function RecommendationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream px-5 pt-12 pb-8 safe-bottom">
-      <div className="max-w-md mx-auto flex flex-col gap-5">
+    <div className="min-h-screen bg-white pb-28">
+      {/* Header */}
+      <div className="px-5 pt-14 pb-4 flex items-center gap-3">
+        <button
+          onClick={() => navigate('/')}
+          className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center tap-target"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
         <div>
-          <p className="text-xs font-semibold text-earth-400 uppercase tracking-widest mb-1">Today's plan</p>
-          <h1 className="text-2xl font-bold text-earth-900">Your workout</h1>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Today's plan</p>
+          <h1 className="text-xl font-bold text-gray-900">Your workout</h1>
         </div>
+      </div>
 
+      <div className="px-5 flex flex-col gap-4">
         {loading && (
           <div className="flex flex-col items-center py-20 gap-4">
-            <div className="w-10 h-10 border-4 border-sunrise-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-earth-500 text-sm">Claude is picking your session…</p>
+            <div className="w-10 h-10 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
+            <p className="text-gray-400 text-sm">Building your session…</p>
           </div>
         )}
 
@@ -66,73 +82,90 @@ export default function RecommendationPage() {
 
         {rec && video && !loading && (
           <>
-            {/* Primary recommendation */}
-            <Card className="border-2 border-sunrise-200 gap-4 flex flex-col">
-              <div className="flex items-center justify-between">
-                <Badge color="sunrise">Recommended for today</Badge>
-                <span className="text-xs text-earth-400">{video.duration_min} min</span>
-              </div>
-
+            {/* Primary card */}
+            <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
               <VideoThumb youtubeId={video.youtube_id} title={video.title} />
 
-              <div>
-                <p className="text-xs font-semibold text-earth-400 mb-0.5">{video.creator}</p>
-                <h2 className="text-lg font-bold text-earth-900">{video.title}</h2>
-              </div>
-
-              <p className="text-earth-600 text-sm leading-relaxed">{rec.primary_reasoning}</p>
-
-              {video.weight_note && (
-                <div className="bg-sunrise-50 border border-sunrise-200 rounded-2xl p-3">
-                  <p className="text-xs font-bold text-sunrise-700 mb-1">Before you press play</p>
-                  <p className="text-sm text-earth-700 leading-relaxed">{video.weight_note}</p>
+              <div className="p-4 flex flex-col gap-3">
+                {/* Tags */}
+                <div className="flex items-center gap-2">
+                  <span className="bg-sky-card text-blue-500 text-xs font-semibold rounded-full px-3 py-1">
+                    {video.duration_min} min
+                  </span>
+                  <span className="bg-orange-50 text-orange-400 text-xs font-semibold rounded-full px-3 py-1">
+                    Recommended
+                  </span>
                 </div>
-              )}
 
-              <Button onClick={() => handleStart(video)} className="w-full">
-                Start Session ▶
-              </Button>
-            </Card>
+                <div>
+                  <p className="text-xs font-medium text-gray-400 mb-0.5">{video.creator}</p>
+                  <h2 className="text-lg font-bold text-gray-900 leading-snug">{video.title}</h2>
+                </div>
+
+                <p className="text-gray-500 text-sm leading-relaxed">{rec.primary_reasoning}</p>
+
+                {video.weight_note && (
+                  <div className="bg-orange-50 border border-orange-100 rounded-2xl p-3">
+                    <p className="text-xs font-bold text-orange-500 mb-1">Before you press play</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{video.weight_note}</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => handleStart(video)}
+                  className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 transition-colors"
+                >
+                  Start Session ▶
+                </button>
+              </div>
+            </div>
 
             {/* Alternatives */}
             {alternatives.length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-earth-500 mb-3">Or choose something different:</p>
+                <p className="text-sm font-semibold text-gray-500 mb-3">Or choose something different:</p>
                 <div className="flex flex-col gap-3">
                   {alternatives.map((alt) => alt && (
-                    <Card key={alt.id}>
+                    <div key={alt.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
                       <div className="flex gap-3">
                         {alt.youtube_id && (
-                          <div className="w-24 flex-shrink-0 rounded-xl overflow-hidden">
-                            <VideoThumb youtubeId={alt.youtube_id} title={alt.title} small />
+                          <div className="w-20 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+                            <img
+                              src={`https://img.youtube.com/vi/${alt.youtube_id}/default.jpg`}
+                              alt={alt.title}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-earth-400 mb-0.5">{alt.creator}</p>
-                          <p className="font-semibold text-earth-800 text-sm leading-tight mb-1">{alt.title}</p>
-                          <p className="text-xs text-earth-500 leading-relaxed mb-2">{alt.reasoning}</p>
+                          <p className="text-xs text-gray-400 mb-0.5">{alt.creator}</p>
+                          <p className="font-semibold text-gray-800 text-sm leading-tight mb-1">{alt.title}</p>
+                          <p className="text-xs text-gray-400 leading-relaxed mb-2">{alt.reasoning}</p>
                           <button
                             onClick={() => handleStart(alt)}
-                            className="text-sunrise-600 text-xs font-semibold underline tap-target"
+                            className="text-blue-400 text-xs font-semibold tap-target"
                           >
                             Choose this →
                           </button>
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 pt-2">
               <button
                 onClick={() => navigate('/checkin')}
-                className="text-sm text-earth-500 underline tap-target"
+                className="text-sm text-gray-400 hover:text-gray-700 underline underline-offset-2 tap-target transition-colors"
               >
                 Redo check-in
               </button>
-              <button onClick={() => navigate('/')} className="text-sm text-earth-500 tap-target">
+              <button
+                onClick={() => navigate('/')}
+                className="text-sm text-gray-300 hover:text-gray-500 tap-target transition-colors"
+              >
                 Skip today
               </button>
             </div>

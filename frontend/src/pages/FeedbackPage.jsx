@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import client from '../api/client';
-import Button from '../components/ui/Button';
 
 const RATINGS = [
-  { value: 'too_easy',    label: 'Too easy 😴',      color: 'blue' },
-  { value: 'just_right',  label: 'Just right 👌',    color: 'green' },
-  { value: 'too_much',    label: 'Too much 😓',       color: 'orange' },
-  { value: 'didnt_finish',label: "Didn't finish 🛑", color: 'red' },
+  { value: 'too_easy',     label: 'Too easy',     icon: '😴' },
+  { value: 'just_right',   label: 'Just right',   icon: '✓' },
+  { value: 'too_much',     label: 'Too much',     icon: '😓' },
+  { value: 'didnt_finish', label: "Didn't finish", icon: '—' },
 ];
 
 const FLARE_REGIONS = [
@@ -20,11 +19,11 @@ export default function FeedbackPage() {
   const navigate = useNavigate();
   const { rec_id } = location.state || {};
 
-  const [rating, setRating]       = useState(null);
-  const [flares, setFlares]       = useState([]);
-  const [notes, setNotes]         = useState('');
+  const [rating, setRating]         = useState(null);
+  const [flares, setFlares]         = useState([]);
+  const [notes, setNotes]           = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError]         = useState('');
+  const [error, setError]           = useState('');
 
   function toggleFlare(region) {
     setFlares((prev) =>
@@ -52,18 +51,18 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream px-5 pt-12 pb-8 safe-bottom">
+    <div className="min-h-screen bg-white px-5 pt-14 pb-28">
       <div className="max-w-md mx-auto flex flex-col gap-6">
         <div>
-          <p className="text-xs font-semibold text-earth-400 uppercase tracking-widest mb-1">
+          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">
             Post-session
           </p>
-          <h1 className="text-2xl font-bold text-earth-900">How did that feel?</h1>
+          <h1 className="text-2xl font-bold text-gray-900">How did that feel?</h1>
         </div>
 
         {/* Effort rating */}
         <div>
-          <p className="text-sm font-semibold text-earth-700 mb-3">Overall effort</p>
+          <p className="text-sm font-semibold text-gray-700 mb-3">Overall effort</p>
           <div className="grid grid-cols-2 gap-3">
             {RATINGS.map((r) => (
               <button
@@ -71,8 +70,8 @@ export default function FeedbackPage() {
                 onClick={() => setRating(r.value)}
                 className={`rounded-2xl py-4 text-sm font-semibold border-2 tap-target transition-all duration-150 ${
                   rating === r.value
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600 hover:border-sunrise-200'
+                    ? 'border-blue-400 bg-sky-card text-blue-600'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
                 }`}
               >
                 {r.label}
@@ -83,17 +82,17 @@ export default function FeedbackPage() {
 
         {/* Flare-ups */}
         <div>
-          <p className="text-sm font-semibold text-earth-700 mb-1">Any new flare-ups?</p>
-          <p className="text-xs text-earth-400 mb-3">Select all that apply (optional)</p>
+          <p className="text-sm font-semibold text-gray-700 mb-1">Any new flare-ups?</p>
+          <p className="text-xs text-gray-400 mb-3">Select all that apply (optional)</p>
           <div className="flex flex-wrap gap-2">
             {FLARE_REGIONS.map((region) => (
               <button
                 key={region}
                 onClick={() => toggleFlare(region)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold border tap-target transition-colors duration-150 ${
+                className={`rounded-full px-4 py-2 text-xs font-semibold border-2 tap-target transition-colors duration-150 ${
                   flares.includes(region)
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600'
+                    ? 'border-blue-400 bg-sky-card text-blue-600'
+                    : 'border-gray-200 bg-white text-gray-600'
                 }`}
               >
                 {region}
@@ -104,25 +103,31 @@ export default function FeedbackPage() {
 
         {/* Notes */}
         <div>
-          <p className="text-sm font-semibold text-earth-700 mb-2">Anything else to note? (optional)</p>
+          <p className="text-sm font-semibold text-gray-700 mb-2">Anything else to note? (optional)</p>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="w-full rounded-2xl border-2 border-earth-100 bg-white px-4 py-3 text-earth-900 text-sm focus:outline-none focus:border-sunrise-500 transition-colors resize-none"
+            className="w-full rounded-2xl border-2 border-gray-200 bg-white px-4 py-3 text-gray-900 text-sm focus:outline-none focus:border-blue-400 transition-colors resize-none"
             placeholder="How did your body feel?"
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm">{error}</div>
+        )}
 
-        <Button onClick={handleSubmit} disabled={!rating || submitting} className="w-full">
+        <button
+          onClick={handleSubmit}
+          disabled={!rating || submitting}
+          className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 transition-colors disabled:opacity-40 disabled:cursor-not-allowed tap-target"
+        >
           {submitting ? 'Saving…' : 'Save & go home'}
-        </Button>
+        </button>
 
         <button
           onClick={() => navigate('/')}
-          className="text-center text-sm text-earth-400 underline tap-target"
+          className="text-center text-sm text-gray-400 hover:text-gray-600 tap-target transition-colors"
         >
           Skip
         </button>

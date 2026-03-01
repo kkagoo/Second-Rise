@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import BodyMapSVG from './BodyMapSVG';
-import Button from '../ui/Button';
 
-const PAIN_TYPES   = ['Sharp', 'Stiffness', 'Weakness'];
-const SEVERITIES   = ['mild', 'moderate', 'severe'];
+const PAIN_TYPES = ['Sharp', 'Stiffness', 'Weakness'];
+const SEVERITIES = ['Mild', 'Moderate', 'Severe'];
 
-export default function Layer2BodyMap({ energy, hasPelvicHistory, onComplete }) {
+const SECONDARY_OPTIONS = [
+  { key: 'sleep',                  label: 'Poor sleep' },
+  { key: 'stress',                 label: 'Stress' },
+  { key: 'brain_fog',              label: 'Brain fog' },
+  { key: 'gi_bloating',            label: 'Bloating' },
+  { key: 'hot_flashes',            label: 'Hot flashes' },
+  { key: 'just_one_of_those_days', label: 'Just one of those days' },
+];
+
+export default function Layer2BodyMap({ energy, onComplete }) {
   const [selectedRegions, setSelectedRegions] = useState([]);
-  const [regionDetails, setRegionDetails] = useState({}); // { region: { pain_type, severity } }
-
-  // Secondary flags (shown when energy is low)
+  const [regionDetails, setRegionDetails] = useState({});
   const showSecondary = energy <= 40;
-  const [secondary, setSecondary] = useState({
-    sleep: false, stress: false, brain_fog: false,
-    gi_bloating: false, hot_flashes: false, just_one_of_those_days: false,
-  });
-  const [pelvicSymptoms, setPelvicSymptoms] = useState(null);
+  const [secondary, setSecondary] = useState(
+    Object.fromEntries(SECONDARY_OPTIONS.map((o) => [o.key, false]))
+  );
 
   function toggleRegion(region) {
     setSelectedRegions((prev) =>
@@ -23,10 +27,10 @@ export default function Layer2BodyMap({ energy, hasPelvicHistory, onComplete }) 
     );
   }
 
-  function setDetail(region, key, value) {
+  function setDetail(region, key, val) {
     setRegionDetails((prev) => ({
       ...prev,
-      [region]: { ...(prev[region] || {}), [key]: value },
+      [region]: { ...(prev[region] || {}), [key]: val },
     }));
   }
 
@@ -34,125 +38,97 @@ export default function Layer2BodyMap({ energy, hasPelvicHistory, onComplete }) 
     setSecondary((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
-  const allRegionsDetailled = selectedRegions.every(
-    (r) => regionDetails[r]?.pain_type && regionDetails[r]?.severity
-  );
-
   function handleSubmit() {
     const body_map_flags = selectedRegions.map((r) => ({
       region: r,
       pain_type: regionDetails[r]?.pain_type || 'Stiffness',
-      severity: regionDetails[r]?.severity || 'mild',
+      severity: (regionDetails[r]?.severity || 'Mild').toLowerCase(),
     }));
-
-    const secondary_flags = showSecondary
-      ? { ...secondary, ...(hasPelvicHistory ? { pelvic_symptoms: pelvicSymptoms === 'yes' } : {}) }
-      : {};
-
-    onComplete({ body_map_flags, secondary_flags });
+    onComplete({ body_map_flags, secondary_flags: showSecondary ? secondary : {} });
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-lg font-semibold text-earth-900 mb-1">Where does it hurt?</h2>
-        <p className="text-sm text-earth-500 mb-4">Tap the regions that are bothering you today.</p>
+        <h2 className="text-base font-bold text-gray-900 mb-1">Where does it hurt?</h2>
+        <p className="text-sm text-gray-400 mb-4">Tap the areas that are bothering you today.</p>
         <BodyMapSVG selected={selectedRegions} onToggle={toggleRegion} />
       </div>
 
-      {/* Per-region details */}
+      {/* Per-region detail cards — optional, shown when region selected */}
       {selectedRegions.map((region) => (
-        <div key={region} className="bg-white rounded-2xl border border-earth-100 p-4">
-          <h3 className="font-semibold text-earth-800 mb-3">{region}</h3>
+        <div key={region} className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-4 shadow-sm">
+          <h3 className="font-semibold text-gray-900 text-sm">{region}</h3>
 
-          <p className="text-xs text-earth-500 mb-2">Pain type</p>
-          <div className="flex gap-2 mb-3">
-            {PAIN_TYPES.map((pt) => (
-              <button
-                key={pt}
-                onClick={() => setDetail(region, 'pain_type', pt)}
-                className={`flex-1 rounded-xl py-2 text-xs font-semibold border tap-target transition-colors duration-150 ${
-                  regionDetails[region]?.pain_type === pt
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600'
-                }`}
-              >
-                {pt}
-              </button>
-            ))}
+          <div>
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Pain type</p>
+            <div className="flex gap-2">
+              {PAIN_TYPES.map((pt) => (
+                <button
+                  key={pt}
+                  onClick={() => setDetail(region, 'pain_type', pt)}
+                  className={`flex-1 rounded-xl py-2.5 text-xs font-semibold border-2 tap-target transition-all duration-150 ${
+                    regionDetails[region]?.pain_type === pt
+                      ? 'bg-blue-400 border-blue-400 text-white'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                  }`}
+                >
+                  {pt}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <p className="text-xs text-earth-500 mb-2">Severity</p>
-          <div className="flex gap-2">
-            {SEVERITIES.map((s) => (
-              <button
-                key={s}
-                onClick={() => setDetail(region, 'severity', s)}
-                className={`flex-1 rounded-xl py-2 text-xs font-semibold border capitalize tap-target transition-colors duration-150 ${
-                  regionDetails[region]?.severity === s
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+          <div>
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Severity</p>
+            <div className="flex gap-2">
+              {SEVERITIES.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setDetail(region, 'severity', s)}
+                  className={`flex-1 rounded-xl py-2.5 text-xs font-semibold border-2 tap-target transition-all duration-150 ${
+                    regionDetails[region]?.severity === s
+                      ? 'bg-blue-400 border-blue-400 text-white'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       ))}
 
       {/* Secondary flags for low energy */}
       {showSecondary && (
-        <div className="bg-white rounded-2xl border border-earth-100 p-4">
-          <h3 className="font-semibold text-earth-800 mb-3">What's driving today's low energy?</h3>
-          <p className="text-xs text-earth-500 mb-3">Select all that apply</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+          <h3 className="font-semibold text-gray-900 text-sm mb-1">What's behind the low energy?</h3>
+          <p className="text-xs text-gray-400 mb-3">Select all that apply</p>
           <div className="flex flex-wrap gap-2">
-            {Object.keys(secondary).map((key) => (
+            {SECONDARY_OPTIONS.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => toggleSecondary(key)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold border tap-target transition-colors duration-150 ${
+                className={`rounded-full px-4 py-2 text-xs font-semibold border-2 tap-target transition-all duration-150 ${
                   secondary[key]
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600'
+                    ? 'bg-blue-400 border-blue-400 text-white'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
                 }`}
               >
-                {key.replace(/_/g, ' ')}
+                {label}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Pelvic floor follow-up */}
-      {hasPelvicHistory && (
-        <div className="bg-white rounded-2xl border border-earth-100 p-4">
-          <h3 className="font-semibold text-earth-800 mb-3">Pelvic floor symptoms today?</h3>
-          <div className="flex gap-3">
-            {['yes', 'no'].map((v) => (
-              <button
-                key={v}
-                onClick={() => setPelvicSymptoms(v)}
-                className={`flex-1 rounded-xl py-3 text-sm font-semibold border tap-target transition-colors duration-150 capitalize ${
-                  pelvicSymptoms === v
-                    ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
-                    : 'border-earth-100 bg-white text-earth-600'
-                }`}
-              >
-                {v}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <Button
+      <button
         onClick={handleSubmit}
-        disabled={selectedRegions.length > 0 && !allRegionsDetailled}
-        className="w-full"
+        className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 transition-colors tap-target"
       >
-        {selectedRegions.length === 0 ? 'No regions selected — continue →' : 'Get my workout →'}
-      </Button>
+        {selectedRegions.length === 0 ? 'No pain today — get my workout' : 'Get my workout →'}
+      </button>
     </div>
   );
 }
