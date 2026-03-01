@@ -91,19 +91,6 @@
     "contra_tags": ["low_impact"]
   },
   {
-    "id": "ya_008",
-    "title": "Bedtime Yoga",
-    "creator": "Yoga With Adriene",
-    "youtube_id": "KymRL1Aal2A",
-    "session_type": "yoga",
-    "duration_min": 20,
-    "difficulty": 1,
-    "equipment": "none",
-    "intensity": "low",
-    "focus_tags": ["evening", "gentle"],
-    "contra_tags": ["low_impact"]
-  },
-  {
     "id": "cg_001",
     "title": "20 Min Full Body Dumbbell Workout",
     "creator": "Caroline Girvan",
@@ -208,19 +195,6 @@
     "contra_tags": []
   },
   {
-    "id": "hr_001",
-    "title": "15 Min Low Impact Cardio",
-    "creator": "Heather Robertson",
-    "youtube_id": "qk2Gg3Cz2Z0",
-    "session_type": "low_impact_cardio",
-    "duration_min": 15,
-    "difficulty": 2,
-    "equipment": "none",
-    "intensity": "medium",
-    "focus_tags": ["cardio", "no_jumping"],
-    "contra_tags": ["knee_friendly"]
-  },
-  {
     "id": "hr_002",
     "title": "20 Min Low Impact Cardio",
     "creator": "Heather Robertson",
@@ -247,19 +221,6 @@
     "contra_tags": ["no_jumping"]
   },
   {
-    "id": "hr_004",
-    "title": "Low Impact HIIT (No Jumping)",
-    "creator": "Heather Robertson",
-    "youtube_id": "zQwQ8zXbStA",
-    "session_type": "low_impact_cardio",
-    "duration_min": 25,
-    "difficulty": 4,
-    "equipment": "none",
-    "intensity": "high",
-    "focus_tags": ["hiit", "no_jumping"],
-    "contra_tags": ["knee_friendly"]
-  },
-  {
     "id": "hr_005",
     "title": "Cardio & Mobility Recovery",
     "creator": "Heather Robertson",
@@ -270,19 +231,6 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["recovery"],
-    "contra_tags": ["low_impact"]
-  },
-  {
-    "id": "hr_006",
-    "title": "Full Body Recovery & Mobility",
-    "creator": "Heather Robertson",
-    "youtube_id": "dF0sO0Xh1nA",
-    "session_type": "low_impact_cardio",
-    "duration_min": 15,
-    "difficulty": 1,
-    "equipment": "none",
-    "intensity": "low",
-    "focus_tags": ["recovery", "gentle"],
     "contra_tags": ["low_impact"]
   },
   {

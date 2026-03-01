@@ -111,8 +111,8 @@ export default function VideoLibraryPage() {
         </div>
       )}
 
-      {/* Video list */}
-      <div className="px-5 flex flex-col gap-4">
+      {/* Video grid */}
+      <div className="px-5">
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
@@ -122,61 +122,45 @@ export default function VideoLibraryPage() {
         ) : videos.length === 0 ? (
           <p className="text-gray-400 text-center py-10">No videos found.</p>
         ) : (
-          videos.map((video) => (
-            <div
-              key={video.id}
-              className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm"
-            >
-              {/* Thumbnail */}
-              <div className="relative aspect-video bg-gray-100">
-                <img
-                  src={`https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`}
-                  alt={video.title}
-                  className="w-full h-full object-cover"
-                />
-                {/* Play overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                  <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#4BA3E3">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+          <div className="grid grid-cols-2 gap-3">
+            {videos.map((video) => (
+              <button
+                key={video.id}
+                onClick={() => handleSelect(video)}
+                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm text-left tap-target"
+              >
+                {/* Thumbnail */}
+                <div className="relative aspect-video bg-gray-100">
+                  <img
+                    src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`}
+                    alt={video.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Play button */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#4BA3E3">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Duration badge */}
+                  <div className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                    {video.duration_min}m
                   </div>
                 </div>
-                {/* Duration badge */}
-                <div className="absolute top-3 right-3 bg-black/60 text-white text-xs font-semibold rounded-full px-2.5 py-1">
-                  {video.duration_min} min
-                </div>
-              </div>
 
-              <div className="p-4">
-                {/* Tags */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-semibold rounded-full px-3 py-1 ${TYPE_COLOR[video.session_type] || 'bg-gray-100 text-gray-500'}`}>
+                {/* Info */}
+                <div className="p-2.5">
+                  <p className="text-xs text-gray-400 truncate mb-0.5">{video.creator}</p>
+                  <p className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2">{video.title}</p>
+                  <span className={`mt-1.5 inline-block text-xs font-semibold rounded-full px-2 py-0.5 ${TYPE_COLOR[video.session_type] || 'bg-gray-100 text-gray-500'}`}>
                     {TYPE_LABEL[video.session_type] || video.session_type}
                   </span>
-                  {video.intensity && (
-                    <span className="text-xs font-semibold rounded-full px-3 py-1 bg-gray-100 text-gray-500">
-                      {video.intensity}
-                    </span>
-                  )}
                 </div>
-
-                <p className="text-xs text-gray-400 mb-0.5">{video.creator}</p>
-                <h3 className="font-bold text-gray-900 text-base leading-snug mb-1">{video.title}</h3>
-
-                {video.weight_note && (
-                  <p className="text-xs text-orange-500 font-medium mb-3">{video.weight_note}</p>
-                )}
-
-                <button
-                  onClick={() => handleSelect(video)}
-                  className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-xl py-3 transition-colors text-sm tap-target mt-2"
-                >
-                  Start this session ▶
-                </button>
-              </div>
-            </div>
-          ))
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>

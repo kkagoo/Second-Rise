@@ -32,8 +32,11 @@ export default function HomePage() {
       <div className="relative bg-sky-card overflow-hidden">
         {/* Text */}
         <div className="px-6 pt-14 pb-0 relative z-10">
-          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">
+          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-0.5">
             Welcome back
+          </p>
+          <p className="text-sm font-medium text-gray-400 mb-2">
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
           <h1 className="text-2xl font-bold text-gray-900 leading-tight max-w-[55%]">
             {checkinDone
