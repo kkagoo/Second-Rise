@@ -111,6 +111,18 @@ export default function ProfilePage() {
   const [saved, setSaved]   = useState(false);
   const [error, setError]   = useState('');
 
+  // Oura state
+  const [ouraToken, setOuraToken]         = useState('');
+  const [ouraStatus, setOuraStatus]       = useState(null); // null | 'connecting' | 'connected' | 'error'
+  const [ouraLastSync, setOuraLastSync]   = useState(null);
+  const [ouraError, setOuraError]         = useState('');
+
+  // Apple Health state
+  const [appleFile, setAppleFile]         = useState(null);
+  const [appleUploading, setAppleUploading] = useState(false);
+  const [appleDays, setAppleDays]         = useState(null);
+  const [appleError, setAppleError]       = useState('');
+
   useEffect(() => {
     if (profile) {
       setForm({
@@ -125,8 +137,68 @@ export default function ProfilePage() {
         activity_baseline:    profile.activity_baseline || null,
         equipment_available:  Array.isArray(profile.equipment_available) ? profile.equipment_available : [],
       });
+      // Check if Oura already connected — fetch last sync
+      if (profile.oura_access_token) {
+        client.get('/oura/today').then((r) => {
+          if (r.data?.synced_at) {
+            setOuraStatus('connected');
+            setOuraLastSync(r.data.synced_at);
+          } else {
+            setOuraStatus('connected');
+          }
+        }).catch(() => setOuraStatus('connected'));
+      }
     }
   }, [profile]);
+
+  async function handleOuraConnect() {
+    if (!ouraToken.trim()) return;
+    setOuraStatus('connecting');
+    setOuraError('');
+    try {
+      await client.put('/oura/token', { token: ouraToken.trim() });
+      const syncRes = await client.post('/oura/sync');
+      setOuraStatus('connected');
+      setOuraLastSync(syncRes.data?.synced_at ?? null);
+      setOuraToken('');
+    } catch (err) {
+      setOuraStatus('error');
+      setOuraError(err.response?.data?.error || 'Could not connect. Check your token.');
+    }
+  }
+
+  async function handleOuraSync() {
+    setOuraStatus('connecting');
+    setOuraError('');
+    try {
+      const syncRes = await client.post('/oura/sync');
+      setOuraStatus('connected');
+      setOuraLastSync(syncRes.data?.synced_at ?? null);
+    } catch (err) {
+      setOuraStatus('error');
+      setOuraError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleAppleUpload() {
+    if (!appleFile) return;
+    setAppleUploading(true);
+    setAppleError('');
+    setAppleDays(null);
+    try {
+      const formData = new FormData();
+      formData.append('export', appleFile);
+      const res = await client.post('/health/apple', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setAppleDays(res.data.days_imported);
+      setAppleFile(null);
+    } catch (err) {
+      setAppleError(err.response?.data?.error || 'Upload failed. Please try again.');
+    } finally {
+      setAppleUploading(false);
+    }
+  }
 
   function set(key, val) {
     setForm((f) => ({ ...f, [key]: val }));
@@ -267,6 +339,79 @@ export default function ProfilePage() {
             onChange={(v) => set('equipment_available', v)}
             multi
           />
+        </Section>
+
+        {/* Oura Ring */}
+        <Section title="Oura Ring" subtitle="Connect for daily readiness, sleep, and HRV data">
+          {ouraStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-green-600 font-semibold">
+                Connected
+                {ouraLastSync ? ` — last synced ${new Date(ouraLastSync).toLocaleString()}` : ''}
+              </p>
+              <button
+                type="button"
+                onClick={handleOuraSync}
+                disabled={ouraStatus === 'connecting'}
+                className="w-full border-2 border-blue-300 text-blue-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-blue-50 disabled:opacity-50"
+              >
+                {ouraStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-xs text-gray-400">
+                Get your token at <span className="font-mono">cloud.ouraring.com → Personal Access Tokens</span>
+              </p>
+              <input
+                type="password"
+                value={ouraToken}
+                onChange={(e) => setOuraToken(e.target.value)}
+                placeholder="Paste your Personal Access Token"
+                className="w-full border-2 border-gray-200 rounded-2xl px-4 py-3 text-sm focus:border-blue-300 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleOuraConnect}
+                disabled={!ouraToken.trim() || ouraStatus === 'connecting'}
+                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {ouraStatus === 'connecting' ? 'Connecting…' : 'Connect Oura'}
+              </button>
+            </div>
+          )}
+          {ouraError && (
+            <p className="text-red-500 text-xs">{ouraError}</p>
+          )}
+        </Section>
+
+        {/* Apple Health */}
+        <Section title="Apple Health" subtitle="Import HRV, sleep, steps from your iPhone">
+          <p className="text-xs text-gray-400">
+            On iPhone: Health app → your avatar (top right) → Export All Health Data → save the zip here.
+          </p>
+          <input
+            type="file"
+            accept=".zip"
+            onChange={(e) => { setAppleFile(e.target.files[0] ?? null); setAppleDays(null); setAppleError(''); }}
+            className="text-sm text-gray-600"
+          />
+          {appleFile && (
+            <button
+              type="button"
+              onClick={handleAppleUpload}
+              disabled={appleUploading}
+              className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+            >
+              {appleUploading ? 'Importing…' : 'Upload export'}
+            </button>
+          )}
+          {appleDays !== null && (
+            <p className="text-green-600 text-sm font-semibold">Imported {appleDays} days of data</p>
+          )}
+          {appleError && (
+            <p className="text-red-500 text-xs">{appleError}</p>
+          )}
         </Section>
 
         {/* Save */}

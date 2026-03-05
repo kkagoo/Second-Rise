@@ -22,6 +22,43 @@ async function getRecommendation(req, res, next) {
 
     const profile = db.prepare('SELECT * FROM user_profiles WHERE user_id = ?').get(req.userId);
 
+    // Fetch today's biometrics (Oura preferred, Apple Health fallback)
+    const today = new Date().toISOString().slice(0, 10);
+    let biometrics = null;
+    try {
+      const oura = db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+      if (oura) {
+        biometrics = {
+          source:              'oura',
+          readiness_score:     oura.readiness_score,
+          sleep_score:         oura.sleep_score,
+          hrv_balance:         oura.hrv_balance_score,
+          resting_hr:          oura.resting_hr,
+          total_sleep_min:     oura.total_sleep_min,
+          rem_sleep_min:       oura.rem_sleep_min,
+          deep_sleep_min:      oura.deep_sleep_min,
+          body_temp_deviation: oura.body_temp_deviation,
+          temp_flag:           typeof oura.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
+        };
+      } else {
+        const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (apple) {
+          biometrics = {
+            source:          'apple_health',
+            readiness_score: null,
+            sleep_score:     null,
+            hrv_balance:     null,
+            resting_hr:      apple.resting_hr,
+            total_sleep_min: apple.sleep_min,
+            rem_sleep_min:   null,
+            deep_sleep_min:  null,
+            body_temp_deviation: null,
+            temp_flag:       false,
+          };
+        }
+      }
+    } catch { /* no biometrics */ }
+
     const priorFeedback = db.prepare(`
       SELECT psf.effort_rating, psf.flare_up_regions
       FROM post_session_feedback psf
@@ -46,7 +83,7 @@ async function getRecommendation(req, res, next) {
     );
 
     const { primary, alternatives } = await generateRecommendation(
-      profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos
+      profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos, biometrics
     );
 
     // Store video selection in primary_workout as JSON

@@ -17,7 +17,34 @@ function submitCheckin(req, res, next) {
       secondary_flags: secondary_flags ? JSON.stringify(secondary_flags) : null,
     };
 
-    const readiness = computeReadiness(req.userId, checkinData, profile);
+    const today = new Date().toISOString().slice(0, 10);
+    let biometrics = null;
+    try {
+      const oura = db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+      if (oura) {
+        biometrics = {
+          source:            'oura',
+          hrv_balance:       oura.hrv_balance_score,
+          sleep_score:       oura.sleep_score,
+          total_sleep_min:   oura.total_sleep_min,
+          body_temp_deviation: oura.body_temp_deviation,
+          temp_flag:         typeof oura.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
+        };
+      } else {
+        const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (apple) {
+          biometrics = {
+            source:          'apple_health',
+            hrv_balance:     null,
+            sleep_score:     null,
+            total_sleep_min: apple.sleep_min,
+            temp_flag:       false,
+          };
+        }
+      }
+    } catch { /* no biometrics available */ }
+
+    const readiness = computeReadiness(req.userId, checkinData, profile, biometrics);
 
     const result = db.prepare(`
       INSERT INTO daily_checkins

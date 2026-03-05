@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -32,6 +32,23 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
     `  ${v.id} | "${v.title}" | ${v.creator} | ${v.duration_min} min | difficulty ${v.difficulty}/5 | ${v.intensity} intensity | equipment: ${v.equipment} | focus: ${v.focus_tags.join(', ')}`
   ).join('\n');
 
+  let biometricsSection = '';
+  if (biometrics && biometrics.source) {
+    const source  = biometrics.source === 'oura' ? 'Oura Ring' : 'Apple Health';
+    const sleepH  = biometrics.total_sleep_min != null ? Math.floor(biometrics.total_sleep_min / 60) : null;
+    const sleepM  = biometrics.total_sleep_min != null ? biometrics.total_sleep_min % 60 : null;
+    const sleepStr = sleepH != null ? `${sleepH}h ${sleepM}m` : 'n/a';
+    biometricsSection = `
+BIOMETRIC DATA (${source}):
+- Readiness: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep: ${biometrics.sleep_score ?? 'n/a'}/100
+- Total sleep: ${sleepStr} | REM: ${biometrics.rem_sleep_min ?? 'n/a'}m | Deep: ${biometrics.deep_sleep_min ?? 'n/a'}m
+- HRV balance: ${biometrics.hrv_balance ?? 'n/a'}/100 | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
+- Body temp deviation: ${biometrics.body_temp_deviation ?? 'n/a'}°C${biometrics.temp_flag ? ' ⚠️ elevated — possible hot flash signal' : ''}
+
+Factor this recovery data into your recommendation alongside the check-in inputs.
+`;
+  }
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -50,7 +67,7 @@ ${bodyFlagsText}
 ${secondaryText}
 
 COMPUTED READINESS: ${readiness} / 85
-
+${biometricsSection}
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import client from '../api/client';
 import Layer1Form from '../components/checkin/Layer1Form';
@@ -13,13 +13,22 @@ const LOADING_MESSAGES = [
   'Almost ready…',
 ];
 
+const ENERGY_LABELS = { 20: 'Low energy', 40: 'Medium-low energy', 65: 'Medium energy', 85: 'High energy' };
+
 export default function CheckinPage() {
   const [layer, setLayer] = useState(1);
   const [layer1Data, setLayer1Data] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(0);
   const [error, setError] = useState('');
+  const [biometrics, setBiometrics] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    client.get('/biometrics/today')
+      .then((r) => { if (r.data?.source) setBiometrics(r.data); })
+      .catch(() => {});
+  }, []);
 
   function handleLayer1Complete(data) {
     setLayer1Data(data);
@@ -98,7 +107,29 @@ export default function CheckinPage() {
         ) : (
           <AnimatedTransition keyProp={layer}>
             {layer === 1 ? (
-              <Layer1Form onComplete={handleLayer1Complete} />
+              <>
+                {biometrics && (
+                  <div className="mb-6 rounded-2xl bg-blue-50 border border-blue-200 px-4 py-3 flex flex-col gap-1">
+                    <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider">
+                      {biometrics.source === 'oura' ? 'Oura' : 'Apple Health'} today
+                    </p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {biometrics.readiness_score != null ? `Readiness ${biometrics.readiness_score}` : ''}
+                      {biometrics.total_sleep_min != null
+                        ? `${biometrics.readiness_score != null ? ' · ' : ''}Sleep ${Math.floor(biometrics.total_sleep_min / 60)}h ${biometrics.total_sleep_min % 60}m`
+                        : ''}
+                    </p>
+                    <p className="text-xs text-blue-400">
+                      Suggesting: {ENERGY_LABELS[biometrics.energy_suggestion] ?? 'Medium energy'} · tap to apply, or choose your own
+                    </p>
+                  </div>
+                )}
+                <Layer1Form
+                  onComplete={handleLayer1Complete}
+                  suggestion={biometrics?.energy_suggestion}
+                  tempFlag={biometrics?.temp_flag}
+                />
+              </>
             ) : (
               <Layer2BodyMap
                 energy={layer1Data?.energy}

@@ -15,11 +15,15 @@ export default function HomePage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [todayCheckin, setTodayCheckin] = useState(undefined);
+  const [biometrics, setBiometrics]     = useState(null);
 
   useEffect(() => {
     client.get('/checkin/today')
       .then((res) => setTodayCheckin(res.data))
       .catch(() => setTodayCheckin(null));
+    client.get('/biometrics/today')
+      .then((r) => { if (r.data?.source) setBiometrics(r.data); })
+      .catch(() => {});
   }, []);
 
   const loading = todayCheckin === undefined;
@@ -113,6 +117,51 @@ export default function HomePage() {
         {loading && (
           <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-center">
             <div className="w-5 h-5 border-2 border-blue-300 border-t-blue-400 rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Biometrics widget */}
+        {biometrics && (
+          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold text-gray-800 uppercase tracking-wider">Recovery today</p>
+              <span className="text-xs bg-blue-50 text-blue-500 font-semibold rounded-full px-2.5 py-0.5">
+                {biometrics.source === 'oura' ? 'Oura' : 'Apple Health'}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {biometrics.readiness_score != null && (
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{biometrics.readiness_score}</p>
+                  <p className="text-xs text-gray-400">readiness</p>
+                </div>
+              )}
+              {biometrics.total_sleep_min != null && (
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {Math.floor(biometrics.total_sleep_min / 60)}h{biometrics.total_sleep_min % 60}m
+                  </p>
+                  <p className="text-xs text-gray-400">sleep</p>
+                </div>
+              )}
+              {biometrics.hrv_balance != null && (
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{biometrics.hrv_balance}</p>
+                  <p className="text-xs text-gray-400">HRV balance</p>
+                </div>
+              )}
+              {biometrics.resting_hr != null && (
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{biometrics.resting_hr}</p>
+                  <p className="text-xs text-gray-400">resting bpm</p>
+                </div>
+              )}
+            </div>
+            {biometrics.temp_flag && (
+              <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700 font-medium">
+                Temp elevated — possible hot flash signal today
+              </div>
+            )}
           </div>
         )}
 

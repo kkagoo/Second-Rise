@@ -8,7 +8,7 @@ const TIME_OPTIONS = [
   { value: '35+', label: '35+ min' },
 ];
 
-export default function Layer1Form({ onComplete }) {
+export default function Layer1Form({ onComplete, suggestion = null, tempFlag = false }) {
   const [energy, setEnergy]     = useState(null);
   const [time, setTime]         = useState(null);
   const [painFlag, setPainFlag] = useState(null);
@@ -20,7 +20,7 @@ export default function Layer1Form({ onComplete }) {
       {/* Energy */}
       <section>
         <h2 className="text-base font-semibold text-gray-800 mb-3">How's your energy?</h2>
-        <EmojiPicker value={energy} onChange={setEnergy} />
+        <EmojiPicker value={energy} onChange={setEnergy} suggestion={suggestion} />
       </section>
 
       {/* Time available */}

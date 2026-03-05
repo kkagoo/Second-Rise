@@ -18,9 +18,9 @@ function parseJSON(rawText) {
   return JSON.parse(cleaned);
 }
 
-async function generateRecommendation(profile, checkin, readiness, priorFeedback, availableVideos) {
+async function generateRecommendation(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null) {
   const client = getClient();
-  const userPrompt = buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos);
+  const userPrompt = buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics);
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',

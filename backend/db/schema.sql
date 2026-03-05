@@ -76,3 +76,34 @@ CREATE TABLE IF NOT EXISTS weekly_reflections (
 
 CREATE INDEX IF NOT EXISTS idx_checkins_user ON daily_checkins(user_id, timestamp);
 CREATE INDEX IF NOT EXISTS idx_recs_checkin  ON recommendations(checkin_id);
+
+CREATE TABLE IF NOT EXISTS oura_daily_data (
+  id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id               INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date                  TEXT NOT NULL,
+  readiness_score       INTEGER,
+  hrv_balance_score     INTEGER,
+  resting_hr            INTEGER,
+  body_temp_deviation   REAL,
+  sleep_score           INTEGER,
+  total_sleep_min       INTEGER,
+  rem_sleep_min         INTEGER,
+  deep_sleep_min        INTEGER,
+  sleep_efficiency      REAL,
+  activity_score        INTEGER,
+  steps                 INTEGER,
+  synced_at             TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);
+
+CREATE TABLE IF NOT EXISTS apple_health_data (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date            TEXT NOT NULL,
+  hrv_ms          REAL,
+  resting_hr      INTEGER,
+  sleep_min       INTEGER,
+  step_count      INTEGER,
+  imported_at     TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);

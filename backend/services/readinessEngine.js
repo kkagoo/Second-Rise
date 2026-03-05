@@ -1,6 +1,6 @@
 const db = require('../db/database');
 
-function computeReadiness(userId, checkinData, profile) {
+function computeReadiness(userId, checkinData, profile, biometrics = null) {
   const { layer1_energy, body_map_flags, secondary_flags } = checkinData;
 
   let score = layer1_energy; // base: 20 | 40 | 65 | 85
@@ -61,6 +61,33 @@ function computeReadiness(userId, checkinData, profile) {
       } catch {
         // skip
       }
+    }
+  }
+
+  // Biometric modifiers
+  if (biometrics) {
+    const hrv = biometrics.hrv_balance ?? null;
+    if (hrv !== null) {
+      if (hrv < 40) score -= 8;
+      if (hrv > 65) score += 5;
+    }
+
+    const sleepScore = biometrics.sleep_score ?? null;
+    if (sleepScore !== null) {
+      if (sleepScore < 55)                         score -= 12;
+      else if (sleepScore >= 55 && sleepScore <= 70) score -= 5;
+      else if (sleepScore > 85)                    score += 3;
+    } else {
+      // Apple Health path — use total_sleep_min
+      const sleepMin = biometrics.total_sleep_min ?? null;
+      if (sleepMin !== null) {
+        if (sleepMin < 330) score -= 10;
+        if (sleepMin > 450) score += 3;
+      }
+    }
+
+    if (biometrics.temp_flag && !secondary.hot_flashes) {
+      score -= 5;
     }
   }
 
