@@ -54,42 +54,54 @@ async function getValidToken(userId) {
 }
 
 async function fetchOuraToday(token) {
-  const today  = new Date().toISOString().slice(0, 10);
+  const today   = new Date().toISOString().slice(0, 10);
   const headers = { Authorization: `Bearer ${token}` };
   const params  = `?start_date=${today}&end_date=${today}`;
 
-  const [readinessRes, sleepRes, activityRes] = await Promise.all([
+  const [readinessRes, dailySleepRes, activityRes, sleepSessionRes] = await Promise.all([
     fetch(`${OURA_BASE}/v2/usercollection/daily_readiness${params}`, { headers }),
     fetch(`${OURA_BASE}/v2/usercollection/daily_sleep${params}`,     { headers }),
     fetch(`${OURA_BASE}/v2/usercollection/daily_activity${params}`,  { headers }),
+    fetch(`${OURA_BASE}/v2/usercollection/sleep${params}`,           { headers }),
   ]);
 
-  if ([readinessRes, sleepRes, activityRes].some((r) => r.status === 401)) {
+  if ([readinessRes, dailySleepRes, activityRes].some((r) => r.status === 401)) {
     throw new Error('Oura token invalid — please reconnect Oura in your profile.');
   }
 
-  const [readinessJson, sleepJson, activityJson] = await Promise.all([
+  const [readinessJson, dailySleepJson, activityJson, sleepSessionJson] = await Promise.all([
     readinessRes.json(),
-    sleepRes.json(),
+    dailySleepRes.json(),
     activityRes.json(),
+    sleepSessionRes.ok ? sleepSessionRes.json() : Promise.resolve({ data: [] }),
   ]);
 
-  const readiness = readinessJson.data?.[0] ?? {};
-  const sleep     = sleepJson.data?.[0]     ?? {};
-  const activity  = activityJson.data?.[0]  ?? {};
+  const readiness    = readinessJson.data?.[0]  ?? {};
+  const dailySleep   = dailySleepJson.data?.[0] ?? {};
+  const activity     = activityJson.data?.[0]   ?? {};
 
+  // Sleep sessions: prefer long_sleep type, else pick the longest session
+  const sessions     = sleepSessionJson.data ?? [];
+  const mainSleep    = sessions.find((s) => s.type === 'long_sleep')
+    ?? sessions.sort((a, b) => (b.total_sleep_duration ?? 0) - (a.total_sleep_duration ?? 0))[0]
+    ?? {};
+
+  // Actual durations come from sleep sessions (in seconds → convert to minutes)
+  // Scores (0-100) come from daily_readiness contributors
   return {
-    readiness_score:     readiness.score                             ?? null,
-    hrv_balance_score:   readiness.contributors?.hrv_balance         ?? null,
-    resting_hr:          readiness.contributors?.resting_heart_rate  ?? null,
-    body_temp_deviation: readiness.temperature_deviation             ?? null,
-    sleep_score:         sleep.score                                 ?? null,
-    total_sleep_min:     sleep.contributors?.total_sleep             ?? null,
-    rem_sleep_min:       sleep.contributors?.rem_sleep               ?? null,
-    deep_sleep_min:      sleep.contributors?.deep_sleep              ?? null,
-    sleep_efficiency:    sleep.contributors?.efficiency              ?? null,
-    activity_score:      activity.score                              ?? null,
-    steps:               activity.steps                              ?? null,
+    readiness_score:     readiness.score                    ?? null,
+    hrv_balance_score:   readiness.contributors?.hrv_balance ?? null,  // 0–100 score
+    body_temp_deviation: readiness.temperature_deviation    ?? null,
+    sleep_score:         dailySleep.score                   ?? null,
+    sleep_efficiency:    mainSleep.efficiency               ?? null,
+    // Actual durations in minutes
+    total_sleep_min:     mainSleep.total_sleep_duration != null ? Math.round(mainSleep.total_sleep_duration / 60) : null,
+    rem_sleep_min:       mainSleep.rem_sleep_duration   != null ? Math.round(mainSleep.rem_sleep_duration   / 60) : null,
+    deep_sleep_min:      mainSleep.deep_sleep_duration  != null ? Math.round(mainSleep.deep_sleep_duration  / 60) : null,
+    // Actual resting HR in BPM from sleep session
+    resting_hr:          mainSleep.lowest_heart_rate        ?? null,
+    activity_score:      activity.score                     ?? null,
+    steps:               activity.steps                     ?? null,
   };
 }
 
