@@ -112,10 +112,9 @@ export default function ProfilePage() {
   const [error, setError]   = useState('');
 
   // Oura state
-  const [ouraToken, setOuraToken]         = useState('');
-  const [ouraStatus, setOuraStatus]       = useState(null); // null | 'connecting' | 'connected' | 'error'
-  const [ouraLastSync, setOuraLastSync]   = useState(null);
-  const [ouraError, setOuraError]         = useState('');
+  const [ouraStatus, setOuraStatus]     = useState(null); // null | 'connected' | 'connecting' | 'error' | 'denied'
+  const [ouraLastSync, setOuraLastSync] = useState(null);
+  const [ouraError, setOuraError]       = useState('');
 
   // Apple Health state
   const [appleFile, setAppleFile]         = useState(null);
@@ -137,33 +136,42 @@ export default function ProfilePage() {
         activity_baseline:    profile.activity_baseline || null,
         equipment_available:  Array.isArray(profile.equipment_available) ? profile.equipment_available : [],
       });
-      // Check if Oura already connected — fetch last sync
-      if (profile.oura_access_token) {
-        client.get('/oura/today').then((r) => {
-          if (r.data?.synced_at) {
-            setOuraStatus('connected');
-            setOuraLastSync(r.data.synced_at);
-          } else {
-            setOuraStatus('connected');
-          }
-        }).catch(() => setOuraStatus('connected'));
+      // Check connection status and last sync
+      client.get('/oura/status').then((r) => {
+        if (r.data?.connected) {
+          setOuraStatus('connected');
+          client.get('/oura/today').then((t) => {
+            if (t.data?.synced_at) setOuraLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
+      // Handle OAuth callback result in URL params
+      const params = new URLSearchParams(window.location.search);
+      const ouraResult = params.get('oura');
+      if (ouraResult === 'connected') {
+        setOuraStatus('connected');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (ouraResult === 'denied') {
+        setOuraStatus('denied');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (ouraResult === 'error') {
+        setOuraStatus('error');
+        setOuraError('Something went wrong during Oura authorization.');
+        window.history.replaceState({}, '', window.location.pathname);
       }
     }
   }, [profile]);
 
   async function handleOuraConnect() {
-    if (!ouraToken.trim()) return;
     setOuraStatus('connecting');
     setOuraError('');
     try {
-      await client.put('/oura/token', { token: ouraToken.trim() });
-      const syncRes = await client.post('/oura/sync');
-      setOuraStatus('connected');
-      setOuraLastSync(syncRes.data?.synced_at ?? null);
-      setOuraToken('');
+      const res = await client.get('/oura/connect');
+      window.location.href = res.data.url;
     } catch (err) {
       setOuraStatus('error');
-      setOuraError(err.response?.data?.error || 'Could not connect. Check your token.');
+      setOuraError(err.response?.data?.error || 'Could not start Oura authorization.');
     }
   }
 
@@ -361,22 +369,18 @@ export default function ProfilePage() {
           ) : (
             <div className="flex flex-col gap-3">
               <p className="text-xs text-gray-400">
-                Get your token at <span className="font-mono">cloud.ouraring.com → Personal Access Tokens</span>
+                Authorize Second Rise to read your Oura data. You'll be redirected to Oura and back.
               </p>
-              <input
-                type="password"
-                value={ouraToken}
-                onChange={(e) => setOuraToken(e.target.value)}
-                placeholder="Paste your Personal Access Token"
-                className="w-full border-2 border-gray-200 rounded-2xl px-4 py-3 text-sm focus:border-blue-300 focus:outline-none"
-              />
+              {ouraStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
               <button
                 type="button"
                 onClick={handleOuraConnect}
-                disabled={!ouraToken.trim() || ouraStatus === 'connecting'}
+                disabled={ouraStatus === 'connecting'}
                 className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
               >
-                {ouraStatus === 'connecting' ? 'Connecting…' : 'Connect Oura'}
+                {ouraStatus === 'connecting' ? 'Redirecting…' : 'Connect with Oura'}
               </button>
             </div>
           )}

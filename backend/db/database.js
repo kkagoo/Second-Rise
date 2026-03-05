@@ -22,8 +22,8 @@ const schema = fs.readFileSync(SCHEMA_PATH, 'utf8');
 db.exec(schema);
 
 // Migrations
-try {
-  db.exec("ALTER TABLE user_profiles ADD COLUMN oura_access_token TEXT");
-} catch (_) { /* column already exists */ }
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN oura_access_token TEXT"); }    catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN oura_refresh_token TEXT"); }   catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN oura_token_expires_at TEXT"); } catch (_) {}
 
 module.exports = db;

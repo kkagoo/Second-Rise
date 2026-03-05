@@ -1,10 +1,60 @@
 const db = require('../db/database');
 
-const OURA_BASE = 'https://api.ouraring.com';
+const OURA_BASE      = 'https://api.ouraring.com';
+const OURA_TOKEN_URL = 'https://api.ouraring.com/oauth/token';
+
+async function refreshAccessToken(userId, refreshToken) {
+  const res = await fetch(OURA_TOKEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type:    'refresh_token',
+      refresh_token: refreshToken,
+      client_id:     process.env.OURA_CLIENT_ID,
+      client_secret: process.env.OURA_CLIENT_SECRET,
+    }),
+  });
+  if (!res.ok) throw new Error('Oura token refresh failed — please reconnect Oura in your profile.');
+  const tokens = await res.json();
+
+  db.prepare(`
+    UPDATE user_profiles SET
+      oura_access_token    = ?,
+      oura_refresh_token   = ?,
+      oura_token_expires_at = ?
+    WHERE user_id = ?
+  `).run(
+    tokens.access_token,
+    tokens.refresh_token || refreshToken,
+    new Date(Date.now() + (tokens.expires_in ?? 3600) * 1000).toISOString(),
+    userId,
+  );
+
+  return tokens.access_token;
+}
+
+async function getValidToken(userId) {
+  const row = db.prepare(
+    'SELECT oura_access_token, oura_refresh_token, oura_token_expires_at FROM user_profiles WHERE user_id = ?'
+  ).get(userId);
+
+  if (!row?.oura_access_token) {
+    throw new Error('Oura not connected. Please connect Oura in your profile.');
+  }
+
+  // Refresh if expiring within 5 minutes
+  if (row.oura_token_expires_at) {
+    const expiresAt = new Date(row.oura_token_expires_at);
+    if (expiresAt - Date.now() < 5 * 60 * 1000) {
+      return refreshAccessToken(userId, row.oura_refresh_token);
+    }
+  }
+
+  return row.oura_access_token;
+}
 
 async function fetchOuraToday(token) {
-  const today = new Date().toISOString().slice(0, 10);
-
+  const today  = new Date().toISOString().slice(0, 10);
   const headers = { Authorization: `Bearer ${token}` };
   const params  = `?start_date=${today}&end_date=${today}`;
 
@@ -14,8 +64,8 @@ async function fetchOuraToday(token) {
     fetch(`${OURA_BASE}/v2/usercollection/daily_activity${params}`,  { headers }),
   ]);
 
-  if (readinessRes.status === 401 || sleepRes.status === 401 || activityRes.status === 401) {
-    throw new Error('Invalid Oura token — please re-enter your Personal Access Token.');
+  if ([readinessRes, sleepRes, activityRes].some((r) => r.status === 401)) {
+    throw new Error('Oura token invalid — please reconnect Oura in your profile.');
   }
 
   const [readinessJson, sleepJson, activityJson] = await Promise.all([
@@ -28,31 +78,24 @@ async function fetchOuraToday(token) {
   const sleep     = sleepJson.data?.[0]     ?? {};
   const activity  = activityJson.data?.[0]  ?? {};
 
-  // Sleep contributor breakdown lives under sleep.contributors
-  const sleepContribs = sleep.contributors ?? {};
-
   return {
-    readiness_score:     readiness.score                      ?? null,
-    hrv_balance_score:   readiness.contributors?.hrv_balance  ?? null,
-    resting_hr:          readiness.contributors?.resting_heart_rate ?? null,
-    body_temp_deviation: readiness.temperature_deviation       ?? null,
-    sleep_score:         sleep.score                           ?? null,
-    total_sleep_min:     sleep.contributors?.total_sleep       ?? null,
-    rem_sleep_min:       sleep.contributors?.rem_sleep         ?? null,
-    deep_sleep_min:      sleep.contributors?.deep_sleep        ?? null,
-    sleep_efficiency:    sleep.contributors?.efficiency        ?? null,
-    activity_score:      activity.score                        ?? null,
-    steps:               activity.steps                        ?? null,
+    readiness_score:     readiness.score                             ?? null,
+    hrv_balance_score:   readiness.contributors?.hrv_balance         ?? null,
+    resting_hr:          readiness.contributors?.resting_heart_rate  ?? null,
+    body_temp_deviation: readiness.temperature_deviation             ?? null,
+    sleep_score:         sleep.score                                 ?? null,
+    total_sleep_min:     sleep.contributors?.total_sleep             ?? null,
+    rem_sleep_min:       sleep.contributors?.rem_sleep               ?? null,
+    deep_sleep_min:      sleep.contributors?.deep_sleep              ?? null,
+    sleep_efficiency:    sleep.contributors?.efficiency              ?? null,
+    activity_score:      activity.score                              ?? null,
+    steps:               activity.steps                              ?? null,
   };
 }
 
 async function syncToday(userId) {
-  const row = db.prepare('SELECT oura_access_token FROM user_profiles WHERE user_id = ?').get(userId);
-  if (!row?.oura_access_token) {
-    throw new Error('No Oura token saved. Please connect Oura in your profile.');
-  }
-
-  const data = await fetchOuraToday(row.oura_access_token);
+  const token = await getValidToken(userId);
+  const data  = await fetchOuraToday(token);
   const today = new Date().toISOString().slice(0, 10);
 
   db.prepare(`
@@ -84,4 +127,4 @@ async function syncToday(userId) {
   return db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(userId, today);
 }
 
-module.exports = { fetchOuraToday, syncToday };
+module.exports = { syncToday, getValidToken };
