@@ -255,8 +255,57 @@ export default function ProfilePage() {
 
       <div className="px-5 flex flex-col gap-4">
 
+        {/* Oura Ring — at the top so user connects first */}
+        <Section title="Oura Ring" subtitle="Connect to auto-fill your profile and get smarter daily recommendations">
+          {ouraStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                <p className="text-sm text-green-600 font-semibold">
+                  Connected{ouraLastSync ? ` — synced ${new Date(ouraLastSync).toLocaleString()}` : ''}
+                </p>
+              </div>
+              <p className="text-xs text-gray-400">Your age has been auto-filled below from your Oura account.</p>
+              <button
+                type="button"
+                onClick={handleOuraSync}
+                disabled={ouraStatus === 'connecting'}
+                className="w-full border-2 border-blue-300 text-blue-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-blue-50 disabled:opacity-50"
+              >
+                {ouraStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-xs text-gray-400">
+                Connect your Oura Ring to auto-fill your age and get daily readiness, sleep, and HRV data in your recommendations. You'll be redirected to Oura and back.
+              </p>
+              {ouraStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
+              <button
+                type="button"
+                onClick={handleOuraConnect}
+                disabled={ouraStatus === 'connecting'}
+                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {ouraStatus === 'connecting' ? 'Redirecting…' : 'Connect with Oura'}
+              </button>
+            </div>
+          )}
+          {ouraError && (
+            <p className="text-red-500 text-xs">{ouraError}</p>
+          )}
+        </Section>
+
         {/* Age range */}
-        <Section title="Age range" subtitle="Helps us calibrate intensity over time">
+        <Section
+          title="Age range"
+          subtitle={ouraStatus === 'connected' ? 'Auto-filled from Oura — adjust if needed' : 'Helps us calibrate intensity over time'}
+        >
+          {ouraStatus === 'connected' && (
+            <span className="self-start text-[10px] font-bold uppercase tracking-wide text-blue-400 bg-blue-50 rounded-full px-2.5 py-0.5">From Oura</span>
+          )}
           <Chips
             options={AGE_RANGES}
             value={form.age_range}
@@ -347,46 +396,6 @@ export default function ProfilePage() {
             onChange={(v) => set('equipment_available', v)}
             multi
           />
-        </Section>
-
-        {/* Oura Ring */}
-        <Section title="Oura Ring" subtitle="Connect for daily readiness, sleep, and HRV data">
-          {ouraStatus === 'connected' ? (
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-green-600 font-semibold">
-                Connected
-                {ouraLastSync ? ` — last synced ${new Date(ouraLastSync).toLocaleString()}` : ''}
-              </p>
-              <button
-                type="button"
-                onClick={handleOuraSync}
-                disabled={ouraStatus === 'connecting'}
-                className="w-full border-2 border-blue-300 text-blue-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-blue-50 disabled:opacity-50"
-              >
-                {ouraStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <p className="text-xs text-gray-400">
-                Authorize Second Rise to read your Oura data. You'll be redirected to Oura and back.
-              </p>
-              {ouraStatus === 'denied' && (
-                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
-              )}
-              <button
-                type="button"
-                onClick={handleOuraConnect}
-                disabled={ouraStatus === 'connecting'}
-                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
-              >
-                {ouraStatus === 'connecting' ? 'Redirecting…' : 'Connect with Oura'}
-              </button>
-            </div>
-          )}
-          {ouraError && (
-            <p className="text-red-500 text-xs">{ouraError}</p>
-          )}
         </Section>
 
         {/* Apple Health */}

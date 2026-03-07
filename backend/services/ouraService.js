@@ -139,4 +139,58 @@ async function syncToday(userId) {
   return db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(userId, today);
 }
 
-module.exports = { syncToday, getValidToken };
+// ── Personal info (age, sex) ──────────────────────────────────────────────────
+
+function ageToRange(age) {
+  if (age < 45) return '40-44';
+  if (age < 50) return '45-49';
+  if (age < 55) return '50-54';
+  return '55-60';
+}
+
+async function syncPersonalInfo(userId) {
+  const token = await getValidToken(userId);
+  const res   = await fetch(`${OURA_BASE}/v2/usercollection/personal_info`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  const info = await res.json();
+
+  const age_range = info.age ? ageToRange(info.age) : null;
+  if (age_range) {
+    db.prepare('UPDATE user_profiles SET age_range = ? WHERE user_id = ?').run(age_range, userId);
+  }
+  return { age: info.age, age_range, biological_sex: info.biological_sex };
+}
+
+// ── Historical data for trend-aware recommendations ───────────────────────────
+
+function getHistory(userId, days = 7) {
+  const rows = db.prepare(`
+    SELECT date, readiness_score, hrv_balance_score, resting_hr, body_temp_deviation,
+           sleep_score, total_sleep_min, deep_sleep_min, rem_sleep_min, activity_score, steps
+    FROM oura_daily_data
+    WHERE user_id = ?
+    ORDER BY date DESC
+    LIMIT ?
+  `).all(userId, days);
+  return rows.reverse(); // chronological order
+}
+
+function getBaseline(userId, days = 30) {
+  return db.prepare(`
+    SELECT
+      ROUND(AVG(readiness_score), 1)   AS avg_readiness,
+      ROUND(AVG(hrv_balance_score), 1) AS avg_hrv,
+      ROUND(AVG(resting_hr), 1)        AS avg_rhr,
+      ROUND(AVG(total_sleep_min), 0)   AS avg_sleep_min,
+      ROUND(AVG(deep_sleep_min), 0)    AS avg_deep_min,
+      ROUND(AVG(activity_score), 1)    AS avg_activity,
+      COUNT(*)                         AS days_of_data
+    FROM oura_daily_data
+    WHERE user_id = ?
+      AND date >= date('now', '-' || ? || ' days')
+  `).get(userId, days);
+}
+
+module.exports = { syncToday, syncPersonalInfo, getHistory, getBaseline, getValidToken };

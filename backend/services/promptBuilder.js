@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -49,6 +49,33 @@ Factor this recovery data into your recommendation alongside the check-in inputs
 `;
   }
 
+  let trendsSection = '';
+  if (history.length >= 2) {
+    const dayLines = history.map((d) => {
+      const sleepStr = d.total_sleep_min != null
+        ? `${Math.floor(d.total_sleep_min / 60)}h${d.total_sleep_min % 60}m`
+        : 'n/a';
+      return `  ${d.date}: readiness=${d.readiness_score ?? 'n/a'}, HRV=${d.hrv_balance_score ?? 'n/a'}, sleep=${sleepStr}, RHR=${d.resting_hr ?? 'n/a'}, activity=${d.activity_score ?? 'n/a'}`;
+    }).join('\n');
+    trendsSection = `\nRECENT ${history.length}-DAY TREND (Oura):\n${dayLines}\n`;
+
+    if (baseline && baseline.days_of_data >= 7) {
+      const bSleepStr = baseline.avg_sleep_min != null
+        ? `${Math.floor(baseline.avg_sleep_min / 60)}h${Math.round(baseline.avg_sleep_min % 60)}m`
+        : 'n/a';
+      trendsSection += `
+PERSONAL BASELINE (last ${baseline.days_of_data} days avg):
+- Readiness: ${baseline.avg_readiness ?? 'n/a'} | HRV: ${baseline.avg_hrv ?? 'n/a'} | RHR: ${baseline.avg_rhr ?? 'n/a'} bpm | Sleep: ${bSleepStr}
+`;
+      if (biometrics?.readiness_score != null && baseline.avg_readiness != null) {
+        const diff = Math.round(biometrics.readiness_score - baseline.avg_readiness);
+        if (Math.abs(diff) >= 5) {
+          trendsSection += `Today's readiness is ${diff > 0 ? '+' : ''}${diff} vs her personal baseline — ${diff > 0 ? 'above normal, she can handle more intensity today' : 'below normal, prioritise recovery and lower load today'}.\n`;
+        }
+      }
+    }
+  }
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -67,7 +94,7 @@ ${bodyFlagsText}
 ${secondaryText}
 
 COMPUTED READINESS: ${readiness} / 85
-${biometricsSection}
+${biometricsSection}${trendsSection}
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):

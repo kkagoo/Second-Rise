@@ -1,6 +1,7 @@
 const db = require('../db/database');
 const { generateRecommendation } = require('../services/claudeService');
 const { getFilteredVideos, getVideoById } = require('../services/videoLibrary');
+const { getHistory, getBaseline } = require('../services/ouraService');
 
 async function getRecommendation(req, res, next) {
   try {
@@ -82,8 +83,16 @@ async function getRecommendation(req, res, next) {
       profile
     );
 
+    // Pull 7-day history and 30-day personal baseline for trend-aware recommendations
+    let history = [];
+    let baseline = null;
+    try {
+      history  = getHistory(req.userId, 7);
+      baseline = getBaseline(req.userId, 30);
+    } catch { /* no Oura history — that's fine */ }
+
     const { primary, alternatives } = await generateRecommendation(
-      profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos, biometrics
+      profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos, biometrics, history, baseline
     );
 
     // Store video selection in primary_workout as JSON

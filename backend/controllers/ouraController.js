@@ -85,8 +85,9 @@ async function callback(req, res, next) {
       userId,
     );
 
-    // Kick off an immediate sync (non-blocking — don't await)
+    // Kick off an immediate sync + personal info auto-fill (non-blocking)
     ouraService.syncToday(userId).catch(() => {});
+    ouraService.syncPersonalInfo(userId).catch(() => {});
 
     res.redirect(`${frontendBase}/profile?oura=connected`);
   } catch (err) {
@@ -130,4 +131,14 @@ function getStatus(req, res, next) {
   }
 }
 
-module.exports = { connect, callback, syncToday, getToday, getStatus };
+// POST /api/oura/personal_info  (authenticated) — fetch & save personal info
+async function syncPersonalInfo(req, res, next) {
+  try {
+    const info = await ouraService.syncPersonalInfo(req.userId);
+    res.json(info ?? { age: null, age_range: null, biological_sex: null });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { connect, callback, syncToday, getToday, getStatus, syncPersonalInfo };
