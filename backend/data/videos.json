@@ -10,7 +10,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["full_body", "beginner"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
   },
   {
     "id": "ya_002",
@@ -23,7 +23,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["morning", "full_body"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
   },
   {
     "id": "ya_003",
@@ -36,7 +36,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["stress_relief", "gentle"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
   },
   {
     "id": "ya_004",
@@ -49,7 +49,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["morning", "short"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
   },
   {
     "id": "ya_005",
@@ -62,7 +62,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["lower_body", "recovery"],
-    "contra_tags": ["knee_friendly"]
+    "contra_tags": []
   },
   {
     "id": "ya_006",
@@ -88,7 +88,124 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["stress_relief", "full_body"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
+  },
+  {
+    "id": "ya_008",
+    "title": "Yoga For Bone Health",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "raUEsDttCL4",
+    "session_type": "yoga",
+    "duration_min": 33,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["full_body", "bone_density_support", "osteoporosis_safe", "posture_improvement", "balance_training"],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_009",
+    "title": "Yoga For Pelvic Floor",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "2aEceax_be4",
+    "session_type": "yoga",
+    "duration_min": 21,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["pelvic_floor", "core_stability", "pelvic_floor_safe", "low_impact", "menopause_friendly"],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_010",
+    "title": "Yoga For Lower Back Pain",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "XeXz8fIZDCE",
+    "session_type": "yoga",
+    "duration_min": 27,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["lower_back", "spine_friendly", "osteoporosis_safe", "joint_mobilization", "pelvic_floor_aware"],
+    "contra_tags": []
+  },
+  {
+    "id": "dlm_001",
+    "title": "Perfect At-Home Routine for Osteoporosis & Osteopenia",
+    "creator": "Dr. Lisa Moore DPT",
+    "youtube_id": "P3mIDpNNOpo",
+    "session_type": "yoga",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "mat, chair",
+    "intensity": "low",
+    "focus_tags": ["full_body", "osteoporosis_safe", "bone_density_support", "pelvic_floor_safe", "midlife_women"],
+    "contra_tags": []
+  },
+  {
+    "id": "sy_001",
+    "title": "Strengthen Bone Health | 50+ Women",
+    "creator": "Siddhi Yoga",
+    "youtube_id": "ZcWJZ_iUMyE",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["full_body", "bone_health", "balance_training", "osteoporosis_safe", "menopause_friendly"],
+    "contra_tags": []
+  },
+  {
+    "id": "db_001",
+    "title": "Peaceful Pelvic Floor Slow Yoga Flow",
+    "creator": "Dr. Bri Vibrant Pelvic Health",
+    "youtube_id": "erIYiNMWVYM",
+    "session_type": "yoga",
+    "duration_min": 45,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["pelvic_floor_safe", "hips", "low_back", "osteoporosis_safe", "prolapse_friendly"],
+    "contra_tags": []
+  },
+  {
+    "id": "df_001",
+    "title": "12 Yoga Poses for Bone Health & Osteoporosis",
+    "creator": "Dr. Loren Fishman",
+    "youtube_id": "FE_W6jMsnPY",
+    "session_type": "yoga",
+    "duration_min": 12,
+    "difficulty": 3,
+    "equipment": "mat, chair",
+    "intensity": "low",
+    "focus_tags": ["spine_focus", "bone_density_support", "osteoporosis_safe", "strength_balance"],
+    "contra_tags": []
+  },
+  {
+    "id": "ys_001",
+    "title": "10 Min Bone Strength Workout | Low Impact",
+    "creator": "Yoga Specialist",
+    "youtube_id": "FGrSEVc3Idw",
+    "session_type": "yoga",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "bodyweight",
+    "intensity": "low",
+    "focus_tags": ["full_body", "bone_strength", "osteoporosis_prevention", "low_impact"],
+    "contra_tags": []
+  },
+  {
+    "id": "ys_002",
+    "title": "Ultimate Guide to Osteoporosis-Safe Yoga",
+    "creator": "Yoga Specialist",
+    "youtube_id": "1DuBs7x45WQ",
+    "session_type": "yoga",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["full_body", "osteoporosis_safe", "modifications", "joint_friendly", "pelvic_floor_aware"],
+    "contra_tags": []
   },
   {
     "id": "cg_001",
@@ -105,28 +222,28 @@
   },
   {
     "id": "cg_002",
-    "title": "20 Min No Repeat Full Body",
+    "title": "20 Min Dumbbell Full Body — No Repeat",
     "creator": "Caroline Girvan",
     "youtube_id": "l9_SoClAO5g",
     "session_type": "strength",
     "duration_min": 20,
-    "difficulty": 4,
-    "equipment": "dumbbells",
-    "intensity": "high",
-    "focus_tags": ["full_body", "no_repeat"],
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "low_impact", "bone_density_support", "peri_menopause_friendly"],
     "contra_tags": []
   },
   {
     "id": "cg_003",
-    "title": "Upper Body Dumbbell Workout",
+    "title": "20 Min Hard Upper Body with Dumbbells",
     "creator": "Caroline Girvan",
     "youtube_id": "SZaggsg2zUY",
     "session_type": "strength",
     "duration_min": 20,
     "difficulty": 4,
-    "equipment": "dumbbells",
+    "equipment": "dumbbells, mat",
     "intensity": "high",
-    "focus_tags": ["upper_body"],
+    "focus_tags": ["upper_body", "chest", "back", "shoulders"],
     "contra_tags": []
   },
   {
@@ -157,15 +274,15 @@
   },
   {
     "id": "cg_006",
-    "title": "45 Min Full Body Strength Workout",
+    "title": "30 Min Full Body Dumbbell Workout at Home",
     "creator": "Caroline Girvan",
     "youtube_id": "GViX8riaHX4",
     "session_type": "strength",
-    "duration_min": 45,
-    "difficulty": 5,
-    "equipment": "dumbbells",
-    "intensity": "high",
-    "focus_tags": ["full_body"],
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "metabolic_support", "muscle_building", "low_impact"],
     "contra_tags": []
   },
   {
@@ -173,9 +290,9 @@
     "title": "5 Min Full Body Warm Up",
     "creator": "Caroline Girvan",
     "youtube_id": "c0VxUFHdYzs",
-    "session_type": "strength",
+    "session_type": "mobility",
     "duration_min": 5,
-    "difficulty": 2,
+    "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["warm_up"],
@@ -195,6 +312,136 @@
     "contra_tags": []
   },
   {
+    "id": "cg_009",
+    "title": "30 Min MIGHTY Full Body Workout — Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "ScInpT_5dIQ",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": ["full_body", "glutes_hamstrings", "core_burn", "muscle_building", "low_impact"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_010",
+    "title": "Beginner EPIC Day 1 — No Equipment Lower Body",
+    "creator": "Caroline Girvan",
+    "youtube_id": "WUzdhcwT8uM",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "bodyweight, mat",
+    "intensity": "low",
+    "focus_tags": ["lower_body", "knee_friendly", "beginner_strength", "balance_training"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_011",
+    "title": "20 Min Shoulder Workout with Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "w8cSjkXkYRc",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": ["upper_body", "shoulders", "posture_support"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_012",
+    "title": "20 Min Dumbbell Upper Body Circuit",
+    "creator": "Caroline Girvan",
+    "youtube_id": "JZPzynsdYCE",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": ["upper_body", "back", "shoulders", "slow_controlled", "posture_support"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_013",
+    "title": "12 Min 4x4 Abs Workout — No Equipment",
+    "creator": "Caroline Girvan",
+    "youtube_id": "Ar6J7ySm2cE",
+    "session_type": "strength",
+    "duration_min": 12,
+    "difficulty": 3,
+    "equipment": "bodyweight, mat",
+    "intensity": "medium",
+    "focus_tags": ["core", "lower_abs", "obliques", "pelvic_floor_safe"],
+    "contra_tags": ["wrist_light"]
+  },
+  {
+    "id": "cg_014",
+    "title": "20 Min Dumbbell Full Body — Compound Movements",
+    "creator": "Caroline Girvan",
+    "youtube_id": "icoe6C2E-aY",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "compound_movements", "metabolic_support"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_015",
+    "title": "IRON Series 30 Min Glute Workout",
+    "creator": "Caroline Girvan",
+    "youtube_id": "2Qd-LJNJYWA",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 4,
+    "equipment": "dumbbells, resistance band, chair, mat",
+    "intensity": "high",
+    "focus_tags": ["lower_body", "glutes", "hip_thrusts", "pelvic_stability", "low_impact"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_016",
+    "title": "20 Min Abs Workout — No Repeat",
+    "creator": "Caroline Girvan",
+    "youtube_id": "3oeimlA6s68",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "bodyweight, mat",
+    "intensity": "medium",
+    "focus_tags": ["core", "low_impact", "active_rest_day"],
+    "contra_tags": ["wrist_light"]
+  },
+  {
+    "id": "cg_017",
+    "title": "Diverse 30 Min Full Body — Dumbbells & Bodyweight",
+    "creator": "Caroline Girvan",
+    "youtube_id": "kaNktg56JaI",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "varied_movements"],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_018",
+    "title": "10 Min Full Body Warm Up | Low Impact",
+    "creator": "Caroline Girvan",
+    "youtube_id": "PzyzfjtNHb0",
+    "session_type": "mobility",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "bodyweight, mat",
+    "intensity": "low",
+    "focus_tags": ["warm_up", "low_impact", "osteoporosis_safe", "joint_mobilization"],
+    "contra_tags": []
+  },
+  {
     "id": "hr_002",
     "title": "20 Min Low Impact Cardio",
     "creator": "Heather Robertson",
@@ -205,7 +452,7 @@
     "equipment": "none",
     "intensity": "medium",
     "focus_tags": ["cardio"],
-    "contra_tags": ["no_jumping"]
+    "contra_tags": []
   },
   {
     "id": "hr_003",
@@ -218,7 +465,7 @@
     "equipment": "none",
     "intensity": "medium",
     "focus_tags": ["steady_state"],
-    "contra_tags": ["no_jumping"]
+    "contra_tags": []
   },
   {
     "id": "hr_005",
@@ -231,7 +478,111 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["recovery"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
+  },
+  {
+    "id": "ss_001",
+    "title": "Walking Workout for Stronger Bones — Low or High Impact Options",
+    "creator": "SeniorShape Fitness",
+    "youtube_id": "zOztMVfW1WM",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "osteoporosis_safe", "bone_building", "weight_bearing"],
+    "contra_tags": []
+  },
+  {
+    "id": "ss_002",
+    "title": "Energizing Interval Walking Workout — Knee & Osteoporosis Friendly",
+    "creator": "SeniorShape Fitness",
+    "youtube_id": "VRuIk9YKws8",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "interval_walking", "knee_friendly", "osteoporosis_safe"],
+    "contra_tags": []
+  },
+  {
+    "id": "fw_001",
+    "title": "Fat Burning Walking Workout Over 50 — 8 Minutes",
+    "creator": "Fit Wise Women",
+    "youtube_id": "mweSYZHxRgE",
+    "session_type": "low_impact_cardio",
+    "duration_min": 8,
+    "difficulty": 1,
+    "equipment": "bodyweight",
+    "intensity": "low",
+    "focus_tags": ["full_body", "menopause_fat_loss", "indoor_walking", "low_impact"],
+    "contra_tags": []
+  },
+  {
+    "id": "db_002",
+    "title": "Indoor Walking Workout — Low Impact, Prolapse Safe",
+    "creator": "Dr. Bri Vibrant Pelvic Health",
+    "youtube_id": "MZdHVkyPF7I",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "low",
+    "focus_tags": ["full_body", "pelvic_floor_safe", "prolapse_friendly", "indoor", "low_impact"],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_001",
+    "title": "30 Minute 5000 Steps Indoor Walking Workout",
+    "creator": "fabulous50s",
+    "youtube_id": "DhwJaDkgFkk",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "steps_challenge", "women_over_50", "indoor", "energy_boost"],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_002",
+    "title": "30 Min Fat Burning Walking + Brain Training",
+    "creator": "fabulous50s",
+    "youtube_id": "7t6ZMca6WM8",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "fat_burning", "brain_training", "menopause_support", "indoor"],
+    "contra_tags": []
+  },
+  {
+    "id": "cj_001",
+    "title": "Low Impact Cardio Workout for Osteoporosis",
+    "creator": "Caroline Jordan",
+    "youtube_id": "uY2p6qj5b-s",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "weight_bearing", "osteoporosis_safe", "no_jumping", "stamina"],
+    "contra_tags": []
+  },
+  {
+    "id": "cj_002",
+    "title": "Low Impact Cardio for Osteoporosis — At-Home",
+    "creator": "Caroline Jordan",
+    "youtube_id": "sfIcp-F9nOQ",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "bone_supporting", "low_impact", "beginner_friendly", "midlife_women"],
+    "contra_tags": []
   },
   {
     "id": "jr_001",
@@ -244,7 +595,7 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["full_body"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
   },
   {
     "id": "jr_002",
@@ -296,6 +647,97 @@
     "equipment": "none",
     "intensity": "low",
     "focus_tags": ["gentle"],
-    "contra_tags": ["low_impact"]
+    "contra_tags": []
+  },
+  {
+    "id": "mn_001",
+    "title": "Full Body Workout for Women Over 50 | 40 Min Pilates",
+    "creator": "Move With Nicole",
+    "youtube_id": "D301PPpFU4c",
+    "session_type": "pilates",
+    "duration_min": 40,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "women_50plus", "strength_flexibility", "osteoporosis_safe"],
+    "contra_tags": []
+  },
+  {
+    "id": "mn_002",
+    "title": "35 Min Intermediate Mat Pilates — No Equipment",
+    "creator": "Move With Nicole",
+    "youtube_id": "AMLSBnAxLbU",
+    "session_type": "pilates",
+    "duration_min": 35,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": ["full_body", "core_focus", "pelvic_floor_aware", "osteoporosis_safe"],
+    "contra_tags": ["wrist_light"]
+  },
+  {
+    "id": "lm_001",
+    "title": "Essential Daily Pilates Routine",
+    "creator": "Lottie Murphy",
+    "youtube_id": "-74SDcT58eE",
+    "session_type": "pilates",
+    "duration_min": 16,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["core", "hips", "pelvic_floor_safe", "osteoporosis_safe", "daily_practice"],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_002",
+    "title": "Full Body Pilates with Band — Strength & Mobility",
+    "creator": "Lottie Murphy",
+    "youtube_id": "9nk1sAcczaA",
+    "session_type": "pilates",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "mat, resistance band",
+    "intensity": "low",
+    "focus_tags": ["full_body", "pelvic_floor_safe", "mobility", "gentle_strength"],
+    "contra_tags": []
+  },
+  {
+    "id": "nhs_001",
+    "title": "Pilates for Osteoporosis | NHS",
+    "creator": "NHS",
+    "youtube_id": "cK2lBuhCN3Q",
+    "session_type": "pilates",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["full_body", "osteoporosis_safe", "strength_balance", "posture", "joint_mobility"],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_001",
+    "title": "Standing Pilates for Osteoporosis | Full Body",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "hZq_PKktIGg",
+    "session_type": "pilates",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "bodyweight",
+    "intensity": "low",
+    "focus_tags": ["full_body", "lower_body", "osteoporosis_safe", "balance_posture", "no_floor_work"],
+    "contra_tags": []
+  },
+  {
+    "id": "cm_001",
+    "title": "Safe Modified Pilates Abdominals for Osteoporosis",
+    "creator": "Carol Michaels Fitness",
+    "youtube_id": "PyRsOuwgT_0",
+    "session_type": "pilates",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": ["core", "osteoporosis_safe", "no_forward_bend", "pelvic_floor_aware", "modifications"],
+    "contra_tags": []
   }
 ]

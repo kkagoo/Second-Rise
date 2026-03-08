@@ -7,7 +7,8 @@ import { WomanWorkoutIllustration } from '../components/ui/Illustrations';
 const CATEGORIES = [
   { label: 'Strength',  type: 'strength',          color: 'bg-blue-400',   text: 'text-white' },
   { label: 'Yoga',      type: 'yoga',              color: 'bg-orange-400', text: 'text-white' },
-  { label: 'Mobility',  type: 'mobility',          color: 'bg-sky-card border border-blue-200', text: 'text-blue-500' },
+  { label: 'Pilates',   type: 'pilates',           color: 'bg-sky-card border border-blue-200', text: 'text-blue-500' },
+  { label: 'Mobility',  type: 'mobility',          color: 'bg-gray-100',   text: 'text-gray-700' },
   { label: 'Cardio',    type: 'low_impact_cardio', color: 'bg-gray-100',   text: 'text-gray-700' },
 ];
 
