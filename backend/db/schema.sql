@@ -107,3 +107,24 @@ CREATE TABLE IF NOT EXISTS apple_health_data (
   imported_at     TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(user_id, date)
 );
+
+CREATE TABLE IF NOT EXISTS whoop_daily_data (
+  id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id               INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date                  TEXT NOT NULL,
+  recovery_score        INTEGER,
+  hrv_rmssd_ms          REAL,
+  resting_hr            INTEGER,
+  spo2_percentage       REAL,
+  skin_temp_celsius     REAL,
+  sleep_performance     INTEGER,
+  sleep_efficiency      REAL,
+  total_sleep_min       INTEGER,
+  rem_sleep_min         INTEGER,
+  deep_sleep_min        INTEGER,
+  light_sleep_min       INTEGER,
+  respiratory_rate      REAL,
+  strain_score          REAL,
+  synced_at             TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);

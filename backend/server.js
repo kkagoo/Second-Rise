@@ -13,6 +13,7 @@ const reflectionRoutes  = require('./routes/reflectionRoutes');
 const historyRoutes     = require('./routes/historyRoutes');
 const videoRoutes       = require('./routes/videoRoutes');
 const ouraRoutes        = require('./routes/ouraRoutes');
+const whoopRoutes       = require('./routes/whoopRoutes');
 const healthRoutes      = require('./routes/healthRoutes');
 const biometricsRoutes  = require('./routes/biometricsRoutes');
 const errorHandler      = require('./middleware/errorHandler');
@@ -44,6 +45,7 @@ app.use('/api/reflection',  reflectionRoutes);
 app.use('/api/history',     historyRoutes);
 app.use('/api/videos',      videoRoutes);
 app.use('/api/oura',        ouraRoutes);
+app.use('/api/whoop',       whoopRoutes);
 app.use('/api/health',      healthRoutes);
 app.use('/api/biometrics',  biometricsRoutes);
 

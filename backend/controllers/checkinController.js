@@ -3,7 +3,7 @@ const { computeReadiness } = require('../services/readinessEngine');
 
 function submitCheckin(req, res, next) {
   try {
-    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags } = req.body;
+    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, workout_preference } = req.body;
 
     if (!layer1_energy || !layer1_time_avail) {
       return res.status(400).json({ error: 'Energy and time available are required' });
@@ -23,23 +23,34 @@ function submitCheckin(req, res, next) {
       const oura = db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
       if (oura) {
         biometrics = {
-          source:            'oura',
-          hrv_balance:       oura.hrv_balance_score,
-          sleep_score:       oura.sleep_score,
-          total_sleep_min:   oura.total_sleep_min,
+          source:              'oura',
+          hrv_balance:         oura.hrv_balance_score,
+          sleep_score:         oura.sleep_score,
+          total_sleep_min:     oura.total_sleep_min,
           body_temp_deviation: oura.body_temp_deviation,
-          temp_flag:         typeof oura.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
+          temp_flag:           typeof oura.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
         };
       } else {
-        const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
-        if (apple) {
+        const whoop = db.prepare('SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (whoop) {
           biometrics = {
-            source:          'apple_health',
+            source:          'whoop',
             hrv_balance:     null,
-            sleep_score:     null,
-            total_sleep_min: apple.sleep_min,
+            sleep_score:     whoop.sleep_performance,
+            total_sleep_min: whoop.total_sleep_min,
             temp_flag:       false,
           };
+        } else {
+          const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+          if (apple) {
+            biometrics = {
+              source:          'apple_health',
+              hrv_balance:     null,
+              sleep_score:     null,
+              total_sleep_min: apple.sleep_min,
+              temp_flag:       false,
+            };
+          }
         }
       }
     } catch { /* no biometrics available */ }
@@ -48,8 +59,8 @@ function submitCheckin(req, res, next) {
 
     const result = db.prepare(`
       INSERT INTO daily_checkins
-        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness, workout_preference)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       req.userId,
       layer1_energy,
@@ -58,6 +69,7 @@ function submitCheckin(req, res, next) {
       checkinData.body_map_flags,
       checkinData.secondary_flags,
       readiness,
+      workout_preference || null,
     );
 
     res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness });

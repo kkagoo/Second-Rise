@@ -8,10 +8,20 @@ const TIME_OPTIONS = [
   { value: '35+', label: '35+ min' },
 ];
 
+const WORKOUT_PREFS = [
+  { value: 'surprise',  label: '✨ Surprise me' },
+  { value: 'strength',  label: '🏋️ Strength' },
+  { value: 'cardio',    label: '🚶 Cardio' },
+  { value: 'yoga',      label: '🧘 Yoga / Mobility' },
+  { value: 'pilates',   label: '🌀 Pilates' },
+  { value: 'gentle',    label: '💙 Something gentle' },
+];
+
 export default function Layer1Form({ onComplete, suggestion = null, tempFlag = false }) {
-  const [energy, setEnergy]     = useState(null);
-  const [time, setTime]         = useState(null);
-  const [painFlag, setPainFlag] = useState(null);
+  const [energy, setEnergy]           = useState(null);
+  const [time, setTime]               = useState(null);
+  const [painFlag, setPainFlag]       = useState(null);
+  const [workoutPref, setWorkoutPref] = useState('surprise');
 
   const canProceed = energy !== null && time !== null && painFlag !== null;
 
@@ -38,6 +48,27 @@ export default function Layer1Form({ onComplete, suggestion = null, tempFlag = f
               }`}
             >
               {t.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Workout preference */}
+      <section>
+        <h2 className="text-base font-semibold text-gray-800 mb-1">What are you in the mood for?</h2>
+        <p className="text-xs text-gray-400 mb-3">We'll balance your week — but we'll honour your preference too.</p>
+        <div className="grid grid-cols-2 gap-2">
+          {WORKOUT_PREFS.map((p) => (
+            <button
+              key={p.value}
+              onClick={() => setWorkoutPref(p.value)}
+              className={`rounded-2xl py-3 text-sm font-semibold tap-target border-2 transition-all duration-150 text-left px-4 ${
+                workoutPref === p.value
+                  ? 'bg-blue-400 border-blue-400 text-white'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-blue-300'
+              }`}
+            >
+              {p.label}
             </button>
           ))}
         </div>
@@ -71,7 +102,7 @@ export default function Layer1Form({ onComplete, suggestion = null, tempFlag = f
       </section>
 
       <button
-        onClick={() => canProceed && onComplete({ energy, time, painFlag })}
+        onClick={() => canProceed && onComplete({ energy, time, painFlag, workoutPref })}
         disabled={!canProceed}
         className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-4 transition-colors disabled:opacity-40 disabled:cursor-not-allowed tap-target"
       >

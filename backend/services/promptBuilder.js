@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = []) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -32,23 +32,51 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
     `  ${v.id} | "${v.title}" | ${v.creator} | ${v.duration_min} min | difficulty ${v.difficulty}/5 | ${v.intensity} intensity | equipment: ${v.equipment} | focus: ${v.focus_tags.join(', ')}`
   ).join('\n');
 
+  // Build biometrics section — handles both Oura and Whoop signals
   let biometricsSection = '';
   if (biometrics && biometrics.source) {
-    const source  = biometrics.source === 'oura' ? 'Oura Ring' : 'Apple Health';
-    const sleepH  = biometrics.total_sleep_min != null ? Math.floor(biometrics.total_sleep_min / 60) : null;
-    const sleepM  = biometrics.total_sleep_min != null ? biometrics.total_sleep_min % 60 : null;
+    const sleepH   = biometrics.total_sleep_min != null ? Math.floor(biometrics.total_sleep_min / 60) : null;
+    const sleepM   = biometrics.total_sleep_min != null ? biometrics.total_sleep_min % 60 : null;
     const sleepStr = sleepH != null ? `${sleepH}h ${sleepM}m` : 'n/a';
-    biometricsSection = `
-BIOMETRIC DATA (${source}):
-- Readiness: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep: ${biometrics.sleep_score ?? 'n/a'}/100
+
+    if (biometrics.source === 'oura') {
+      biometricsSection = `
+BIOMETRIC DATA (Oura Ring):
+- Readiness: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep score: ${biometrics.sleep_score ?? 'n/a'}/100
 - Total sleep: ${sleepStr} | REM: ${biometrics.rem_sleep_min ?? 'n/a'}m | Deep: ${biometrics.deep_sleep_min ?? 'n/a'}m
+- Sleep efficiency: ${biometrics.sleep_efficiency != null ? `${Math.round(biometrics.sleep_efficiency * 100)}%` : 'n/a'}
 - HRV balance: ${biometrics.hrv_balance ?? 'n/a'}/100 | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
 - Body temp deviation: ${biometrics.body_temp_deviation ?? 'n/a'}°C${biometrics.temp_flag ? ' ⚠️ elevated — possible hot flash signal' : ''}
+- Activity score: ${biometrics.activity_score ?? 'n/a'}/100 | Steps: ${biometrics.steps ?? 'n/a'}
 
 Factor this recovery data into your recommendation alongside the check-in inputs.
 `;
+    } else if (biometrics.source === 'whoop') {
+      biometricsSection = `
+BIOMETRIC DATA (Whoop):
+- Recovery score: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep performance: ${biometrics.sleep_score ?? 'n/a'}%
+- Total sleep: ${sleepStr} | REM: ${biometrics.rem_sleep_min ?? 'n/a'}m | Deep (SWS): ${biometrics.deep_sleep_min ?? 'n/a'}m
+- Sleep efficiency: ${biometrics.sleep_efficiency != null ? `${Math.round(biometrics.sleep_efficiency)}%` : 'n/a'}
+- HRV (rMSSD): ${biometrics.hrv_rmssd_ms ?? 'n/a'} ms | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
+- Respiratory rate: ${biometrics.respiratory_rate ?? 'n/a'} breaths/min
+- SpO2: ${biometrics.spo2_percentage != null ? `${biometrics.spo2_percentage.toFixed(1)}%` : 'n/a'}
+- Skin temp: ${biometrics.skin_temp_celsius != null ? `${biometrics.skin_temp_celsius.toFixed(1)}°C` : 'n/a'}
+- Strain score (previous day): ${biometrics.strain_score != null ? `${biometrics.strain_score.toFixed(1)}/21` : 'n/a'}${biometrics.strain_score != null && biometrics.strain_score > 16 ? ' ⚠️ high strain — prioritise recovery' : ''}
+
+Note: Whoop HRV rMSSD is in milliseconds (raw, not 0-100 scale). A value >60ms is generally good; <40ms suggests elevated stress or fatigue.
+Factor ALL recovery signals into your recommendation.
+`;
+    } else {
+      biometricsSection = `
+BIOMETRIC DATA (Apple Health):
+- Total sleep: ${sleepStr} | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
+
+Factor this into your recommendation.
+`;
+    }
   }
 
+  // 7-day trend section
   let trendsSection = '';
   if (history.length >= 2) {
     const dayLines = history.map((d) => {
@@ -76,6 +104,51 @@ PERSONAL BASELINE (last ${baseline.days_of_data} days avg):
     }
   }
 
+  // Weekly workout schedule section for balance tracking
+  let weeklyScheduleSection = '';
+  if (weeklySchedule.length > 0) {
+    const scheduleLines = weeklySchedule.map((w) =>
+      `  ${w.workout_date}: ${w.body_focus || w.primary_session_type || 'unknown'}`
+    ).join('\n');
+
+    // Count workout types this week
+    const counts = { strength_upper: 0, strength_lower: 0, strength_full: 0, cardio: 0, yoga: 0, mobility: 0, pilates: 0 };
+    for (const w of weeklySchedule) {
+      const f = w.body_focus || '';
+      if (counts[f] !== undefined) counts[f]++;
+    }
+    const strengthTotal = counts.strength_upper + counts.strength_lower + counts.strength_full;
+    const cardioTotal   = counts.cardio;
+    const flexTotal     = counts.yoga + counts.mobility + counts.pilates;
+
+    weeklyScheduleSection = `
+WEEKLY WORKOUT SCHEDULE (last 7 days — workouts actually started):
+${scheduleLines}
+
+This week's balance:
+- Strength sessions: ${strengthTotal} (upper body: ${counts.strength_upper}, lower body: ${counts.strength_lower}, full body: ${counts.strength_full})
+- Cardio sessions: ${cardioTotal}
+- Yoga/Mobility/Pilates: ${flexTotal}
+
+WEEKLY BALANCE GUIDELINES — follow these unless today's check-in or biometrics strongly suggest otherwise:
+- Aim for 2–3 strength sessions per week, ALTERNATING between upper body, lower body, and full body (avoid repeating the same focus two days in a row)
+- Aim for 1–2 cardio sessions per week
+- Fill remaining days with yoga, mobility, or Pilates
+- If strength_upper was done yesterday or today, prefer strength_lower or full_body next
+- If all 3 strength slots are filled, steer toward cardio, yoga, or mobility today
+`;
+  } else {
+    weeklyScheduleSection = `
+WEEKLY WORKOUT SCHEDULE: No workout history yet this week.
+Start with what feels best today — a strength session (full body or lower body is a great start) if energy allows.
+`;
+  }
+
+  // Workout preference section
+  const workoutPrefText = checkin.workout_preference && checkin.workout_preference !== 'surprise'
+    ? `\nUSER'S WORKOUT PREFERENCE TODAY: "${checkin.workout_preference}" — honour this request if it's safe and appropriate given recovery data. If it conflicts with safety (e.g. she wants high-intensity strength but her recovery is very low), choose a gentler version of that type and explain why.\n`
+    : '\nUSER\'S WORKOUT PREFERENCE TODAY: "Surprise me" — use your best judgement based on recovery data and weekly balance.\n';
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -92,18 +165,18 @@ TODAY'S CHECK-IN:
 ${bodyFlagsText}
 - Secondary symptoms:
 ${secondaryText}
-
+${workoutPrefText}
 COMPUTED READINESS: ${readiness} / 85
-${biometricsSection}${trendsSection}
+${biometricsSection}${trendsSection}${weeklyScheduleSection}
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):
 ${videoListText || '  No videos matched filters — pick the gentlest option from the full library.'}
 
 TASK:
-1. Pick the single best video ID for today from the list above.
+1. Pick the single best video ID for today from the list above. Factor in the weekly balance guidelines: avoid repeating the same body focus area two days in a row, aim for the right mix of strength/cardio/yoga across the week.
 2. Write a weight_note: tell the user exactly what equipment to grab before pressing play (e.g. "Grab a pair of 8–12 lb dumbbells. If it's your first Caroline Girvan session, go lighter than you think."). If no equipment needed, say so warmly.
-3. Write reasoning: 2–3 warm sentences directly to the user explaining why this video fits today. No jargon.
+3. Write reasoning: 2–3 warm sentences directly to the user explaining why this video fits today. Mention if you're balancing the weekly schedule. No jargon.
 4. Pick 3 alternative video IDs with 1–2 sentence reasoning each.
 
 Respond with ONLY valid JSON:

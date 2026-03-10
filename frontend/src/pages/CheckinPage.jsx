@@ -54,11 +54,12 @@ export default function CheckinPage() {
 
     try {
       await client.post('/checkin', {
-        layer1_energy:     l1.energy,
-        layer1_time_avail: l1.time,
-        pain_flagged:      l1.painFlag,
-        body_map_flags:    l2.body_map_flags,
-        secondary_flags:   l2.secondary_flags,
+        layer1_energy:      l1.energy,
+        layer1_time_avail:  l1.time,
+        pain_flagged:       l1.painFlag,
+        body_map_flags:     l2.body_map_flags,
+        secondary_flags:    l2.secondary_flags,
+        workout_preference: l1.workoutPref,
       });
       const res = await client.get('/recommend');
       clearInterval(msgTimer);
@@ -111,7 +112,7 @@ export default function CheckinPage() {
                 {biometrics && (
                   <div className="mb-6 rounded-2xl bg-blue-50 border border-blue-200 px-4 py-3 flex flex-col gap-1">
                     <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider">
-                      {biometrics.source === 'oura' ? 'Oura' : 'Apple Health'} today
+                      {biometrics.source === 'oura' ? 'Oura' : biometrics.source === 'whoop' ? 'Whoop' : 'Apple Health'} today
                     </p>
                     <p className="text-sm font-medium text-gray-800">
                       {biometrics.readiness_score != null ? `Readiness ${biometrics.readiness_score}` : ''}

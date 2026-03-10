@@ -116,6 +116,11 @@ export default function ProfilePage() {
   const [ouraLastSync, setOuraLastSync] = useState(null);
   const [ouraError, setOuraError]       = useState('');
 
+  // Whoop state
+  const [whoopStatus, setWhoopStatus]     = useState(null); // null | 'connected' | 'connecting' | 'error' | 'denied'
+  const [whoopLastSync, setWhoopLastSync] = useState(null);
+  const [whoopError, setWhoopError]       = useState('');
+
   // Apple Health state
   const [appleFile, setAppleFile]         = useState(null);
   const [appleUploading, setAppleUploading] = useState(false);
@@ -146,6 +151,16 @@ export default function ProfilePage() {
         }
       }).catch(() => {});
 
+      // Check Whoop connection status
+      client.get('/whoop/status').then((r) => {
+        if (r.data?.connected) {
+          setWhoopStatus('connected');
+          client.get('/whoop/today').then((t) => {
+            if (t.data?.synced_at) setWhoopLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
       // Handle OAuth callback result in URL params
       const params = new URLSearchParams(window.location.search);
       const ouraResult = params.get('oura');
@@ -158,6 +173,19 @@ export default function ProfilePage() {
       } else if (ouraResult === 'error') {
         setOuraStatus('error');
         setOuraError('Something went wrong during Oura authorization.');
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+
+      const whoopResult = params.get('whoop');
+      if (whoopResult === 'connected') {
+        setWhoopStatus('connected');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (whoopResult === 'denied') {
+        setWhoopStatus('denied');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (whoopResult === 'error') {
+        setWhoopStatus('error');
+        setWhoopError('Something went wrong during Whoop authorization.');
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
@@ -185,6 +213,31 @@ export default function ProfilePage() {
     } catch (err) {
       setOuraStatus('error');
       setOuraError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleWhoopConnect() {
+    setWhoopStatus('connecting');
+    setWhoopError('');
+    try {
+      const res = await client.get('/whoop/connect');
+      window.location.href = res.data.url;
+    } catch (err) {
+      setWhoopStatus('error');
+      setWhoopError(err.response?.data?.error || 'Could not start Whoop authorization.');
+    }
+  }
+
+  async function handleWhoopSync() {
+    setWhoopStatus('connecting');
+    setWhoopError('');
+    try {
+      const syncRes = await client.post('/whoop/sync');
+      setWhoopStatus('connected');
+      setWhoopLastSync(syncRes.data?.synced_at ?? null);
+    } catch (err) {
+      setWhoopStatus('error');
+      setWhoopError(err.response?.data?.error || 'Sync failed. Please try again.');
     }
   }
 
@@ -295,6 +348,49 @@ export default function ProfilePage() {
           )}
           {ouraError && (
             <p className="text-red-500 text-xs">{ouraError}</p>
+          )}
+        </Section>
+
+        {/* Whoop */}
+        <Section title="Whoop" subtitle="Connect to get recovery score, HRV, strain, sleep performance, and respiratory rate">
+          {whoopStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                <p className="text-sm text-green-600 font-semibold">
+                  Connected{whoopLastSync ? ` — synced ${new Date(whoopLastSync).toLocaleString()}` : ''}
+                </p>
+              </div>
+              <p className="text-xs text-gray-400">Whoop recovery score, HRV, strain, and sleep stages are being used in your recommendations.</p>
+              <button
+                type="button"
+                onClick={handleWhoopSync}
+                disabled={whoopStatus === 'connecting'}
+                className="w-full border-2 border-blue-300 text-blue-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-blue-50 disabled:opacity-50"
+              >
+                {whoopStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-xs text-gray-400">
+                Connect your Whoop to get daily recovery score, HRV (rMSSD), resting HR, strain, respiratory rate, SpO2, and sleep performance in your recommendations.
+              </p>
+              {whoopStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
+              <button
+                type="button"
+                onClick={handleWhoopConnect}
+                disabled={whoopStatus === 'connecting'}
+                className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {whoopStatus === 'connecting' ? 'Redirecting…' : 'Connect with Whoop'}
+              </button>
+            </div>
+          )}
+          {whoopError && (
+            <p className="text-red-500 text-xs">{whoopError}</p>
           )}
         </Section>
 

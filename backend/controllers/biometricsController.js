@@ -8,7 +8,6 @@ function energySuggestionFromReadiness(score) {
 }
 
 function energySuggestionFromApple(hrv, sleepMin) {
-  // Rough heuristic when no readiness score available
   let score = 65;
   if (hrv !== null) {
     if (hrv < 25)      score -= 15;
@@ -26,7 +25,7 @@ function getToday(req, res, next) {
   try {
     const today = new Date().toISOString().slice(0, 10);
 
-    // Prefer Oura
+    // Priority 1: Oura
     const oura = db.prepare(
       'SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
@@ -51,7 +50,34 @@ function getToday(req, res, next) {
       });
     }
 
-    // Fall back to Apple Health
+    // Priority 2: Whoop
+    const whoop = db.prepare(
+      'SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    if (whoop) {
+      return res.json({
+        source:            'whoop',
+        readiness_score:   whoop.recovery_score,
+        sleep_score:       whoop.sleep_performance,
+        hrv_balance:       null,
+        hrv_rmssd_ms:      whoop.hrv_rmssd_ms,
+        resting_hr:        whoop.resting_hr,
+        total_sleep_min:   whoop.total_sleep_min,
+        rem_sleep_min:     whoop.rem_sleep_min,
+        deep_sleep_min:    whoop.deep_sleep_min,
+        respiratory_rate:  whoop.respiratory_rate,
+        strain_score:      whoop.strain_score,
+        spo2_percentage:   whoop.spo2_percentage,
+        skin_temp_celsius: whoop.skin_temp_celsius,
+        body_temp_deviation: null,
+        steps:             null,
+        energy_suggestion: energySuggestionFromReadiness(whoop.recovery_score ?? 65),
+        temp_flag:         false,
+      });
+    }
+
+    // Priority 3: Apple Health
     const apple = db.prepare(
       'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
