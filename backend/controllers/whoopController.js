@@ -23,7 +23,9 @@ function connect(req, res, next) {
       state,
     });
 
-    res.json({ url: `${WHOOP_AUTH_URL}?${params}` });
+    const fullUrl = `${WHOOP_AUTH_URL}?${params}`;
+    console.log('[Whoop connect] OAuth URL:', fullUrl);
+    res.json({ url: fullUrl });
   } catch (err) {
     next(err);
   }
@@ -31,10 +33,13 @@ function connect(req, res, next) {
 
 async function callback(req, res, next) {
   try {
-    const { code, state, error: whoopError } = req.query;
+    const { code, state, error: whoopError, error_description } = req.query;
     const frontendBase = process.env.FRONTEND_URL || 'https://second-rise-production.up.railway.app';
 
+    console.log('[Whoop callback] query params:', { code: !!code, state: !!state, whoopError, error_description });
+
     if (whoopError || !code) {
+      console.log('[Whoop callback] denied — error:', whoopError, error_description);
       return res.redirect(`${frontendBase}/profile?whoop=denied`);
     }
 
