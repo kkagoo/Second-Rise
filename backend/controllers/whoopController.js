@@ -15,15 +15,11 @@ function connect(req, res, next) {
     const userJwt    = authHeader?.slice(7) ?? '';
     const state      = Buffer.from(JSON.stringify({ jwt: userJwt })).toString('base64url');
 
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id:     process.env.WHOOP_CLIENT_ID,
-      redirect_uri:  process.env.WHOOP_REDIRECT_URI,
-      scope:         'read:recovery read:sleep read:cycle offline',
-      state,
-    });
-
-    const fullUrl = `${WHOOP_AUTH_URL}?${params}`;
+    const fullUrl = `${WHOOP_AUTH_URL}?response_type=code`
+      + `&client_id=${encodeURIComponent(process.env.WHOOP_CLIENT_ID)}`
+      + `&redirect_uri=${encodeURIComponent(process.env.WHOOP_REDIRECT_URI)}`
+      + `&scope=${encodeURIComponent('read:recovery read:sleep read:cycle offline')}`
+      + `&state=${state}`;
     console.log('[Whoop connect] OAuth URL:', fullUrl);
     res.json({ url: fullUrl });
   } catch (err) {
