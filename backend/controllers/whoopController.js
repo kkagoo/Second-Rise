@@ -32,7 +32,7 @@ function connect(req, res, next) {
 async function callback(req, res, next) {
   try {
     const { code, state, error: whoopError } = req.query;
-    const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendBase = process.env.FRONTEND_URL || 'https://second-rise-production.up.railway.app';
 
     if (whoopError || !code) {
       return res.redirect(`${frontendBase}/profile?whoop=denied`);
