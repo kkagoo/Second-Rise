@@ -19,7 +19,7 @@ function connect(req, res, next) {
       response_type: 'code',
       client_id:     process.env.WHOOP_CLIENT_ID,
       redirect_uri:  process.env.WHOOP_REDIRECT_URI,
-      scope:         'read:recovery read:sleep read:workout read:cycle read:profile offline',
+      scope:         'read:recovery read:sleep read:cycle offline',
       state,
     });
 
