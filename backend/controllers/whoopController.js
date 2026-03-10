@@ -18,7 +18,7 @@ function connect(req, res, next) {
     const fullUrl = `${WHOOP_AUTH_URL}?response_type=code`
       + `&client_id=${encodeURIComponent(process.env.WHOOP_CLIENT_ID)}`
       + `&redirect_uri=${encodeURIComponent(process.env.WHOOP_REDIRECT_URI)}`
-      + `&scope=${encodeURIComponent('read:recovery read:sleep read:cycle read:workout read:profile offline_access')}`
+      + `&scope=${encodeURIComponent('read:recovery read:cycles read:sleep read:workout read:profile read:body_measurement')}`
       + `&state=${state}`;
     console.log('[Whoop connect] OAuth URL:', fullUrl);
     res.json({ url: fullUrl });
