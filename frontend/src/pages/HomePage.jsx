@@ -12,18 +12,63 @@ const CATEGORIES = [
   { label: 'Cardio',    type: 'low_impact_cardio', color: 'bg-gray-100',   text: 'text-gray-700' },
 ];
 
-function SourceBadge({ source }) {
-  if (!source) return null;
-  const labels = { oura: 'Oura', whoop: 'Whoop', apple_health: 'Apple' };
-  const colors = {
-    oura:  'bg-blue-100 text-blue-600',
-    whoop: 'bg-gray-900 text-white',
-    apple_health: 'bg-red-50 text-red-500',
-  };
+// Inline SVG icons for stats
+function MoonIcon() {
   return (
-    <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 ${colors[source] || 'bg-gray-100 text-gray-500'}`}>
-      {labels[source] || source}
-    </span>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+    </svg>
+  );
+}
+function HeartIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+function BoltIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
+function PulseIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  );
+}
+function FlameIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M12 2c0 0-5 4.5-5 10a5 5 0 0 0 10 0C17 6.5 12 2 12 2zm0 16a3 3 0 0 1-3-3c0-2.5 3-6 3-6s3 3.5 3 6a3 3 0 0 1-3 3z" />
+    </svg>
+  );
+}
+
+const SOURCE_COLORS = {
+  oura:         'bg-blue-100 text-blue-600',
+  whoop:        'bg-gray-900 text-white',
+  apple_health: 'bg-red-50 text-red-500',
+};
+const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', apple_health: 'Apple' };
+
+function StatPill({ icon, label, value, source }) {
+  if (value == null) return null;
+  return (
+    <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+      <span className="text-gray-500">{icon}</span>
+      <span className="text-xs text-gray-500">{label}</span>
+      <span className="text-xs font-bold text-gray-900">{value}</span>
+      {source && (
+        <span className={`text-[9px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 ${SOURCE_COLORS[source] || 'bg-gray-100 text-gray-500'}`}>
+          {SOURCE_LABELS[source] || source}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -49,78 +94,80 @@ export default function HomePage() {
   const loading = todayCheckin === undefined;
   const checkinDone = !!todayCheckin;
 
-  const hasSleepScore    = biometrics?.sleep_score != null;
-  const hasRecoveryScore = biometrics?.recovery_score != null;
+  // Energy suggestion label derived from recovery/sleep
+  const energyScore = biometrics?.energy_suggestion;
+  const energyLabel = energyScore == null ? null
+    : energyScore >= 80 ? 'High energy'
+    : energyScore >= 60 ? 'Moderate energy'
+    : energyScore >= 35 ? 'Low energy'
+    : 'Rest day';
 
   return (
     <div className="min-h-screen bg-white pb-28">
 
       {/* ── Hero banner ── */}
       <div className="relative bg-sky-card overflow-hidden">
-        <div className="px-6 pt-14 pb-0 relative z-10">
+        <div className="px-6 pt-12 pb-5 relative z-10 max-w-[62%]">
 
           {/* Welcome + weekly streak */}
-          <div className="flex items-center justify-between mb-0.5">
+          <div className="flex items-center gap-2 mb-0.5">
             <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
               Welcome back
             </p>
             {weekStats != null && (
-              <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
-                <span className="text-base leading-none">🏆</span>
-                <span className="text-xs font-bold text-gray-800">
-                  {weekStats.days_worked}
-                </span>
-                <span className="text-xs text-gray-400">this week</span>
+              <div className="flex items-center gap-1 bg-white/70 rounded-full px-2 py-0.5">
+                <span className="text-sm leading-none">🏆</span>
+                <span className="text-xs font-bold text-gray-800">{weekStats.days_worked}</span>
+                <span className="text-[10px] text-gray-400">this wk</span>
               </div>
             )}
           </div>
 
           {/* Date */}
-          <p className="text-sm font-medium text-gray-400 mb-1">
+          <p className="text-sm font-medium text-gray-400 mb-2">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
 
-          {/* Biometric stats next to date */}
-          {biometrics && (hasSleepScore || hasRecoveryScore) && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {hasSleepScore && (
-                <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
-                  <span className="text-xs text-gray-500">Sleep</span>
-                  <span className="text-xs font-bold text-gray-900">{biometrics.sleep_score}</span>
-                  <SourceBadge source={biometrics.sleep_source} />
-                </div>
+          {/* Biometric stat pills */}
+          {biometrics && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              <StatPill icon={<MoonIcon />}  label="Sleep"    value={biometrics.sleep_score}    source={biometrics.sleep_source} />
+              <StatPill icon={<BoltIcon />}  label="Recovery" value={biometrics.recovery_score} source={biometrics.recovery_source} />
+              <StatPill icon={<PulseIcon />} label="HRV"      value={biometrics.hrv_balance ?? (biometrics.hrv_rmssd_ms != null ? Math.round(biometrics.hrv_rmssd_ms) : null)} source={null} />
+              <StatPill icon={<HeartIcon />} label="HR"       value={biometrics.resting_hr}     source={null} />
+              {biometrics.strain_score != null && (
+                <StatPill icon={<FlameIcon />} label="Strain" value={biometrics.strain_score?.toFixed(1)} source={null} />
               )}
-              {hasRecoveryScore && (
-                <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
-                  <span className="text-xs text-gray-500">Recovery</span>
-                  <span className="text-xs font-bold text-gray-900">{biometrics.recovery_score}</span>
-                  <SourceBadge source={biometrics.recovery_source} />
+              {energyLabel && (
+                <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                  <span className="text-xs font-semibold text-gray-700">{energyLabel}</span>
                 </div>
               )}
             </div>
           )}
 
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight max-w-[55%]">
-            {checkinDone
-              ? 'Your workout\nis ready'
-              : 'Ready to\nmove today?'}
+          {biometrics?.temp_flag && (
+            <div className="mb-2 rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-[11px] text-amber-700 font-medium">
+              🌡 Temp elevated — possible hot flash signal
+            </div>
+          )}
+
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+            {checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
           </h1>
 
           <button
             onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
-            className="mt-4 mb-6 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
+            className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
           >
             {checkinDone ? 'View workout →' : 'Start check-in →'}
           </button>
         </div>
 
-        {/* Illustration — absolute positioned to the right */}
-        <div className="absolute right-0 bottom-0 pointer-events-none" style={{ width: 180 }}>
-          <WomanWorkoutIllustration size={180} />
+        {/* Illustration — sits top-right, no spacer div needed */}
+        <div className="absolute right-0 top-4 bottom-0 pointer-events-none flex items-end" style={{ width: 160 }}>
+          <WomanWorkoutIllustration size={200} />
         </div>
-
-        {/* Spacer so the card has enough height for the illustration */}
-        <div style={{ height: 200 }} />
       </div>
 
       <div className="px-5 flex flex-col gap-5 mt-5">
@@ -135,20 +182,13 @@ export default function HomePage() {
                     Today's check-in
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-2xl font-bold text-gray-900">
-                      {todayCheckin.computed_readiness}
-                    </span>
+                    <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <span className="text-xs bg-blue-50 text-blue-500 font-semibold rounded-full px-3 py-1">
-                    Done ✓
-                  </span>
-                  <button
-                    onClick={() => navigate('/checkin')}
-                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                  >
+                  <span className="text-xs bg-blue-50 text-blue-500 font-semibold rounded-full px-3 py-1">Done ✓</span>
+                  <button onClick={() => navigate('/checkin')} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
                     Redo check-in
                   </button>
                 </div>
@@ -156,9 +196,7 @@ export default function HomePage() {
             ) : (
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
-                    Today's check-in
-                  </p>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Today's check-in</p>
                   <p className="text-sm font-medium text-gray-700 mt-1">Not done yet</p>
                 </div>
                 <button
@@ -175,66 +213,6 @@ export default function HomePage() {
         {loading && (
           <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-center">
             <div className="w-5 h-5 border-2 border-blue-300 border-t-blue-400 rounded-full animate-spin" />
-          </div>
-        )}
-
-        {/* Biometrics detail card */}
-        {biometrics && (
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-            <p className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-3">Today's data</p>
-
-            {/* Source-attributed insight lines */}
-            <div className="flex flex-col gap-2 mb-3">
-              {hasSleepScore && (
-                <p className="text-sm text-gray-700">
-                  From <span className="font-semibold">{biometrics.sleep_source === 'oura' ? 'Oura' : biometrics.sleep_source === 'whoop' ? 'Whoop' : 'Apple Health'}</span> your sleep score is{' '}
-                  <span className="font-bold text-gray-900">{biometrics.sleep_score}</span>
-                  {biometrics.total_sleep_min != null && (
-                    <span className="text-gray-400"> ({Math.floor(biometrics.total_sleep_min / 60)}h {biometrics.total_sleep_min % 60}m)</span>
-                  )}
-                </p>
-              )}
-              {hasRecoveryScore && (
-                <p className="text-sm text-gray-700">
-                  From <span className="font-semibold">{biometrics.recovery_source === 'whoop' ? 'Whoop' : 'Oura'}</span> your recovery is{' '}
-                  <span className="font-bold text-gray-900">{biometrics.recovery_score}</span>
-                </p>
-              )}
-            </div>
-
-            {/* Metric grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {biometrics.hrv_balance != null && (
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{biometrics.hrv_balance}</p>
-                  <p className="text-xs text-gray-400">HRV balance</p>
-                </div>
-              )}
-              {biometrics.hrv_rmssd_ms != null && (
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{Math.round(biometrics.hrv_rmssd_ms)}</p>
-                  <p className="text-xs text-gray-400">HRV rMSSD ms</p>
-                </div>
-              )}
-              {biometrics.resting_hr != null && (
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{biometrics.resting_hr}</p>
-                  <p className="text-xs text-gray-400">resting bpm</p>
-                </div>
-              )}
-              {biometrics.strain_score != null && (
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{biometrics.strain_score?.toFixed(1)}</p>
-                  <p className="text-xs text-gray-400">strain</p>
-                </div>
-              )}
-            </div>
-
-            {biometrics.temp_flag && (
-              <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700 font-medium">
-                Temp elevated — possible hot flash signal today
-              </div>
-            )}
           </div>
         )}
 
@@ -258,10 +236,7 @@ export default function HomePage() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-bold text-gray-800">Completed workouts</p>
-            <button
-              onClick={() => navigate('/history')}
-              className="text-xs text-blue-400 font-semibold tap-target"
-            >
+            <button onClick={() => navigate('/history')} className="text-xs text-blue-400 font-semibold tap-target">
               See all
             </button>
           </div>

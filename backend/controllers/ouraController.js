@@ -37,7 +37,7 @@ async function callback(req, res, next) {
   try {
     const { code, state, error: ouraError } = req.query;
 
-    const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendBase = process.env.FRONTEND_URL || '';
 
     if (ouraError || !code) {
       return res.redirect(`${frontendBase}/profile?oura=denied`);

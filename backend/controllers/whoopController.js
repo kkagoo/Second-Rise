@@ -30,7 +30,7 @@ function connect(req, res, next) {
 async function callback(req, res, next) {
   try {
     const { code, state, error: whoopError, error_description } = req.query;
-    const frontendBase = process.env.FRONTEND_URL || 'https://second-rise-production.up.railway.app';
+    const frontendBase = process.env.FRONTEND_URL || '';
 
     console.log('[Whoop callback] query params:', { code: !!code, state: !!state, whoopError, error_description });
 

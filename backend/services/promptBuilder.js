@@ -32,48 +32,45 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
     `  ${v.id} | "${v.title}" | ${v.creator} | ${v.duration_min} min | difficulty ${v.difficulty}/5 | ${v.intensity} intensity | equipment: ${v.equipment} | focus: ${v.focus_tags.join(', ')}`
   ).join('\n');
 
-  // Build biometrics section — handles both Oura and Whoop signals
+  // Build biometrics section — handles combined Oura+Whoop or single-source data
   let biometricsSection = '';
-  if (biometrics && biometrics.source) {
+  if (biometrics && (biometrics.sleep_source || biometrics.recovery_source)) {
     const sleepH   = biometrics.total_sleep_min != null ? Math.floor(biometrics.total_sleep_min / 60) : null;
     const sleepM   = biometrics.total_sleep_min != null ? biometrics.total_sleep_min % 60 : null;
     const sleepStr = sleepH != null ? `${sleepH}h ${sleepM}m` : 'n/a';
 
-    if (biometrics.source === 'oura') {
-      biometricsSection = `
-BIOMETRIC DATA (Oura Ring):
-- Readiness: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep score: ${biometrics.sleep_score ?? 'n/a'}/100
+    const sourceNote = [
+      biometrics.sleep_source    ? `Sleep data from ${biometrics.sleep_source === 'oura' ? 'Oura Ring' : biometrics.sleep_source === 'whoop' ? 'Whoop' : 'Apple Health'}` : null,
+      biometrics.recovery_source ? `Recovery data from ${biometrics.recovery_source === 'whoop' ? 'Whoop' : 'Oura Ring'}` : null,
+    ].filter(Boolean).join('; ');
+
+    biometricsSection = `
+BIOMETRIC DATA (${sourceNote}):
+ESTIMATED ENERGY LEVEL: ${biometrics.energy_label ?? 'Unknown'} — use this as a primary signal for today's intensity.
+- Recovery score: ${biometrics.recovery_score ?? 'n/a'}${biometrics.recovery_source === 'whoop' ? '/100 (Whoop)' : biometrics.recovery_source === 'oura' ? '/100 (Oura readiness)' : ''}
+- Sleep score: ${biometrics.sleep_score ?? 'n/a'}${biometrics.sleep_source === 'oura' ? '/100 (Oura)' : biometrics.sleep_source === 'whoop' ? '% (Whoop performance)' : ''}
 - Total sleep: ${sleepStr} | REM: ${biometrics.rem_sleep_min ?? 'n/a'}m | Deep: ${biometrics.deep_sleep_min ?? 'n/a'}m
-- Sleep efficiency: ${biometrics.sleep_efficiency != null ? `${Math.round(biometrics.sleep_efficiency * 100)}%` : 'n/a'}
-- HRV balance: ${biometrics.hrv_balance ?? 'n/a'}/100 | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
-- Body temp deviation: ${biometrics.body_temp_deviation ?? 'n/a'}°C${biometrics.temp_flag ? ' ⚠️ elevated — possible hot flash signal' : ''}
-- Activity score: ${biometrics.activity_score ?? 'n/a'}/100 | Steps: ${biometrics.steps ?? 'n/a'}
-
-Factor this recovery data into your recommendation alongside the check-in inputs.
-`;
-    } else if (biometrics.source === 'whoop') {
-      biometricsSection = `
-BIOMETRIC DATA (Whoop):
-- Recovery score: ${biometrics.readiness_score ?? 'n/a'}/100 | Sleep performance: ${biometrics.sleep_score ?? 'n/a'}%
-- Total sleep: ${sleepStr} | REM: ${biometrics.rem_sleep_min ?? 'n/a'}m | Deep (SWS): ${biometrics.deep_sleep_min ?? 'n/a'}m
 - Sleep efficiency: ${biometrics.sleep_efficiency != null ? `${Math.round(biometrics.sleep_efficiency)}%` : 'n/a'}
-- HRV (rMSSD): ${biometrics.hrv_rmssd_ms ?? 'n/a'} ms | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
-- Respiratory rate: ${biometrics.respiratory_rate ?? 'n/a'} breaths/min
-- SpO2: ${biometrics.spo2_percentage != null ? `${biometrics.spo2_percentage.toFixed(1)}%` : 'n/a'}
-- Skin temp: ${biometrics.skin_temp_celsius != null ? `${biometrics.skin_temp_celsius.toFixed(1)}°C` : 'n/a'}
-- Strain score (previous day): ${biometrics.strain_score != null ? `${biometrics.strain_score.toFixed(1)}/21` : 'n/a'}${biometrics.strain_score != null && biometrics.strain_score > 16 ? ' ⚠️ high strain — prioritise recovery' : ''}
+${biometrics.hrv_balance != null ? `- HRV balance: ${biometrics.hrv_balance}/100 (Oura)` : ''}${biometrics.hrv_rmssd_ms != null ? `\n- HRV rMSSD: ${biometrics.hrv_rmssd_ms.toFixed(1)} ms (Whoop) — >60ms good, <40ms suggests fatigue` : ''}
+- Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
+${biometrics.respiratory_rate != null ? `- Respiratory rate: ${biometrics.respiratory_rate} breaths/min` : ''}
+${biometrics.strain_score != null ? `- Yesterday's strain: ${biometrics.strain_score.toFixed(1)}/21${biometrics.strain_score > 16 ? ' ⚠️ high — prioritise recovery' : ''}` : ''}
+${biometrics.spo2_percentage != null ? `- SpO2: ${biometrics.spo2_percentage.toFixed(1)}%` : ''}
+${biometrics.body_temp_deviation != null ? `- Body temp deviation: ${biometrics.body_temp_deviation}°C${biometrics.temp_flag ? ' ⚠️ elevated — possible hot flash signal' : ''}` : ''}
+${biometrics.activity_score != null ? `- Activity score: ${biometrics.activity_score}/100 | Steps: ${biometrics.steps ?? 'n/a'}` : ''}
 
-Note: Whoop HRV rMSSD is in milliseconds (raw, not 0-100 scale). A value >60ms is generally good; <40ms suggests elevated stress or fatigue.
-Factor ALL recovery signals into your recommendation.
+Factor ALL available recovery and sleep signals into your recommendation. The ESTIMATED ENERGY LEVEL above is derived from the best available recovery data — honour it when choosing intensity.
 `;
-    } else {
-      biometricsSection = `
+  } else if (biometrics && biometrics.sleep_source === 'apple_health') {
+    const sleepH   = biometrics.total_sleep_min != null ? Math.floor(biometrics.total_sleep_min / 60) : null;
+    const sleepM   = biometrics.total_sleep_min != null ? biometrics.total_sleep_min % 60 : null;
+    const sleepStr = sleepH != null ? `${sleepH}h ${sleepM}m` : 'n/a';
+    biometricsSection = `
 BIOMETRIC DATA (Apple Health):
 - Total sleep: ${sleepStr} | Resting HR: ${biometrics.resting_hr ?? 'n/a'} bpm
 
 Factor this into your recommendation.
 `;
-    }
   }
 
   // 7-day trend section

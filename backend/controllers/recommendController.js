@@ -55,63 +55,66 @@ async function getRecommendation(req, res, next) {
 
     const profile = db.prepare('SELECT * FROM user_profiles WHERE user_id = ?').get(req.userId);
 
-    // Fetch today's biometrics (Oura preferred, Whoop fallback, Apple Health last)
+    // Fetch today's biometrics: query both Oura AND Whoop simultaneously
+    // Sleep data: Oura priority; Recovery data: Whoop priority
     const today = new Date().toISOString().slice(0, 10);
     let biometrics = null;
     try {
-      const oura = db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
-      if (oura) {
+      const oura  = db.prepare('SELECT * FROM oura_daily_data  WHERE user_id = ? AND date = ?').get(req.userId, today);
+      const whoop = db.prepare('SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+
+      if (oura || whoop) {
+        const recoveryScore = whoop ? whoop.recovery_score  : oura?.readiness_score;
+        const energyLabel = recoveryScore == null ? null
+          : recoveryScore >= 80 ? 'High energy'
+          : recoveryScore >= 60 ? 'Moderate energy'
+          : recoveryScore >= 40 ? 'Low energy'
+          : 'Rest day — very low recovery';
+
         biometrics = {
-          source:              'oura',
-          readiness_score:     oura.readiness_score,
-          sleep_score:         oura.sleep_score,
-          hrv_balance:         oura.hrv_balance_score,
-          resting_hr:          oura.resting_hr,
-          total_sleep_min:     oura.total_sleep_min,
-          rem_sleep_min:       oura.rem_sleep_min,
-          deep_sleep_min:      oura.deep_sleep_min,
-          sleep_efficiency:    oura.sleep_efficiency,
-          body_temp_deviation: oura.body_temp_deviation,
-          activity_score:      oura.activity_score,
-          steps:               oura.steps,
-          temp_flag:           typeof oura.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
+          // Sources
+          sleep_source:        oura  ? 'oura'  : (whoop ? 'whoop' : null),
+          recovery_source:     whoop ? 'whoop' : (oura  ? 'oura'  : null),
+          // Sleep (Oura priority)
+          sleep_score:         oura  ? oura.sleep_score        : whoop?.sleep_performance ?? null,
+          total_sleep_min:     oura  ? oura.total_sleep_min    : whoop?.total_sleep_min   ?? null,
+          rem_sleep_min:       oura  ? oura.rem_sleep_min      : whoop?.rem_sleep_min     ?? null,
+          deep_sleep_min:      oura  ? oura.deep_sleep_min     : whoop?.deep_sleep_min    ?? null,
+          sleep_efficiency:    oura  ? oura.sleep_efficiency   : whoop?.sleep_efficiency  ?? null,
+          // Recovery (Whoop priority)
+          recovery_score:      recoveryScore,
+          energy_label:        energyLabel,
+          // HRV
+          hrv_balance:         oura  ? oura.hrv_balance_score : null,
+          hrv_rmssd_ms:        whoop ? whoop.hrv_rmssd_ms     : null,
+          // Other
+          resting_hr:          oura  ? oura.resting_hr        : whoop?.resting_hr         ?? null,
+          body_temp_deviation: oura  ? oura.body_temp_deviation : null,
+          activity_score:      oura  ? oura.activity_score    : null,
+          steps:               oura  ? oura.steps             : null,
+          respiratory_rate:    whoop ? whoop.respiratory_rate : null,
+          strain_score:        whoop ? whoop.strain_score     : null,
+          spo2_percentage:     whoop ? whoop.spo2_percentage  : null,
+          skin_temp_celsius:   whoop ? whoop.skin_temp_celsius : null,
+          temp_flag:           typeof oura?.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
         };
       } else {
-        const whoop = db.prepare('SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
-        if (whoop) {
+        const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (apple) {
           biometrics = {
-            source:            'whoop',
-            readiness_score:   whoop.recovery_score,
-            sleep_score:       whoop.sleep_performance,
-            hrv_balance:       null,
-            hrv_rmssd_ms:      whoop.hrv_rmssd_ms,
-            resting_hr:        whoop.resting_hr,
-            total_sleep_min:   whoop.total_sleep_min,
-            rem_sleep_min:     whoop.rem_sleep_min,
-            deep_sleep_min:    whoop.deep_sleep_min,
-            sleep_efficiency:  whoop.sleep_efficiency,
-            respiratory_rate:  whoop.respiratory_rate,
-            strain_score:      whoop.strain_score,
-            spo2_percentage:   whoop.spo2_percentage,
-            skin_temp_celsius: whoop.skin_temp_celsius,
-            temp_flag:         false,
+            sleep_source:    'apple_health',
+            recovery_source: null,
+            sleep_score:     null,
+            recovery_score:  null,
+            energy_label:    null,
+            hrv_balance:     null,
+            resting_hr:      apple.resting_hr,
+            total_sleep_min: apple.sleep_min,
+            rem_sleep_min:   null,
+            deep_sleep_min:  null,
+            body_temp_deviation: null,
+            temp_flag:       false,
           };
-        } else {
-          const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
-          if (apple) {
-            biometrics = {
-              source:          'apple_health',
-              readiness_score: null,
-              sleep_score:     null,
-              hrv_balance:     null,
-              resting_hr:      apple.resting_hr,
-              total_sleep_min: apple.sleep_min,
-              rem_sleep_min:   null,
-              deep_sleep_min:  null,
-              body_temp_deviation: null,
-              temp_flag:       false,
-            };
-          }
         }
       }
     } catch { /* no biometrics */ }
