@@ -25,55 +25,64 @@ function getToday(req, res, next) {
   try {
     const today = new Date().toISOString().slice(0, 10);
 
-    // Priority 1: Oura
     const oura = db.prepare(
       'SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    if (oura) {
-      const tempFlag = typeof oura.body_temp_deviation === 'number'
-        ? oura.body_temp_deviation > 0.4
-        : false;
-      return res.json({
-        source:              'oura',
-        readiness_score:     oura.readiness_score,
-        sleep_score:         oura.sleep_score,
-        hrv_balance:         oura.hrv_balance_score,
-        resting_hr:          oura.resting_hr,
-        total_sleep_min:     oura.total_sleep_min,
-        rem_sleep_min:       oura.rem_sleep_min,
-        deep_sleep_min:      oura.deep_sleep_min,
-        body_temp_deviation: oura.body_temp_deviation,
-        steps:               oura.steps,
-        energy_suggestion:   energySuggestionFromReadiness(oura.readiness_score ?? 65),
-        temp_flag:           tempFlag,
-      });
-    }
-
-    // Priority 2: Whoop
     const whoop = db.prepare(
       'SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    if (whoop) {
+    // If we have either Oura or Whoop, combine them
+    if (oura || whoop) {
+      // Sleep: Oura has priority, fall back to Whoop
+      const sleepSource = oura ? 'oura' : 'whoop';
+      const sleepScore     = oura ? oura.sleep_score         : whoop.sleep_performance;
+      const totalSleepMin  = oura ? oura.total_sleep_min     : whoop.total_sleep_min;
+      const remSleepMin    = oura ? oura.rem_sleep_min       : whoop.rem_sleep_min;
+      const deepSleepMin   = oura ? oura.deep_sleep_min      : whoop.deep_sleep_min;
+
+      // Recovery: Whoop has priority, fall back to Oura
+      const recoverySource = whoop ? 'whoop' : 'oura';
+      const recoveryScore  = whoop ? whoop.recovery_score    : oura.readiness_score;
+
+      // HRV
+      const hrvBalance = oura ? oura.hrv_balance_score : null;
+      const hrvRmssd   = whoop ? whoop.hrv_rmssd_ms    : null;
+
+      // Resting HR: Oura priority
+      const restingHr = oura ? oura.resting_hr : whoop?.resting_hr ?? null;
+
+      // Temp flag: Oura body temp deviation
+      const bodyTempDeviation = oura ? oura.body_temp_deviation : null;
+      const tempFlag = typeof bodyTempDeviation === 'number' && bodyTempDeviation > 0.4;
+
+      // Energy suggestion from best available readiness
+      const readinessForEnergy = whoop ? whoop.recovery_score : (oura ? oura.readiness_score : 65);
+
       return res.json({
-        source:            'whoop',
-        readiness_score:   whoop.recovery_score,
-        sleep_score:       whoop.sleep_performance,
-        hrv_balance:       null,
-        hrv_rmssd_ms:      whoop.hrv_rmssd_ms,
-        resting_hr:        whoop.resting_hr,
-        total_sleep_min:   whoop.total_sleep_min,
-        rem_sleep_min:     whoop.rem_sleep_min,
-        deep_sleep_min:    whoop.deep_sleep_min,
-        respiratory_rate:  whoop.respiratory_rate,
-        strain_score:      whoop.strain_score,
-        spo2_percentage:   whoop.spo2_percentage,
-        skin_temp_celsius: whoop.skin_temp_celsius,
-        body_temp_deviation: null,
-        steps:             null,
-        energy_suggestion: energySuggestionFromReadiness(whoop.recovery_score ?? 65),
-        temp_flag:         false,
+        // Per-metric sources
+        sleep_source:        sleepSource,
+        recovery_source:     recoverySource,
+        // Sleep data (Oura priority)
+        sleep_score:         sleepScore,
+        total_sleep_min:     totalSleepMin,
+        rem_sleep_min:       remSleepMin,
+        deep_sleep_min:      deepSleepMin,
+        // Recovery data (Whoop priority)
+        recovery_score:      recoveryScore,
+        // HRV
+        hrv_balance:         hrvBalance,
+        hrv_rmssd_ms:        hrvRmssd,
+        // Other
+        resting_hr:          restingHr,
+        body_temp_deviation: bodyTempDeviation,
+        steps:               oura ? oura.steps : null,
+        respiratory_rate:    whoop ? whoop.respiratory_rate : null,
+        strain_score:        whoop ? whoop.strain_score : null,
+        spo2_percentage:     whoop ? whoop.spo2_percentage : null,
+        energy_suggestion:   energySuggestionFromReadiness(readinessForEnergy ?? 65),
+        temp_flag:           tempFlag,
       });
     }
 
@@ -84,10 +93,12 @@ function getToday(req, res, next) {
 
     if (apple) {
       return res.json({
-        source:              'apple_health',
-        readiness_score:     null,
+        sleep_source:        'apple_health',
+        recovery_source:     null,
         sleep_score:         null,
+        recovery_score:      null,
         hrv_balance:         null,
+        hrv_rmssd_ms:        null,
         resting_hr:          apple.resting_hr,
         total_sleep_min:     apple.sleep_min,
         rem_sleep_min:       null,

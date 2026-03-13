@@ -50,4 +50,39 @@ function getStats(req, res, next) {
   }
 }
 
-module.exports = { getHistory, getStats };
+function getWeekStats(req, res, next) {
+  try {
+    // Get Monday of current week (ISO week, Mon = start)
+    const now = new Date();
+    const day = now.getDay(); // 0=Sun, 1=Mon...
+    const diff = day === 0 ? -6 : 1 - day; // days back to Monday
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    const mondayISO = monday.toISOString().slice(0, 10);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const sundayISO = sunday.toISOString().slice(0, 10);
+
+    const rows = db.prepare(`
+      SELECT date(psf.timestamp) AS workout_date
+      FROM post_session_feedback psf
+      WHERE psf.user_id = ?
+        AND date(psf.timestamp) BETWEEN ? AND ?
+      GROUP BY date(psf.timestamp)
+      ORDER BY workout_date ASC
+    `).all(req.userId, mondayISO, sundayISO);
+
+    res.json({
+      week_start:    mondayISO,
+      week_end:      sundayISO,
+      days_worked:   rows.length,
+      workout_dates: rows.map((r) => r.workout_date),
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getHistory, getStats, getWeekStats };

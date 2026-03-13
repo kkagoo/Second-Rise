@@ -22,7 +22,7 @@ export default function SignupPage() {
     try {
       const res = await client.post('/auth/signup', { email, password });
       login(res.data.token);
-      navigate('/');
+      navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.error || 'Sign up failed. Please try again.');
     } finally {

@@ -12,37 +12,94 @@ const CATEGORIES = [
   { label: 'Cardio',    type: 'low_impact_cardio', color: 'bg-gray-100',   text: 'text-gray-700' },
 ];
 
+function SourceBadge({ source }) {
+  if (!source) return null;
+  const labels = { oura: 'Oura', whoop: 'Whoop', apple_health: 'Apple' };
+  const colors = {
+    oura:  'bg-blue-100 text-blue-600',
+    whoop: 'bg-gray-900 text-white',
+    apple_health: 'bg-red-50 text-red-500',
+  };
+  return (
+    <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-1.5 py-0.5 ${colors[source] || 'bg-gray-100 text-gray-500'}`}>
+      {labels[source] || source}
+    </span>
+  );
+}
+
 export default function HomePage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [todayCheckin, setTodayCheckin] = useState(undefined);
   const [biometrics, setBiometrics]     = useState(null);
+  const [weekStats, setWeekStats]       = useState(null);
 
   useEffect(() => {
     client.get('/checkin/today')
       .then((res) => setTodayCheckin(res.data))
       .catch(() => setTodayCheckin(null));
     client.get('/biometrics/today')
-      .then((r) => { if (r.data?.source) setBiometrics(r.data); })
+      .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
+      .catch(() => {});
+    client.get('/history/week')
+      .then((r) => setWeekStats(r.data))
       .catch(() => {});
   }, []);
 
   const loading = todayCheckin === undefined;
   const checkinDone = !!todayCheckin;
 
+  const hasSleepScore    = biometrics?.sleep_score != null;
+  const hasRecoveryScore = biometrics?.recovery_score != null;
+
   return (
     <div className="min-h-screen bg-white pb-28">
 
       {/* ── Hero banner ── */}
       <div className="relative bg-sky-card overflow-hidden">
-        {/* Text */}
         <div className="px-6 pt-14 pb-0 relative z-10">
-          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-0.5">
-            Welcome back
-          </p>
-          <p className="text-sm font-medium text-gray-400 mb-2">
+
+          {/* Welcome + weekly streak */}
+          <div className="flex items-center justify-between mb-0.5">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
+              Welcome back
+            </p>
+            {weekStats != null && (
+              <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
+                <span className="text-base leading-none">🏆</span>
+                <span className="text-xs font-bold text-gray-800">
+                  {weekStats.days_worked}
+                </span>
+                <span className="text-xs text-gray-400">this week</span>
+              </div>
+            )}
+          </div>
+
+          {/* Date */}
+          <p className="text-sm font-medium text-gray-400 mb-1">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
+
+          {/* Biometric stats next to date */}
+          {biometrics && (hasSleepScore || hasRecoveryScore) && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {hasSleepScore && (
+                <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
+                  <span className="text-xs text-gray-500">Sleep</span>
+                  <span className="text-xs font-bold text-gray-900">{biometrics.sleep_score}</span>
+                  <SourceBadge source={biometrics.sleep_source} />
+                </div>
+              )}
+              {hasRecoveryScore && (
+                <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
+                  <span className="text-xs text-gray-500">Recovery</span>
+                  <span className="text-xs font-bold text-gray-900">{biometrics.recovery_score}</span>
+                  <SourceBadge source={biometrics.recovery_source} />
+                </div>
+              )}
+            </div>
+          )}
+
           <h1 className="text-2xl font-bold text-gray-900 leading-tight max-w-[55%]">
             {checkinDone
               ? 'Your workout\nis ready'
@@ -121,43 +178,58 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Biometrics widget */}
+        {/* Biometrics detail card */}
         {biometrics && (
           <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-bold text-gray-800 uppercase tracking-wider">Recovery today</p>
-              <span className="text-xs bg-blue-50 text-blue-500 font-semibold rounded-full px-2.5 py-0.5">
-                {biometrics.source === 'oura' ? 'Oura' : 'Apple Health'}
-              </span>
+            <p className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-3">Today's data</p>
+
+            {/* Source-attributed insight lines */}
+            <div className="flex flex-col gap-2 mb-3">
+              {hasSleepScore && (
+                <p className="text-sm text-gray-700">
+                  From <span className="font-semibold">{biometrics.sleep_source === 'oura' ? 'Oura' : biometrics.sleep_source === 'whoop' ? 'Whoop' : 'Apple Health'}</span> your sleep score is{' '}
+                  <span className="font-bold text-gray-900">{biometrics.sleep_score}</span>
+                  {biometrics.total_sleep_min != null && (
+                    <span className="text-gray-400"> ({Math.floor(biometrics.total_sleep_min / 60)}h {biometrics.total_sleep_min % 60}m)</span>
+                  )}
+                </p>
+              )}
+              {hasRecoveryScore && (
+                <p className="text-sm text-gray-700">
+                  From <span className="font-semibold">{biometrics.recovery_source === 'whoop' ? 'Whoop' : 'Oura'}</span> your recovery is{' '}
+                  <span className="font-bold text-gray-900">{biometrics.recovery_score}</span>
+                </p>
+              )}
             </div>
+
+            {/* Metric grid */}
             <div className="grid grid-cols-2 gap-3">
-              {biometrics.readiness_score != null && (
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{biometrics.readiness_score}</p>
-                  <p className="text-xs text-gray-400">readiness</p>
-                </div>
-              )}
-              {biometrics.total_sleep_min != null && (
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {Math.floor(biometrics.total_sleep_min / 60)}h{biometrics.total_sleep_min % 60}m
-                  </p>
-                  <p className="text-xs text-gray-400">sleep</p>
-                </div>
-              )}
               {biometrics.hrv_balance != null && (
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{biometrics.hrv_balance}</p>
+                  <p className="text-xl font-bold text-gray-900">{biometrics.hrv_balance}</p>
                   <p className="text-xs text-gray-400">HRV balance</p>
+                </div>
+              )}
+              {biometrics.hrv_rmssd_ms != null && (
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{Math.round(biometrics.hrv_rmssd_ms)}</p>
+                  <p className="text-xs text-gray-400">HRV rMSSD ms</p>
                 </div>
               )}
               {biometrics.resting_hr != null && (
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{biometrics.resting_hr}</p>
+                  <p className="text-xl font-bold text-gray-900">{biometrics.resting_hr}</p>
                   <p className="text-xs text-gray-400">resting bpm</p>
                 </div>
               )}
+              {biometrics.strain_score != null && (
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{biometrics.strain_score?.toFixed(1)}</p>
+                  <p className="text-xs text-gray-400">strain</p>
+                </div>
+              )}
             </div>
+
             {biometrics.temp_flag && (
               <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700 font-medium">
                 Temp elevated — possible hot flash signal today

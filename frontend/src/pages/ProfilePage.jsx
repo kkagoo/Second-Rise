@@ -308,8 +308,35 @@ export default function ProfilePage() {
 
       <div className="px-5 flex flex-col gap-4">
 
-        {/* Oura Ring — at the top so user connects first */}
-        <Section title="Oura Ring" subtitle="Connect to auto-fill your profile and get smarter daily recommendations">
+        {/* Data sources — at the top so user connects first */}
+        <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm flex flex-col gap-1">
+          <h2 className="font-bold text-gray-900 text-base">Your data sources</h2>
+          <p className="text-xs text-gray-400 mb-3">Connect your devices or import data to personalise recommendations</p>
+          <div className="flex gap-3 flex-wrap">
+            <a
+              href="#oura-section"
+              className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+            >
+              <span>🔵</span> Oura Ring
+            </a>
+            <a
+              href="#whoop-section"
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+            >
+              <span>⚫</span> Whoop
+            </a>
+            <a
+              href="#apple-section"
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+            >
+              <span>🍎</span> Apple Health
+            </a>
+          </div>
+        </div>
+
+        {/* Oura Ring */}
+        <div id="oura-section">
+        <Section title="Oura Ring" subtitle="Readiness, sleep score, HRV, resting HR, and body temperature — auto-fills your age">
           {ouraStatus === 'connected' ? (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
@@ -330,9 +357,6 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-xs text-gray-400">
-                Connect your Oura Ring to auto-fill your age and get daily readiness, sleep, and HRV data in your recommendations. You'll be redirected to Oura and back.
-              </p>
               {ouraStatus === 'denied' && (
                 <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
               )}
@@ -350,9 +374,11 @@ export default function ProfilePage() {
             <p className="text-red-500 text-xs">{ouraError}</p>
           )}
         </Section>
+        </div>
 
         {/* Whoop */}
-        <Section title="Whoop" subtitle="Connect to get recovery score, HRV, strain, sleep performance, and respiratory rate">
+        <div id="whoop-section">
+        <Section title="Whoop" subtitle="Recovery score, HRV, strain, SpO2, and sleep performance">
           {whoopStatus === 'connected' ? (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
@@ -361,7 +387,6 @@ export default function ProfilePage() {
                   Connected{whoopLastSync ? ` — synced ${new Date(whoopLastSync).toLocaleString()}` : ''}
                 </p>
               </div>
-              <p className="text-xs text-gray-400">Whoop recovery score, HRV, strain, and sleep stages are being used in your recommendations.</p>
               <button
                 type="button"
                 onClick={handleWhoopSync}
@@ -373,9 +398,6 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-xs text-gray-400">
-                Connect your Whoop to get daily recovery score, HRV (rMSSD), resting HR, strain, respiratory rate, SpO2, and sleep performance in your recommendations.
-              </p>
               {whoopStatus === 'denied' && (
                 <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
               )}
@@ -393,6 +415,36 @@ export default function ProfilePage() {
             <p className="text-red-500 text-xs">{whoopError}</p>
           )}
         </Section>
+        </div>
+
+        {/* Apple Health */}
+        <div id="apple-section">
+        <Section title="Apple Health" subtitle="Health app → avatar (top right) → Export All Health Data → upload the zip below">
+
+          <input
+            type="file"
+            accept=".zip"
+            onChange={(e) => { setAppleFile(e.target.files[0] ?? null); setAppleDays(null); setAppleError(''); }}
+            className="text-sm text-gray-600"
+          />
+          {appleFile && (
+            <button
+              type="button"
+              onClick={handleAppleUpload}
+              disabled={appleUploading}
+              className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+            >
+              {appleUploading ? 'Importing…' : 'Upload export'}
+            </button>
+          )}
+          {appleDays !== null && (
+            <p className="text-green-600 text-sm font-semibold">Imported {appleDays} days of data</p>
+          )}
+          {appleError && (
+            <p className="text-red-500 text-xs">{appleError}</p>
+          )}
+        </Section>
+        </div>
 
         {/* Age range */}
         <Section
@@ -492,35 +544,6 @@ export default function ProfilePage() {
             onChange={(v) => set('equipment_available', v)}
             multi
           />
-        </Section>
-
-        {/* Apple Health */}
-        <Section title="Apple Health" subtitle="Import HRV, sleep, steps from your iPhone">
-          <p className="text-xs text-gray-400">
-            On iPhone: Health app → your avatar (top right) → Export All Health Data → save the zip here.
-          </p>
-          <input
-            type="file"
-            accept=".zip"
-            onChange={(e) => { setAppleFile(e.target.files[0] ?? null); setAppleDays(null); setAppleError(''); }}
-            className="text-sm text-gray-600"
-          />
-          {appleFile && (
-            <button
-              type="button"
-              onClick={handleAppleUpload}
-              disabled={appleUploading}
-              className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
-            >
-              {appleUploading ? 'Importing…' : 'Upload export'}
-            </button>
-          )}
-          {appleDays !== null && (
-            <p className="text-green-600 text-sm font-semibold">Imported {appleDays} days of data</p>
-          )}
-          {appleError && (
-            <p className="text-red-500 text-xs">{appleError}</p>
-          )}
         </Section>
 
         {/* Save */}
