@@ -4,12 +4,25 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { CheckinProvider } from './context/CheckinContext';
 import AppLayout from './components/ui/AppLayout';
 
-// Catch OAuth callbacks that land on any page (e.g. home) and redirect to /profile
+// After OAuth, the callback can land anywhere depending on provider config.
+// We store the intended return path in sessionStorage before leaving,
+// then navigate back here regardless of where we land.
 function OAuthRedirectGuard() {
   const navigate = useNavigate();
   useEffect(() => {
+    const returnTo = sessionStorage.getItem('oauthReturnTo');
     const params = new URLSearchParams(window.location.search);
-    if (params.has('oura') || params.has('whoop')) {
+    const hasOAuthResult = params.has('oura') || params.has('whoop');
+
+    if (returnTo) {
+      sessionStorage.removeItem('oauthReturnTo');
+      const dest = returnTo + window.location.search;
+      // Only navigate if we're not already there
+      if (window.location.pathname !== returnTo) {
+        navigate(dest, { replace: true });
+      }
+    } else if (hasOAuthResult && window.location.pathname !== '/profile') {
+      // Fallback: no sessionStorage but recognisable OAuth params on wrong page
       navigate('/profile' + window.location.search, { replace: true });
     }
   }, []);

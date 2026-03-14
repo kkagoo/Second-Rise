@@ -198,6 +198,7 @@ export default function ProfilePage() {
     setOuraError('');
     try {
       const res = await client.get('/oura/connect');
+      sessionStorage.setItem('oauthReturnTo', '/profile');
       window.location.href = res.data.url;
     } catch (err) {
       setOuraStatus('error');
@@ -223,6 +224,7 @@ export default function ProfilePage() {
     setWhoopError('');
     try {
       const res = await client.get('/whoop/connect');
+      sessionStorage.setItem('oauthReturnTo', '/profile');
       window.location.href = res.data.url;
     } catch (err) {
       setWhoopStatus('error');
