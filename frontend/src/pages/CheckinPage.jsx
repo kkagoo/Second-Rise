@@ -26,7 +26,7 @@ export default function CheckinPage() {
 
   useEffect(() => {
     client.get('/biometrics/today')
-      .then((r) => { if (r.data?.source) setBiometrics(r.data); })
+      .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
       .catch(() => {});
   }, []);
 
@@ -112,12 +112,17 @@ export default function CheckinPage() {
                 {biometrics && (
                   <div className="mb-6 rounded-2xl bg-blue-50 border border-blue-200 px-4 py-3 flex flex-col gap-1">
                     <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider">
-                      {biometrics.source === 'oura' ? 'Oura' : biometrics.source === 'whoop' ? 'Whoop' : 'Apple Health'} today
+                      {[biometrics.recovery_source, biometrics.sleep_source]
+                        .filter(Boolean)
+                        .map((s) => s === 'oura' ? 'Oura' : s === 'whoop' ? 'Whoop' : 'Apple Health')
+                        .filter((v, i, a) => a.indexOf(v) === i)
+                        .join(' + ')} today
                     </p>
                     <p className="text-sm font-medium text-gray-800">
-                      {biometrics.readiness_score != null ? `Readiness ${biometrics.readiness_score}` : ''}
+                      {biometrics.recovery_score != null ? `Recovery ${biometrics.recovery_score}` : ''}
+                      {biometrics.sleep_score != null ? `${biometrics.recovery_score != null ? ' · ' : ''}Sleep ${biometrics.sleep_score}` : ''}
                       {biometrics.total_sleep_min != null
-                        ? `${biometrics.readiness_score != null ? ' · ' : ''}Sleep ${Math.floor(biometrics.total_sleep_min / 60)}h ${biometrics.total_sleep_min % 60}m`
+                        ? ` (${Math.floor(biometrics.total_sleep_min / 60)}h ${biometrics.total_sleep_min % 60}m)`
                         : ''}
                     </p>
                     <p className="text-xs text-blue-400">
