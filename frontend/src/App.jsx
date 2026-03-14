@@ -1,8 +1,20 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CheckinProvider } from './context/CheckinContext';
 import AppLayout from './components/ui/AppLayout';
+
+// Catch OAuth callbacks that land on any page (e.g. home) and redirect to /profile
+function OAuthRedirectGuard() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('oura') || params.has('whoop')) {
+      navigate('/profile' + window.location.search, { replace: true });
+    }
+  }, []);
+  return null;
+}
 
 import LoginPage            from './pages/LoginPage';
 import SignupPage           from './pages/SignupPage';
@@ -34,6 +46,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <CheckinProvider>
+          <OAuthRedirectGuard />
           <Routes>
             {/* Public */}
             <Route path="/login"  element={<LoginPage />} />

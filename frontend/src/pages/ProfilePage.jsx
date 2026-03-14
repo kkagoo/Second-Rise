@@ -167,6 +167,8 @@ export default function ProfilePage() {
       if (ouraResult === 'connected') {
         setOuraStatus('connected');
         window.history.replaceState({}, '', window.location.pathname);
+        // Refresh profile so auto-filled age_range from Oura appears immediately
+        refreshProfile().catch(() => {});
       } else if (ouraResult === 'denied') {
         setOuraStatus('denied');
         window.history.replaceState({}, '', window.location.pathname);
