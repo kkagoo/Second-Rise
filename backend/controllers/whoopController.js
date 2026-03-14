@@ -13,7 +13,8 @@ function connect(req, res, next) {
 
     const authHeader = req.headers.authorization;
     const userJwt    = authHeader?.slice(7) ?? '';
-    const state      = Buffer.from(JSON.stringify({ jwt: userJwt })).toString('base64url');
+    const returnTo   = (req.query.returnTo || '/profile').replace(/[^a-zA-Z0-9/_-]/g, '');
+    const state      = Buffer.from(JSON.stringify({ jwt: userJwt, returnTo })).toString('base64url');
 
     const fullUrl = `${WHOOP_AUTH_URL}?response_type=code`
       + `&client_id=${encodeURIComponent(process.env.WHOOP_CLIENT_ID)}`
@@ -40,10 +41,14 @@ async function callback(req, res, next) {
     }
 
     let userId;
+    let returnTo = '/profile';
     try {
-      const { jwt: userJwt } = JSON.parse(Buffer.from(state, 'base64url').toString());
-      const decoded = jwt.verify(userJwt, process.env.JWT_SECRET);
+      const parsed = JSON.parse(Buffer.from(state, 'base64url').toString());
+      const decoded = jwt.verify(parsed.jwt, process.env.JWT_SECRET);
       userId = decoded.userId;
+      if (parsed.returnTo && /^\/[a-zA-Z0-9/_-]*$/.test(parsed.returnTo)) {
+        returnTo = parsed.returnTo;
+      }
     } catch {
       return res.redirect(`${frontendBase}/profile?whoop=error`);
     }
@@ -82,7 +87,7 @@ async function callback(req, res, next) {
     // Kick off an immediate sync (non-blocking)
     whoopService.syncToday(userId).catch(() => {});
 
-    res.redirect(`${frontendBase}/profile?whoop=connected`);
+    res.redirect(`${frontendBase}${returnTo}?whoop=connected`);
   } catch (err) {
     next(err);
   }

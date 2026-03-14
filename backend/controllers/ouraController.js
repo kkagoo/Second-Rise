@@ -13,11 +13,12 @@ function connect(req, res, next) {
       return res.status(500).json({ error: 'Oura OAuth not configured on this server.' });
     }
 
-    // Encode the user's JWT as state so the callback can identify the user
+    // Encode the user's JWT and return path as state so the callback can identify the user
     const authHeader = req.headers.authorization;
     const userJwt    = authHeader?.slice(7) ?? '';
+    const returnTo   = (req.query.returnTo || '/profile').replace(/[^a-zA-Z0-9/_-]/g, '');
 
-    const state  = Buffer.from(JSON.stringify({ jwt: userJwt })).toString('base64url');
+    const state  = Buffer.from(JSON.stringify({ jwt: userJwt, returnTo })).toString('base64url');
     const params = new URLSearchParams({
       response_type: 'code',
       client_id:     process.env.OURA_CLIENT_ID,
@@ -40,15 +41,19 @@ async function callback(req, res, next) {
     const frontendBase = process.env.FRONTEND_URL || '';
 
     if (ouraError || !code) {
-      return res.redirect(`${frontendBase}/profile?oura=denied`);
+      return res.redirect(`${frontendBase}/profile?oura=denied`);  // no state yet, fall back to /profile
     }
 
-    // Recover userId from state
+    // Recover userId and returnTo from state
     let userId;
+    let returnTo = '/profile';
     try {
-      const { jwt: userJwt } = JSON.parse(Buffer.from(state, 'base64url').toString());
-      const decoded = jwt.verify(userJwt, process.env.JWT_SECRET);
+      const parsed = JSON.parse(Buffer.from(state, 'base64url').toString());
+      const decoded = jwt.verify(parsed.jwt, process.env.JWT_SECRET);
       userId = decoded.userId;
+      if (parsed.returnTo && /^\/[a-zA-Z0-9/_-]*$/.test(parsed.returnTo)) {
+        returnTo = parsed.returnTo;
+      }
     } catch {
       return res.redirect(`${frontendBase}/profile?oura=error`);
     }
@@ -89,7 +94,7 @@ async function callback(req, res, next) {
     ouraService.syncToday(userId).catch(() => {});
     ouraService.syncPersonalInfo(userId).catch(() => {});
 
-    res.redirect(`${frontendBase}/profile?oura=connected`);
+    res.redirect(`${frontendBase}${returnTo}?oura=connected`);
   } catch (err) {
     next(err);
   }
