@@ -16,6 +16,7 @@ const ouraRoutes        = require('./routes/ouraRoutes');
 const whoopRoutes       = require('./routes/whoopRoutes');
 const healthRoutes      = require('./routes/healthRoutes');
 const biometricsRoutes  = require('./routes/biometricsRoutes');
+const watchRoutes       = require('./routes/watchRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -48,6 +49,7 @@ app.use('/api/oura',        ouraRoutes);
 app.use('/api/whoop',       whoopRoutes);
 app.use('/api/health',      healthRoutes);
 app.use('/api/biometrics',  biometricsRoutes);
+app.use('/api/watch',       watchRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
