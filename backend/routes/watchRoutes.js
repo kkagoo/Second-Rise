@@ -7,7 +7,7 @@ const buildSample = () => ({
   date:               new Date().toISOString().slice(0, 10),
   sourceSummary:      'Sample data',
   sleepScore:         72,
-  recoveryScore:      null,
+  recoveryScore:      68,
   hrv:                45.0,
   restingHr:          58,
   readinessScore:     62,
@@ -34,14 +34,16 @@ router.get('/snapshot', auth, (req, res, next) => {
     const oura = db.prepare(`
       SELECT sleep_score, hrv_balance_score, resting_hr
       FROM oura_daily_data
-      WHERE user_id = ? AND date = ?
-    `).get(req.userId, today);
+      WHERE user_id = ?
+      ORDER BY date DESC LIMIT 1
+    `).get(req.userId);
 
     const whoop = db.prepare(`
       SELECT recovery_score, hrv_rmssd_ms, resting_hr, sleep_performance
       FROM whoop_daily_data
-      WHERE user_id = ? AND date = ?
-    `).get(req.userId, today);
+      WHERE user_id = ?
+      ORDER BY date DESC LIMIT 1
+    `).get(req.userId);
 
     const rec = db.prepare(`
       SELECT primary_session_type
