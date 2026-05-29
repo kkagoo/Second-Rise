@@ -27,6 +27,7 @@ export default function RecommendationPage() {
   const [rec, setRec]         = useState(location.state?.rec || null);
   const [loading, setLoading] = useState(!location.state?.rec);
   const [error, setError]     = useState('');
+  const [review, setReview]   = useState(null);
   const navigate              = useNavigate();
 
   useEffect(() => {
@@ -36,6 +37,13 @@ export default function RecommendationPage() {
       .catch((err) => setError(err.response?.data?.error || 'Could not load recommendation.'))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!rec?.rec_id) return;
+    client.get('/wearable-review/today')
+      .then((res) => setReview(res.data))
+      .catch(() => {});
+  }, [rec?.rec_id]);
 
   const video = rec?.primary_workout;
 
@@ -48,6 +56,11 @@ export default function RecommendationPage() {
   async function handleStart(selectedVideo) {
     await client.post('/recommend/select', { rec_id: rec.rec_id, session_type: selectedVideo.id || selectedVideo.session_type });
     navigate('/session', { state: { rec, video: selectedVideo, session_type: selectedVideo.session_type } });
+  }
+
+  async function refreshWearableReview() {
+    const res = await client.post('/wearable-review/evaluate');
+    setReview(res.data);
   }
 
   return (
@@ -119,6 +132,33 @@ export default function RecommendationPage() {
                 </button>
               </div>
             </div>
+
+            {review && (
+              <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">End-of-day review</p>
+                    <h2 className="text-base font-bold text-gray-900 mt-1">
+                      {review.adherence_status === 'followed' && 'On plan'}
+                      {review.adherence_status === 'over' && 'Went over plan'}
+                      {review.adherence_status === 'under' && 'Below plan'}
+                      {review.adherence_status === 'unknown' && 'Waiting for data'}
+                    </h2>
+                  </div>
+                  <span className="bg-gray-50 text-gray-500 text-xs font-semibold rounded-full px-3 py-1">
+                    {review.actual_load}
+                  </span>
+                </div>
+                <p className="text-gray-500 text-sm leading-relaxed mt-3">{review.summary}</p>
+                <p className="text-gray-700 text-sm leading-relaxed mt-2">{review.recommendation}</p>
+                <button
+                  onClick={refreshWearableReview}
+                  className="mt-3 text-blue-400 text-xs font-semibold tap-target"
+                >
+                  Refresh wearable review →
+                </button>
+              </div>
+            )}
 
             {/* Alternatives */}
             {alternatives.length > 0 && (

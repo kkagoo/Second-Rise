@@ -21,6 +21,24 @@ function energySuggestionFromApple(hrv, sleepMin) {
   return energySuggestionFromReadiness(score);
 }
 
+function energySuggestionFromFitbit(restingHr, sleepMin) {
+  let score = 65;
+  if (restingHr !== null) {
+    if (restingHr > 72) score -= 10;
+    else if (restingHr < 58) score += 5;
+  }
+  if (sleepMin !== null) {
+    if (sleepMin < 330) score -= 15;
+    else if (sleepMin > 450) score += 5;
+  }
+  score = Math.max(0, Math.min(100, score));
+  return energySuggestionFromReadiness(score);
+}
+
+function energySuggestionFromGoogleFit(restingHr, sleepMin) {
+  return energySuggestionFromFitbit(restingHr, sleepMin);
+}
+
 function getToday(req, res, next) {
   try {
     const today = new Date().toISOString().slice(0, 10);
@@ -86,7 +104,53 @@ function getToday(req, res, next) {
       });
     }
 
-    // Priority 3: Apple Health
+    const googleFit = db.prepare(
+      'SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    if (googleFit) {
+      return res.json({
+        sleep_source:        'google_fit',
+        recovery_source:     null,
+        sleep_score:         null,
+        recovery_score:      null,
+        hrv_balance:         null,
+        hrv_rmssd_ms:        null,
+        resting_hr:          googleFit.resting_hr,
+        total_sleep_min:     googleFit.total_sleep_min,
+        rem_sleep_min:       googleFit.rem_sleep_min,
+        deep_sleep_min:      googleFit.deep_sleep_min,
+        body_temp_deviation: null,
+        steps:               googleFit.step_count,
+        energy_suggestion:   energySuggestionFromGoogleFit(googleFit.resting_hr, googleFit.total_sleep_min),
+        temp_flag:           false,
+      });
+    }
+
+    const fitbit = db.prepare(
+      'SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    if (fitbit) {
+      return res.json({
+        sleep_source:        'fitbit',
+        recovery_source:     null,
+        sleep_score:         null,
+        recovery_score:      null,
+        hrv_balance:         null,
+        hrv_rmssd_ms:        null,
+        resting_hr:          fitbit.resting_hr,
+        total_sleep_min:     fitbit.total_sleep_min,
+        rem_sleep_min:       fitbit.rem_sleep_min,
+        deep_sleep_min:      fitbit.deep_sleep_min,
+        body_temp_deviation: null,
+        steps:               fitbit.step_count,
+        energy_suggestion:   energySuggestionFromFitbit(fitbit.resting_hr, fitbit.total_sleep_min),
+        temp_flag:           false,
+      });
+    }
+
+    // Priority 4: Apple Health
     const apple = db.prepare(
       'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);

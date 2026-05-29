@@ -4,6 +4,14 @@ const WHOOP_BASE      = 'https://api.prod.whoop.com/developer';
 const WHOOP_TOKEN_URL = 'https://api.prod.whoop.com/oauth/oauth2/token';
 
 async function refreshAccessToken(userId, refreshToken) {
+  if (!process.env.WHOOP_CLIENT_ID || !process.env.WHOOP_CLIENT_SECRET) {
+    throw new Error('Whoop OAuth is missing server credentials. Add WHOOP_CLIENT_ID and WHOOP_CLIENT_SECRET.');
+  }
+
+  if (!refreshToken) {
+    throw new Error('Whoop refresh token missing — please reconnect Whoop in your profile.');
+  }
+
   const res = await fetch(WHOOP_TOKEN_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -14,7 +22,21 @@ async function refreshAccessToken(userId, refreshToken) {
       client_secret: process.env.WHOOP_CLIENT_SECRET,
     }),
   });
-  if (!res.ok) throw new Error('Whoop token refresh failed — please reconnect Whoop in your profile.');
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error('[Whoop refresh] failed', {
+      status: res.status,
+      body: body.slice(0, 500),
+    });
+
+    if (res.status === 400 || res.status === 401) {
+      throw new Error('Whoop session expired — please reconnect Whoop in your profile.');
+    }
+
+    throw new Error('Whoop token refresh failed — please try again later.');
+  }
+
   const tokens = await res.json();
 
   db.prepare(`

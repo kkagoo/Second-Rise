@@ -52,9 +52,11 @@ function FlameIcon() {
 const SOURCE_COLORS = {
   oura:         'bg-blue-100 text-blue-600',
   whoop:        'bg-gray-900 text-white',
+  google_fit:   'bg-emerald-50 text-emerald-600',
+  fitbit:       'bg-emerald-50 text-emerald-600',
   apple_health: 'bg-red-50 text-red-500',
 };
-const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', apple_health: 'Apple' };
+const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', google_fit: 'Google Fit', fitbit: 'Fitbit', apple_health: 'Apple' };
 
 function StatPill({ icon, label, value, source }) {
   if (value == null) return null;

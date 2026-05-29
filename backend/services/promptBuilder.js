@@ -40,7 +40,19 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
     const sleepStr = sleepH != null ? `${sleepH}h ${sleepM}m` : 'n/a';
 
     const sourceNote = [
-      biometrics.sleep_source    ? `Sleep data from ${biometrics.sleep_source === 'oura' ? 'Oura Ring' : biometrics.sleep_source === 'whoop' ? 'Whoop' : 'Apple Health'}` : null,
+      biometrics.sleep_source
+        ? `Sleep data from ${
+          biometrics.sleep_source === 'oura'
+            ? 'Oura Ring'
+            : biometrics.sleep_source === 'whoop'
+              ? 'Whoop'
+              : biometrics.sleep_source === 'google_fit'
+                ? 'Google Fit / Pixel Watch'
+              : biometrics.sleep_source === 'fitbit'
+                ? 'Fitbit / Pixel Watch'
+                : 'Apple Health'
+        }`
+        : null,
       biometrics.recovery_source ? `Recovery data from ${biometrics.recovery_source === 'whoop' ? 'Whoop' : 'Oura Ring'}` : null,
     ].filter(Boolean).join('; ');
 
@@ -57,7 +69,7 @@ ${biometrics.respiratory_rate != null ? `- Respiratory rate: ${biometrics.respir
 ${biometrics.strain_score != null ? `- Yesterday's strain: ${biometrics.strain_score.toFixed(1)}/21${biometrics.strain_score > 16 ? ' ⚠️ high — prioritise recovery' : ''}` : ''}
 ${biometrics.spo2_percentage != null ? `- SpO2: ${biometrics.spo2_percentage.toFixed(1)}%` : ''}
 ${biometrics.body_temp_deviation != null ? `- Body temp deviation: ${biometrics.body_temp_deviation}°C${biometrics.temp_flag ? ' ⚠️ elevated — possible hot flash signal' : ''}` : ''}
-${biometrics.activity_score != null ? `- Activity score: ${biometrics.activity_score}/100 | Steps: ${biometrics.steps ?? 'n/a'}` : ''}
+${biometrics.activity_score != null ? `- Activity score: ${biometrics.activity_score}/100 | Steps: ${biometrics.steps ?? 'n/a'}` : biometrics.steps != null ? `- Steps: ${biometrics.steps}` : ''}
 
 Factor ALL available recovery and sleep signals into your recommendation. The ESTIMATED ENERGY LEVEL above is derived from the best available recovery data — honour it when choosing intensity.
 `;

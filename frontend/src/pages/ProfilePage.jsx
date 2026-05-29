@@ -127,6 +127,16 @@ export default function ProfilePage() {
   const [appleDays, setAppleDays]         = useState(null);
   const [appleError, setAppleError]       = useState('');
 
+  // Google Fit state
+  const [googleFitStatus, setGoogleFitStatus] = useState(null);
+  const [googleFitLastSync, setGoogleFitLastSync] = useState(null);
+  const [googleFitError, setGoogleFitError] = useState('');
+
+  // Fitbit state
+  const [fitbitStatus, setFitbitStatus] = useState(null);
+  const [fitbitLastSync, setFitbitLastSync] = useState(null);
+  const [fitbitError, setFitbitError] = useState('');
+
   useEffect(() => {
     if (profile) {
       setForm({
@@ -161,6 +171,24 @@ export default function ProfilePage() {
         }
       }).catch(() => {});
 
+      client.get('/googlefit/status').then((r) => {
+        if (r.data?.connected) {
+          setGoogleFitStatus('connected');
+          client.get('/googlefit/today').then((t) => {
+            if (t.data?.synced_at) setGoogleFitLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
+      client.get('/fitbit/status').then((r) => {
+        if (r.data?.connected) {
+          setFitbitStatus('connected');
+          client.get('/fitbit/today').then((t) => {
+            if (t.data?.synced_at) setFitbitLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
       // Handle OAuth callback result in URL params
       const params = new URLSearchParams(window.location.search);
       const ouraResult = params.get('oura');
@@ -188,6 +216,32 @@ export default function ProfilePage() {
       } else if (whoopResult === 'error') {
         setWhoopStatus('error');
         setWhoopError('Something went wrong during Whoop authorization.');
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+
+      const googleFitResult = params.get('googlefit');
+      if (googleFitResult === 'connected') {
+        setGoogleFitStatus('connected');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (googleFitResult === 'denied') {
+        setGoogleFitStatus('denied');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (googleFitResult === 'error') {
+        setGoogleFitStatus('error');
+        setGoogleFitError('Something went wrong during Google Fit authorization.');
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+
+      const fitbitResult = params.get('fitbit');
+      if (fitbitResult === 'connected') {
+        setFitbitStatus('connected');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (fitbitResult === 'denied') {
+        setFitbitStatus('denied');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (fitbitResult === 'error') {
+        setFitbitStatus('error');
+        setFitbitError('Something went wrong during Fitbit authorization.');
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
@@ -263,6 +317,56 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleGoogleFitConnect() {
+    setGoogleFitStatus('connecting');
+    setGoogleFitError('');
+    try {
+      const res = await client.get('/googlefit/connect', { params: { returnTo: '/profile' } });
+      window.location.href = res.data.url;
+    } catch (err) {
+      setGoogleFitStatus('error');
+      setGoogleFitError(err.response?.data?.error || 'Could not start Google Fit authorization.');
+    }
+  }
+
+  async function handleGoogleFitSync() {
+    setGoogleFitStatus('connecting');
+    setGoogleFitError('');
+    try {
+      const syncRes = await client.post('/googlefit/sync');
+      setGoogleFitStatus('connected');
+      setGoogleFitLastSync(syncRes.data?.synced_at ?? null);
+    } catch (err) {
+      setGoogleFitStatus('error');
+      setGoogleFitError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleFitbitConnect() {
+    setFitbitStatus('connecting');
+    setFitbitError('');
+    try {
+      const res = await client.get('/fitbit/connect', { params: { returnTo: '/profile' } });
+      window.location.href = res.data.url;
+    } catch (err) {
+      setFitbitStatus('error');
+      setFitbitError(err.response?.data?.error || 'Could not start Fitbit authorization.');
+    }
+  }
+
+  async function handleFitbitSync() {
+    setFitbitStatus('connecting');
+    setFitbitError('');
+    try {
+      const syncRes = await client.post('/fitbit/sync');
+      setFitbitStatus('connected');
+      setFitbitLastSync(syncRes.data?.synced_at ?? null);
+    } catch (err) {
+      setFitbitStatus('error');
+      setFitbitError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
   function set(key, val) {
     setForm((f) => ({ ...f, [key]: val }));
     setSaved(false);
@@ -328,6 +432,12 @@ export default function ProfilePage() {
               <span>⚫</span> Whoop
             </a>
             <a
+              href="#googlefit-section"
+              className="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+            >
+              <span>🟢</span> Google Fit / Pixel Watch
+            </a>
+            <a
               href="#apple-section"
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
@@ -355,6 +465,14 @@ export default function ProfilePage() {
                 className="w-full border-2 border-blue-300 text-blue-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-blue-50 disabled:opacity-50"
               >
                 {ouraStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+              <button
+                type="button"
+                onClick={handleOuraConnect}
+                disabled={ouraStatus === 'connecting'}
+                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+              >
+                Reconnect Oura
               </button>
             </div>
           ) : (
@@ -397,6 +515,14 @@ export default function ProfilePage() {
               >
                 {whoopStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
               </button>
+              <button
+                type="button"
+                onClick={handleWhoopConnect}
+                disabled={whoopStatus === 'connecting'}
+                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+              >
+                Reconnect Whoop
+              </button>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -415,6 +541,58 @@ export default function ProfilePage() {
           )}
           {whoopError && (
             <p className="text-red-500 text-xs">{whoopError}</p>
+          )}
+        </Section>
+        </div>
+
+        {/* Google Fit / Pixel Watch */}
+        <div id="googlefit-section">
+        <Section title="Google Fit / Pixel Watch" subtitle="Connect Google Fit to sync steps, heart rate summaries, and sleep sessions for Pixel Watch-compatible Google health data">
+          {googleFitStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                <p className="text-sm text-green-600 font-semibold">
+                  Connected{googleFitLastSync ? ` — synced ${new Date(googleFitLastSync).toLocaleString()}` : ''}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleGoogleFitSync}
+                disabled={googleFitStatus === 'connecting'}
+                className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
+              >
+                {googleFitStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+              <button
+                type="button"
+                onClick={handleGoogleFitConnect}
+                disabled={googleFitStatus === 'connecting'}
+                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+              >
+                Reconnect Google Fit
+              </button>
+              <p className="text-xs text-amber-700">
+                Google Fit APIs are being deprecated in 2026, so treat this as a bridge rather than the long-term Android strategy.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {googleFitStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
+              <button
+                type="button"
+                onClick={handleGoogleFitConnect}
+                disabled={googleFitStatus === 'connecting'}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Fit'}
+              </button>
+            </div>
+          )}
+          {googleFitError && (
+            <p className="text-red-500 text-xs">{googleFitError}</p>
           )}
         </Section>
         </div>

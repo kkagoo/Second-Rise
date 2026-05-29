@@ -8,7 +8,10 @@ import AppLayout from './components/ui/AppLayout';
 // The backend encodes returnTo in the OAuth state, so this should rarely fire.
 function OAuthRedirectGuard() {
   const params = new URLSearchParams(window.location.search);
-  const hasOAuthResult = params.has('oura') || params.has('whoop');
+  const hasOAuthResult = params.has('oura')
+    || params.has('whoop')
+    || params.has('googlefit')
+    || params.has('fitbit');
 
   if (hasOAuthResult && window.location.pathname !== '/profile') {
     window.location.replace('/profile' + window.location.search);

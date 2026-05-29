@@ -128,3 +128,53 @@ CREATE TABLE IF NOT EXISTS whoop_daily_data (
   synced_at             TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(user_id, date)
 );
+
+CREATE TABLE IF NOT EXISTS fitbit_daily_data (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date            TEXT NOT NULL,
+  resting_hr      INTEGER,
+  total_sleep_min INTEGER,
+  rem_sleep_min   INTEGER,
+  deep_sleep_min  INTEGER,
+  light_sleep_min INTEGER,
+  step_count      INTEGER,
+  synced_at       TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);
+
+CREATE TABLE IF NOT EXISTS google_fit_daily_data (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date            TEXT NOT NULL,
+  resting_hr      INTEGER,
+  total_sleep_min INTEGER,
+  rem_sleep_min   INTEGER,
+  deep_sleep_min  INTEGER,
+  light_sleep_min INTEGER,
+  step_count      INTEGER,
+  synced_at       TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);
+
+CREATE TABLE IF NOT EXISTS daily_wearable_reviews (
+  review_id               INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id                 INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date                    TEXT NOT NULL,
+  rec_id                  INTEGER REFERENCES recommendations(rec_id),
+  planned_session_type    TEXT,
+  planned_intensity       TEXT NOT NULL,
+  actual_load             TEXT NOT NULL,
+  adherence_status        TEXT NOT NULL,
+  strain_score            REAL,
+  cardio_load             REAL,
+  step_count              INTEGER,
+  sleep_min               INTEGER,
+  recovery_score          INTEGER,
+  feedback_effort_rating  TEXT,
+  summary                 TEXT NOT NULL,
+  recommendation          TEXT NOT NULL,
+  evidence                TEXT,
+  evaluated_at            TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, date)
+);

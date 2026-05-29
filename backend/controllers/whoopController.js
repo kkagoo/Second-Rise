@@ -1,13 +1,14 @@
 const db           = require('../db/database');
 const jwt          = require('jsonwebtoken');
 const whoopService = require('../services/whoopService');
+const wearableReviewService = require('../services/wearableReviewService');
 
 const WHOOP_AUTH_URL  = 'https://api.prod.whoop.com/oauth/oauth2/auth';
 const WHOOP_TOKEN_URL = 'https://api.prod.whoop.com/oauth/oauth2/token';
 
 function connect(req, res, next) {
   try {
-    if (!process.env.WHOOP_CLIENT_ID || !process.env.WHOOP_REDIRECT_URI) {
+    if (!process.env.WHOOP_CLIENT_ID || !process.env.WHOOP_CLIENT_SECRET || !process.env.WHOOP_REDIRECT_URI) {
       return res.status(500).json({ error: 'Whoop OAuth not configured on this server.' });
     }
 
@@ -66,6 +67,11 @@ async function callback(req, res, next) {
     });
 
     if (!tokenRes.ok) {
+      const body = await tokenRes.text().catch(() => '');
+      console.error('[Whoop callback] token exchange failed', {
+        status: tokenRes.status,
+        body: body.slice(0, 500),
+      });
       return res.redirect(`${frontendBase}/profile?whoop=error`);
     }
 
@@ -96,7 +102,8 @@ async function callback(req, res, next) {
 async function syncToday(req, res, next) {
   try {
     const row = await whoopService.syncToday(req.userId);
-    res.json(row);
+    const review = wearableReviewService.evaluateDay(req.userId, row?.date);
+    res.json({ ...row, review });
   } catch (err) {
     next(err);
   }

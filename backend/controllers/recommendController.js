@@ -99,6 +99,41 @@ async function getRecommendation(req, res, next) {
           temp_flag:           typeof oura?.body_temp_deviation === 'number' && oura.body_temp_deviation > 0.4,
         };
       } else {
+        const googleFit = db.prepare('SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (googleFit) {
+          biometrics = {
+            sleep_source:    'google_fit',
+            recovery_source: null,
+            sleep_score:     null,
+            recovery_score:  null,
+            energy_label:    null,
+            hrv_balance:     null,
+            resting_hr:      googleFit.resting_hr,
+            total_sleep_min: googleFit.total_sleep_min,
+            rem_sleep_min:   googleFit.rem_sleep_min,
+            deep_sleep_min:  googleFit.deep_sleep_min,
+            body_temp_deviation: null,
+            steps:           googleFit.step_count,
+            temp_flag:       false,
+          };
+        } else {
+        const fitbit = db.prepare('SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (fitbit) {
+          biometrics = {
+            sleep_source:    'fitbit',
+            recovery_source: null,
+            sleep_score:     null,
+            recovery_score:  null,
+            energy_label:    null,
+            hrv_balance:     null,
+            resting_hr:      fitbit.resting_hr,
+            total_sleep_min: fitbit.total_sleep_min,
+            rem_sleep_min:   fitbit.rem_sleep_min,
+            deep_sleep_min:  fitbit.deep_sleep_min,
+            body_temp_deviation: null,
+            temp_flag:       false,
+          };
+        } else {
         const apple = db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(req.userId, today);
         if (apple) {
           biometrics = {
@@ -116,6 +151,8 @@ async function getRecommendation(req, res, next) {
             temp_flag:       false,
           };
         }
+        }
+      }
       }
     } catch { /* no biometrics */ }
 

@@ -4,6 +4,14 @@ const OURA_BASE      = 'https://api.ouraring.com';
 const OURA_TOKEN_URL = 'https://api.ouraring.com/oauth/token';
 
 async function refreshAccessToken(userId, refreshToken) {
+  if (!process.env.OURA_CLIENT_ID || !process.env.OURA_CLIENT_SECRET) {
+    throw new Error('Oura OAuth is missing server credentials. Add OURA_CLIENT_ID and OURA_CLIENT_SECRET.');
+  }
+
+  if (!refreshToken) {
+    throw new Error('Oura refresh token missing — please reconnect Oura in your profile.');
+  }
+
   const res = await fetch(OURA_TOKEN_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -14,7 +22,21 @@ async function refreshAccessToken(userId, refreshToken) {
       client_secret: process.env.OURA_CLIENT_SECRET,
     }),
   });
-  if (!res.ok) throw new Error('Oura token refresh failed — please reconnect Oura in your profile.');
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error('[Oura refresh] failed', {
+      status: res.status,
+      body: body.slice(0, 500),
+    });
+
+    if (res.status === 400 || res.status === 401) {
+      throw new Error('Oura session expired — please reconnect Oura in your profile.');
+    }
+
+    throw new Error('Oura token refresh failed — please try again later.');
+  }
+
   const tokens = await res.json();
 
   db.prepare(`

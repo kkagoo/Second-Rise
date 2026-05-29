@@ -114,7 +114,15 @@ export default function CheckinPage() {
                     <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider">
                       {[biometrics.recovery_source, biometrics.sleep_source]
                         .filter(Boolean)
-                        .map((s) => s === 'oura' ? 'Oura' : s === 'whoop' ? 'Whoop' : 'Apple Health')
+                        .map((s) => s === 'oura'
+                          ? 'Oura'
+                          : s === 'whoop'
+                            ? 'Whoop'
+                            : s === 'google_fit'
+                              ? 'Google Fit'
+                            : s === 'fitbit'
+                              ? 'Fitbit'
+                              : 'Apple Health')
                         .filter((v, i, a) => a.indexOf(v) === i)
                         .join(' + ')} today
                     </p>

@@ -1,6 +1,7 @@
 const db          = require('../db/database');
 const jwt         = require('jsonwebtoken');
 const ouraService = require('../services/ouraService');
+const wearableReviewService = require('../services/wearableReviewService');
 
 const OURA_AUTH_URL  = 'https://cloud.ouraring.com/oauth/authorize';
 const OURA_TOKEN_URL = 'https://api.ouraring.com/oauth/token';
@@ -9,7 +10,7 @@ const OURA_TOKEN_URL = 'https://api.ouraring.com/oauth/token';
 // Returns the Oura OAuth URL — frontend redirects the browser to it
 function connect(req, res, next) {
   try {
-    if (!process.env.OURA_CLIENT_ID || !process.env.OURA_REDIRECT_URI) {
+    if (!process.env.OURA_CLIENT_ID || !process.env.OURA_CLIENT_SECRET || !process.env.OURA_REDIRECT_URI) {
       return res.status(500).json({ error: 'Oura OAuth not configured on this server.' });
     }
 
@@ -72,6 +73,11 @@ async function callback(req, res, next) {
     });
 
     if (!tokenRes.ok) {
+      const body = await tokenRes.text().catch(() => '');
+      console.error('[Oura callback] token exchange failed', {
+        status: tokenRes.status,
+        body: body.slice(0, 500),
+      });
       return res.redirect(`${frontendBase}/profile?oura=error`);
     }
 
@@ -104,7 +110,8 @@ async function callback(req, res, next) {
 async function syncToday(req, res, next) {
   try {
     const row = await ouraService.syncToday(req.userId);
-    res.json(row);
+    const review = wearableReviewService.evaluateDay(req.userId, row?.date);
+    res.json({ ...row, review });
   } catch (err) {
     next(err);
   }

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -14,9 +14,12 @@ const historyRoutes     = require('./routes/historyRoutes');
 const videoRoutes       = require('./routes/videoRoutes');
 const ouraRoutes        = require('./routes/ouraRoutes');
 const whoopRoutes       = require('./routes/whoopRoutes');
+const fitbitRoutes      = require('./routes/fitbitRoutes');
+const googleFitRoutes   = require('./routes/googleFitRoutes');
 const healthRoutes      = require('./routes/healthRoutes');
 const biometricsRoutes  = require('./routes/biometricsRoutes');
 const watchRoutes       = require('./routes/watchRoutes');
+const wearableReviewRoutes = require('./routes/wearableReviewRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -47,9 +50,12 @@ app.use('/api/history',     historyRoutes);
 app.use('/api/videos',      videoRoutes);
 app.use('/api/oura',        ouraRoutes);
 app.use('/api/whoop',       whoopRoutes);
+app.use('/api/fitbit',      fitbitRoutes);
+app.use('/api/googlefit',   googleFitRoutes);
 app.use('/api/health',      healthRoutes);
 app.use('/api/biometrics',  biometricsRoutes);
 app.use('/api/watch',       watchRoutes);
+app.use('/api/wearable-review', wearableReviewRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
