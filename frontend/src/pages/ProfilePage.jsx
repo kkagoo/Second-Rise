@@ -1,8 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import { ProfileIllustration } from '../components/ui/Illustrations';
+
+async function openOAuth(url) {
+  try {
+    const { Browser } = await import('@capacitor/browser');
+    await Browser.open({ url });
+  } catch (_) {
+    try {
+      window.location.href = url;
+    } catch (__) {
+      // Silently fail — work profile message shown below
+    }
+  }
+}
+
+function WorkProfileWarning() {
+  return (
+    <div className="rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800 leading-relaxed">
+      <p className="font-semibold mb-1">Using a work profile?</p>
+      <p>
+        If this button isn't opening a browser, your work profile may be blocking external apps.
+        Connect your wearables on the{' '}
+        <a
+          href="https://second-rise-production.up.railway.app/profile"
+          className="underline font-semibold"
+          target="_blank"
+          rel="noreferrer"
+        >
+          web app
+        </a>{' '}
+        instead.
+      </p>
+    </div>
+  );
+}
 
 /* ── helpers ──────────────────────────────────────────────── */
 function Section({ title, subtitle, children }) {
@@ -247,12 +281,27 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
+  // Refresh wearable statuses when app resumes from OAuth browser
+  useEffect(() => {
+    function refreshStatuses() {
+      client.get('/oura/status').then((r) => { if (r.data?.connected) setOuraStatus('connected'); }).catch(() => {});
+      client.get('/whoop/status').then((r) => { if (r.data?.connected) setWhoopStatus('connected'); }).catch(() => {});
+      client.get('/googlefit/status').then((r) => { if (r.data?.connected) setGoogleFitStatus('connected'); }).catch(() => {});
+      client.get('/fitbit/status').then((r) => { if (r.data?.connected) setFitbitStatus('connected'); }).catch(() => {});
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') refreshStatuses();
+    });
+    return () => document.removeEventListener('visibilitychange', refreshStatuses);
+  }, []);
+
   async function handleOuraConnect() {
     setOuraStatus('connecting');
     setOuraError('');
     try {
       const res = await client.get('/oura/connect', { params: { returnTo: '/profile' } });
-      window.location.href = res.data.url;
+      await openOAuth(res.data.url);
+      setOuraStatus(null);
     } catch (err) {
       setOuraStatus('error');
       setOuraError(err.response?.data?.error || 'Could not start Oura authorization.');
@@ -277,7 +326,9 @@ export default function ProfilePage() {
     setWhoopError('');
     try {
       const res = await client.get('/whoop/connect', { params: { returnTo: '/profile' } });
-      window.location.href = res.data.url;
+      await openOAuth(res.data.url);
+      // Reset so button is usable again — visibilitychange listener will update to 'connected' on return
+      setWhoopStatus(null);
     } catch (err) {
       setWhoopStatus('error');
       setWhoopError(err.response?.data?.error || 'Could not start Whoop authorization.');
@@ -322,7 +373,8 @@ export default function ProfilePage() {
     setGoogleFitError('');
     try {
       const res = await client.get('/googlefit/connect', { params: { returnTo: '/profile' } });
-      window.location.href = res.data.url;
+      await openOAuth(res.data.url);
+      setGoogleFitStatus(null);
     } catch (err) {
       setGoogleFitStatus('error');
       setGoogleFitError(err.response?.data?.error || 'Could not start Google Fit authorization.');
@@ -347,7 +399,8 @@ export default function ProfilePage() {
     setFitbitError('');
     try {
       const res = await client.get('/fitbit/connect', { params: { returnTo: '/profile' } });
-      window.location.href = res.data.url;
+      await openOAuth(res.data.url);
+      setFitbitStatus(null);
     } catch (err) {
       setFitbitStatus('error');
       setFitbitError(err.response?.data?.error || 'Could not start Fitbit authorization.');
@@ -418,7 +471,8 @@ export default function ProfilePage() {
         <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm flex flex-col gap-1">
           <h2 className="font-bold text-gray-900 text-base">Your data sources</h2>
           <p className="text-xs text-gray-400 mb-3">Connect your devices or import data to personalise recommendations</p>
-          <div className="flex gap-3 flex-wrap">
+          <WorkProfileWarning />
+          <div className="flex gap-3 flex-wrap mt-2">
             <a
               href="#oura-section"
               className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
