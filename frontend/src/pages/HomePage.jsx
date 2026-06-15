@@ -234,6 +234,27 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* End of day review */}
+        {checkinDone && (
+          <button
+            onClick={() => navigate('/recommend')}
+            className="w-full flex items-center gap-4 bg-orange-50 hover:bg-orange-100 rounded-2xl p-4 transition-colors text-left border border-orange-100"
+          >
+            <div className="w-14 h-14 rounded-xl bg-orange-100 flex-shrink-0 flex items-center justify-center">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-orange-700 text-sm">End-of-day review</p>
+              <p className="text-xs text-orange-400 mt-0.5">See how your actual activity compared to your plan</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fdba74" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        )}
+
         {/* History teaser */}
         <div>
           <div className="flex items-center justify-between mb-3">
