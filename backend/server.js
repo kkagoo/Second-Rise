@@ -27,13 +27,17 @@ const app = express();
 // In production the frontend is served from the same origin — no CORS needed.
 // In development, allow the Vite dev server.
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:3001'];
-app.use(cors({
+const corsOptions = {
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
     cb(null, true); // allow all origins (Railway URL changes per deploy)
   },
   credentials: true,
-}));
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // explicit preflight for all routes
 
 app.use(express.json());
 
