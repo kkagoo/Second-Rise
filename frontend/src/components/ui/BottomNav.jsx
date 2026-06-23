@@ -10,11 +10,11 @@ function HomeIcon({ active }) {
   );
 }
 
-function VideosIcon({ active }) {
+function ResourcesIcon({ active }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="5" width="20" height="14" rx="2" />
-      <path d="M10 9l6 3-6 3V9z" fill={active ? 'currentColor' : 'none'} />
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
   );
 }
@@ -36,13 +36,14 @@ function PlusIcon() {
   );
 }
 
-// Home | [+ FAB] | Videos | History
-// Profile lives as avatar in Home header; Resources is a card on Home
+// Home | [+ FAB] | Resources | History
+// Profile = avatar in Home header
+// Videos = under + choice sheet
 const TABS = [
-  { label: 'Home',    path: '/',        Icon: HomeIcon },
-  { label: null,      path: '/log-activity', Icon: PlusIcon }, // center FAB
-  { label: 'Videos',  path: '/videos',  Icon: VideosIcon },
-  { label: 'History', path: '/history', Icon: HistoryIcon },
+  { label: 'Home',      path: '/',          Icon: HomeIcon },
+  { label: null,        path: '/move',      Icon: PlusIcon }, // choice sheet
+  { label: 'Resources', path: '/resources', Icon: ResourcesIcon },
+  { label: 'History',   path: '/history',   Icon: HistoryIcon },
 ];
 
 export default function BottomNav() {
@@ -50,7 +51,7 @@ export default function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex safe-bottom z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex safe-bottom z-40">
       {TABS.map(({ label, path, Icon }) => {
         const active = pathname === path || (path !== '/' && pathname.startsWith(path));
 
@@ -64,7 +65,7 @@ export default function BottomNav() {
               <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-md text-white -mt-5">
                 <PlusIcon />
               </div>
-              <span className="text-[10px] font-semibold text-gray-400">Log</span>
+              <span className="text-[10px] font-semibold text-gray-400">Move</span>
             </button>
           );
         }

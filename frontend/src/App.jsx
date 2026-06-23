@@ -36,6 +36,7 @@ import DeleteAccountPage    from './pages/DeleteAccountPage';
 import LogActivityPage      from './pages/LogActivityPage';
 import PainHistoryPage      from './pages/PainHistoryPage';
 import ResourcesPage        from './pages/ResourcesPage';
+import ActivityChoicePage   from './pages/ActivityChoicePage';
 
 function AuthGuard({ children }) {
   const { token, loading } = useAuth();
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/log-activity"     element={<AuthGuard><LogActivityPage /></AuthGuard>} />
             <Route path="/pain-history"     element={<AuthGuard><PainHistoryPage /></AuthGuard>} />
             <Route path="/resources"        element={<AuthGuard><ResourcesPage /></AuthGuard>} />
+            <Route path="/move"             element={<AuthGuard><ActivityChoicePage /></AuthGuard>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
