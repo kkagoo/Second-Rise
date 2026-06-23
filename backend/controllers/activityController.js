@@ -87,14 +87,31 @@ function exportActivityCSV(req, res, next) {
   } catch (err) { next(err); }
 }
 
-// ── Pain history with activity overlay ───────────────────────────────────────
+// Body-area to workout category mapping for lag correlation
+const AREA_TO_CATEGORY = {
+  'shoulder': ['Strength', 'Upper Body', 'Functional'],
+  'arm':      ['Strength', 'Upper Body', 'Functional'],
+  'neck':     ['Strength', 'Upper Body', 'Yoga & Flexibility'],
+  'upper back': ['Strength', 'Yoga & Flexibility', 'Functional'],
+  'lower back': ['Strength', 'Yoga & Flexibility', 'Cardio'],
+  'hip':      ['Strength', 'Lower Body', 'Cardio', 'Yoga & Flexibility'],
+  'knee':     ['Strength', 'Lower Body', 'Cardio', 'Cycling'],
+  'ankle':    ['Cardio', 'Lower Body'],
+  'wrist':    ['Strength', 'Upper Body'],
+  'chest':    ['Strength', 'Upper Body'],
+  'glute':    ['Strength', 'Lower Body'],
+};
+
+// ── Pain history with 1-2 day lag activity overlay ────────────────────────────
 function getPainHistory(req, res, next) {
   try {
     const { days = 90 } = req.query;
+
+    // Pain entries (grouped by day)
     const checkins = db.prepare(`
       SELECT
-        date(timestamp) as day,
-        MAX(pain_flagged) as pain_flagged,
+        date(timestamp)    AS day,
+        MAX(pain_flagged)  AS pain_flagged,
         body_map_flags,
         secondary_flags
       FROM daily_checkins
@@ -104,23 +121,56 @@ function getPainHistory(req, res, next) {
       ORDER BY day ASC
     `).all(req.userId, `-${days} days`);
 
-    const activityCounts = db.prepare(`
-      SELECT activity_date as day, COUNT(*) as count
+    // Activities (for 1-2 day lag: for each pain day, look at D-1 and D-2)
+    const activities = db.prepare(`
+      SELECT activity_date AS day, category, activity, intensity
       FROM activity_log
       WHERE user_id = ?
         AND activity_date >= date('now', ?)
-      GROUP BY activity_date
-    `).all(req.userId, `-${days} days`);
+      ORDER BY activity_date DESC
+    `).all(req.userId, `-${parseInt(days) + 2} days`);
 
-    const actMap = {};
-    activityCounts.forEach((a) => { actMap[a.day] = a.count; });
+    // Build activity map: day → list of activities
+    const actByDay = {};
+    activities.forEach((a) => {
+      if (!actByDay[a.day]) actByDay[a.day] = [];
+      actByDay[a.day].push(a);
+    });
 
-    const data = checkins.map((c) => ({
-      day: c.day,
-      pain_flagged: c.pain_flagged,
-      body_areas: c.body_map_flags ? JSON.parse(c.body_map_flags) : [],
-      activity_count: actMap[c.day] || 0,
-    }));
+    function prevDay(dateStr, n) {
+      const d = new Date(dateStr + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() - n);
+      return d.toISOString().slice(0, 10);
+    }
+
+    const data = checkins.map((c) => {
+      const areas = c.body_map_flags ? (() => { try { return JSON.parse(c.body_map_flags); } catch { return []; } })() : [];
+
+      // Activities from day-before and two-days-before
+      const prevDayActs  = actByDay[prevDay(c.day, 1)] || [];
+      const prev2DayActs = actByDay[prevDay(c.day, 2)] || [];
+      const precedingActs = [...prevDayActs, ...prev2DayActs];
+
+      // Check if any preceding activity category matches a flagged body area
+      const relatedWorkouts = precedingActs.filter((act) => {
+        return areas.some((area) => {
+          const matchCats = AREA_TO_CATEGORY[area.toLowerCase()] || [];
+          return matchCats.some((cat) => act.category?.toLowerCase().includes(cat.toLowerCase()) || act.activity?.toLowerCase().includes(cat.toLowerCase()));
+        });
+      });
+
+      return {
+        day:              c.day,
+        pain_flagged:     c.pain_flagged,
+        body_areas:       areas,
+        // activities on same day (for display)
+        same_day_count:   (actByDay[c.day] || []).length,
+        // activities 1-2 days prior
+        prior_activities: precedingActs,
+        related_workouts: relatedWorkouts,
+        has_match:        relatedWorkouts.length > 0,
+      };
+    });
 
     res.json({ data });
   } catch (err) { next(err); }

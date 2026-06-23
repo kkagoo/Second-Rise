@@ -4,6 +4,18 @@ import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import { ProfileIllustration } from '../components/ui/Illustrations';
 
+async function downloadCSV(path, filename) {
+  try {
+    const res = await client.get(path, { responseType: 'blob' });
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch { alert('Export failed. Please try again.'); }
+}
+
 async function openOAuth(url) {
   try {
     const { Browser } = await import('@capacitor/browser');
@@ -792,6 +804,38 @@ export default function ProfilePage() {
         >
           {saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save profile'}
         </button>
+
+        {/* Download your data */}
+        <div className="bg-gray-50 rounded-2xl p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-0.5">Download your data</p>
+          <p className="text-xs text-gray-400 mb-3">Your data belongs to you. Export anytime.</p>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => downloadCSV('/export/checkins.csv', 'checkin-history.csv')}
+              className="w-full text-left text-sm text-gray-700 bg-white border border-gray-200 rounded-xl px-4 py-2.5 tap-target font-medium"
+            >
+              📋 Check-in history (.csv)
+            </button>
+            <button
+              onClick={() => downloadCSV('/history/export.csv', 'session-history.csv')}
+              className="w-full text-left text-sm text-gray-700 bg-white border border-gray-200 rounded-xl px-4 py-2.5 tap-target font-medium"
+            >
+              💪 Session history (.csv)
+            </button>
+            <button
+              onClick={() => downloadCSV('/activity/export.csv', 'activity-log.csv')}
+              className="w-full text-left text-sm text-gray-700 bg-white border border-gray-200 rounded-xl px-4 py-2.5 tap-target font-medium"
+            >
+              🏃 Activity log (.csv)
+            </button>
+            <button
+              onClick={() => downloadCSV('/export/all.csv', 'second-rise-all-data.csv')}
+              className="w-full text-left text-sm font-semibold text-blue-500 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 tap-target"
+            >
+              ⬇️ Download everything (.csv)
+            </button>
+          </div>
+        </div>
 
         <button
           onClick={() => { logout(); navigate('/login'); }}

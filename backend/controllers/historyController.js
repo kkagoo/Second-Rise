@@ -85,4 +85,87 @@ function getWeekStats(req, res, next) {
   }
 }
 
-module.exports = { getHistory, getStats, getWeekStats };
+// ── Unified timeline (guided sessions + manual/video activities) ──────────────
+function getUnifiedHistory(req, res, next) {
+  try {
+    const limit  = 30;
+    const offset = parseInt(req.query.offset || '0', 10);
+
+    const rows = db.prepare(`
+      SELECT
+        'guided'                       AS source,
+        date(psf.timestamp)            AS activity_date,
+        r.primary_session_type         AS title,
+        r.primary_session_type         AS category,
+        NULL                           AS duration_min,
+        NULL                           AS intensity,
+        dc.layer1_energy               AS energy,
+        dc.computed_readiness          AS readiness,
+        psf.effort_rating              AS effort,
+        psf.notes                      AS notes,
+        psf.timestamp                  AS sort_ts,
+        CAST(psf.feedback_id AS TEXT)  AS item_id
+      FROM post_session_feedback psf
+      JOIN recommendations r  ON r.rec_id     = psf.rec_id  AND r.user_id  = psf.user_id
+      JOIN daily_checkins  dc ON dc.checkin_id = r.checkin_id AND dc.user_id = psf.user_id
+      WHERE psf.user_id = ?
+
+      UNION ALL
+
+      SELECT
+        COALESCE(source, 'manual')      AS source,
+        activity_date,
+        activity                        AS title,
+        category,
+        duration_min,
+        intensity,
+        NULL                            AS energy,
+        NULL                            AS readiness,
+        NULL                            AS effort,
+        notes,
+        logged_at                       AS sort_ts,
+        CAST(id AS TEXT)                AS item_id
+      FROM activity_log
+      WHERE user_id = ?
+
+      ORDER BY sort_ts DESC
+      LIMIT ? OFFSET ?
+    `).all(req.userId, req.userId, limit, offset);
+
+    const totalGuided = db.prepare('SELECT COUNT(*) as n FROM post_session_feedback WHERE user_id = ?').get(req.userId).n;
+    const totalActivities = db.prepare('SELECT COUNT(*) as n FROM activity_log WHERE user_id = ?').get(req.userId).n;
+
+    res.json({ items: rows, total: totalGuided + totalActivities, offset });
+  } catch (err) { next(err); }
+}
+
+// ── Sessions CSV export ───────────────────────────────────────────────────────
+function exportSessionsCSV(req, res, next) {
+  try {
+    const rows = db.prepare(`
+      SELECT
+        date(psf.timestamp)       AS date,
+        r.primary_session_type    AS session_type,
+        dc.layer1_energy          AS energy,
+        dc.computed_readiness     AS readiness,
+        psf.effort_rating         AS effort,
+        psf.notes                 AS notes
+      FROM post_session_feedback psf
+      JOIN recommendations r  ON r.rec_id     = psf.rec_id  AND r.user_id = psf.user_id
+      JOIN daily_checkins  dc ON dc.checkin_id = r.checkin_id AND dc.user_id = psf.user_id
+      WHERE psf.user_id = ?
+      ORDER BY psf.timestamp DESC
+    `).all(req.userId);
+
+    const header = 'Date,Session Type,Energy,Readiness,Effort,Notes\n';
+    const csv = rows.map((r) =>
+      [r.date, `"${r.session_type || ''}"`, r.energy || '', r.readiness || '', `"${(r.effort || '').replace(/_/g, ' ')}"`, `"${(r.notes || '').replace(/"/g, "'")}"`].join(',')
+    ).join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="session-history.csv"');
+    res.send(header + csv);
+  } catch (err) { next(err); }
+}
+
+module.exports = { getHistory, getStats, getWeekStats, getUnifiedHistory, exportSessionsCSV };

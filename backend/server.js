@@ -24,6 +24,7 @@ const deleteAccountRoutes       = require('./routes/deleteAccountRoutes');
 const adminRoutes               = require('./routes/adminRoutes');
 const activityRoutes            = require('./routes/activityRoutes');
 const publicResourcesRoutes     = require('./routes/publicResourcesRoutes');
+const exportRoutes              = require('./routes/exportRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -72,6 +73,7 @@ app.use('/api/account',        deleteAccountRoutes);
 app.use('/api/admin',          adminRoutes);
 app.use('/api/activity',       activityRoutes);
 app.use('/api/resources',      publicResourcesRoutes);
+app.use('/api/export',         exportRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

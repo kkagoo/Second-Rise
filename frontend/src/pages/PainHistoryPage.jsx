@@ -115,9 +115,12 @@ export default function PainHistoryPage() {
         <button onClick={() => navigate(-1)} className="text-blue-400 text-sm font-semibold mb-3 tap-target">
           ← Back
         </button>
-        <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">Analytics</p>
-        <h1 className="text-2xl font-bold text-gray-900">Pain & Activity</h1>
-        <p className="text-sm text-gray-400 mt-1">See if your aches correlate with activity.</p>
+        <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">Explore</p>
+        <h1 className="text-2xl font-bold text-gray-900">Pain Patterns</h1>
+        <p className="text-sm text-gray-400 mt-1">Testing whether aches follow workouts 1–2 days later.</p>
+        <div className="mt-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+          <p className="text-xs text-amber-700">⚠️ This is exploratory — patterns shown here are not medical conclusions.</p>
+        </div>
       </div>
 
       {/* Time range selector */}
@@ -184,17 +187,52 @@ export default function PainHistoryPage() {
             </div>
           </div>
 
-          {/* Insight */}
+          {/* Lag pattern insight */}
           {data.length >= 7 && (
             <div className="bg-sky-card rounded-2xl p-4">
-              <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1">Insight</p>
-              {painWithActivity === 0 ? (
-                <p className="text-sm text-gray-700">No pain reported on active days in this period. Keep moving! 🎉</p>
-              ) : painWithActivity / activeDays > 0.5 ? (
-                <p className="text-sm text-gray-700">Pain occurred on {Math.round((painWithActivity / activeDays) * 100)}% of active days. Consider logging intensity — harder sessions may be contributing.</p>
-              ) : (
-                <p className="text-sm text-gray-700">Pain and activity overlap on {painWithActivity} days. Logging notes when you exercise can help spot patterns.</p>
-              )}
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1">Pattern test</p>
+              {(() => {
+                const matchDays = data.filter((d) => d.has_match).length;
+                if (painDays === 0) return <p className="text-sm text-gray-700">No pain flagged in this period. 🎉</p>;
+                if (matchDays === 0) return <p className="text-sm text-gray-700">No clear workout-to-pain matches found in the 1–2 day window. Try logging more activities with body area notes.</p>;
+                return (
+                  <p className="text-sm text-gray-700">
+                    On <strong>{matchDays} of {painDays}</strong> pain days, a workout matching that body area was logged 1–2 days before. Worth watching — but not a conclusion yet.
+                  </p>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Body-area matched entries */}
+          {data.filter((d) => d.pain_flagged && d.prior_activities?.length > 0).length > 0 && (
+            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+              <p className="text-sm font-semibold text-gray-900 mb-1">Pain days with prior activity</p>
+              <p className="text-xs text-gray-400 mb-3">Activities logged 1–2 days before each pain report</p>
+              <div className="space-y-3">
+                {data
+                  .filter((d) => d.pain_flagged && d.prior_activities?.length > 0)
+                  .slice(-8)
+                  .reverse()
+                  .map((d) => (
+                    <div key={d.day} className="border-l-2 border-red-200 pl-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-semibold text-red-500">🔴 {d.day}</span>
+                        {d.body_areas.length > 0 && (
+                          <span className="text-xs text-gray-400">{d.body_areas.slice(0, 2).join(', ')}</span>
+                        )}
+                      </div>
+                      <div className="space-y-0.5">
+                        {d.prior_activities.slice(0, 3).map((act, i) => (
+                          <p key={i} className={`text-xs ${d.has_match && d.related_workouts?.some((r) => r.activity === act.activity) ? 'text-orange-600 font-semibold' : 'text-gray-500'}`}>
+                            ↑ {act.activity} ({act.category})
+                            {d.has_match && d.related_workouts?.some((r) => r.activity === act.activity) && ' ← possible match'}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
