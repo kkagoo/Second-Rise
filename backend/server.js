@@ -21,6 +21,7 @@ const biometricsRoutes  = require('./routes/biometricsRoutes');
 const watchRoutes       = require('./routes/watchRoutes');
 const wearableReviewRoutes = require('./routes/wearableReviewRoutes');
 const deleteAccountRoutes  = require('./routes/deleteAccountRoutes');
+const adminRoutes          = require('./routes/adminRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -42,6 +43,10 @@ app.options('*', cors(corsOptions)); // explicit preflight for all routes
 
 app.use(express.json());
 
+// Serve admin panel
+app.use('/admin-assets', express.static(path.join(__dirname, 'public')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+
 // Health check for Railway
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
@@ -62,6 +67,7 @@ app.use('/api/biometrics',  biometricsRoutes);
 app.use('/api/watch',       watchRoutes);
 app.use('/api/wearable-review', wearableReviewRoutes);
 app.use('/api/account',        deleteAccountRoutes);
+app.use('/api/admin',          adminRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

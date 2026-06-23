@@ -40,4 +40,22 @@ try { db.exec("ALTER TABLE daily_checkins ADD COLUMN workout_preference TEXT"); 
 try { db.exec("ALTER TABLE recommendations ADD COLUMN body_focus TEXT"); }          catch (_) {}
 try { db.exec("ALTER TABLE daily_wearable_reviews ADD COLUMN cardio_load REAL"); }  catch (_) {}
 
+// Resources table for Wellness Resources Hub
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS resources (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      title       TEXT NOT NULL,
+      type        TEXT NOT NULL DEFAULT 'article',
+      author      TEXT,
+      url         TEXT NOT NULL,
+      description TEXT,
+      tags        TEXT DEFAULT '[]',
+      featured    INTEGER NOT NULL DEFAULT 0,
+      active      INTEGER NOT NULL DEFAULT 1,
+      date_added  TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+} catch (_) {}
+
 module.exports = db;
