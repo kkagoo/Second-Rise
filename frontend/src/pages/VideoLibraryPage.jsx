@@ -3,6 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
 import { RunIllustration, StrengthIllustration, YogaIllustration, DumbbellIllustration } from '../components/ui/Illustrations';
 
+const VIDEO_CATEGORY_MAP = {
+  yoga:              'Yoga & Flexibility',
+  strength:          'Strength',
+  low_impact_cardio: 'Cardio',
+  mobility:          'Yoga & Flexibility',
+};
+
 const CATEGORIES = [
   { id: null,               label: 'All',      color: 'bg-gray-900 text-white',     textInactive: 'text-gray-700' },
   { id: 'yoga',             label: 'Yoga',     color: 'bg-orange-400 text-white',   textInactive: 'text-gray-700' },
@@ -34,10 +41,11 @@ const TYPE_COLOR = {
 
 export default function VideoLibraryPage() {
   const location = useLocation();
-  const [videos, setVideos]       = useState([]);
-  const [filter, setFilter]       = useState(location.state?.type || null);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState('');
+  const [videos, setVideos]         = useState([]);
+  const [filter, setFilter]         = useState(location.state?.type || null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState('');
+  const [loggedIds, setLoggedIds]   = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,19 +58,33 @@ export default function VideoLibraryPage() {
   }, [filter]);
 
   async function handleSelect(video) {
-    // Start a session directly from library — skip check-in
+    navigate('/session', {
+      state: {
+        rec: null,
+        video,
+        session_type: video.session_type,
+        fromLibrary: true,
+      },
+    });
+  }
+
+  async function handleLogIt(video) {
+    setLoggedIds((prev) => ({ ...prev, [video.id]: 'saving' }));
     try {
-      // We post a recommend/select with null rec_id (library pick)
-      navigate('/session', {
-        state: {
-          rec: null,
-          video,
-          session_type: video.session_type,
-          fromLibrary: true,
-        },
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      await client.post('/activity', {
+        activity_date: dateStr,
+        category:      VIDEO_CATEGORY_MAP[video.session_type] || 'Cardio',
+        activity:      video.title,
+        duration_min:  video.duration_min || null,
+        intensity:     'moderate',
+        source:        'video',
+        video_id:      video.id,
       });
+      setLoggedIds((prev) => ({ ...prev, [video.id]: 'done' }));
     } catch {
-      // ignore
+      setLoggedIds((prev) => ({ ...prev, [video.id]: null }));
     }
   }
 
@@ -124,41 +146,55 @@ export default function VideoLibraryPage() {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {videos.map((video) => (
-              <button
+              <div
                 key={video.id}
-                onClick={() => handleSelect(video)}
-                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm text-left tap-target"
+                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm flex flex-col"
               >
-                {/* Thumbnail */}
-                <div className="relative aspect-video bg-gray-100">
-                  <img
-                    src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`}
-                    alt={video.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Play button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#4BA3E3">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                {/* Thumbnail — tapping starts session */}
+                <button onClick={() => handleSelect(video)} className="text-left tap-target">
+                  <div className="relative aspect-video bg-gray-100">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`}
+                      alt={video.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#4BA3E3">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                      {video.duration_min}m
                     </div>
                   </div>
-                  {/* Duration badge */}
-                  <div className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-xs font-semibold rounded-full px-2 py-0.5">
-                    {video.duration_min}m
+                  <div className="p-2.5 pb-1">
+                    <p className="text-xs text-gray-400 truncate mb-0.5">{video.creator}</p>
+                    <p className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2">{video.title}</p>
+                    <span className={`mt-1.5 inline-block text-xs font-semibold rounded-full px-2 py-0.5 ${TYPE_COLOR[video.session_type] || 'bg-gray-100 text-gray-500'}`}>
+                      {TYPE_LABEL[video.session_type] || video.session_type}
+                    </span>
                   </div>
-                </div>
+                </button>
 
-                {/* Info */}
-                <div className="p-2.5">
-                  <p className="text-xs text-gray-400 truncate mb-0.5">{video.creator}</p>
-                  <p className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2">{video.title}</p>
-                  <span className={`mt-1.5 inline-block text-xs font-semibold rounded-full px-2 py-0.5 ${TYPE_COLOR[video.session_type] || 'bg-gray-100 text-gray-500'}`}>
-                    {TYPE_LABEL[video.session_type] || video.session_type}
-                  </span>
+                {/* "Log It" button */}
+                <div className="px-2.5 pb-2.5 mt-auto">
+                  <button
+                    onClick={() => handleLogIt(video)}
+                    disabled={!!loggedIds[video.id]}
+                    className={`w-full text-xs font-semibold rounded-xl py-1.5 tap-target transition-all ${
+                      loggedIds[video.id] === 'done'
+                        ? 'bg-green-100 text-green-600'
+                        : loggedIds[video.id] === 'saving'
+                        ? 'bg-gray-100 text-gray-400'
+                        : 'bg-blue-50 text-blue-500 hover:bg-blue-100'
+                    }`}
+                  >
+                    {loggedIds[video.id] === 'done' ? '✓ Logged' : loggedIds[video.id] === 'saving' ? '…' : 'Log it done'}
+                  </button>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         )}

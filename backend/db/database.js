@@ -58,4 +58,35 @@ try {
   `);
 } catch (_) {}
 
+// Activity log table (manual + video-sourced activities)
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS activity_log (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      activity_date TEXT NOT NULL,
+      logged_at     TEXT NOT NULL DEFAULT (datetime('now')),
+      category      TEXT NOT NULL,
+      activity      TEXT NOT NULL,
+      duration_min  INTEGER,
+      intensity     TEXT DEFAULT 'moderate',
+      notes         TEXT,
+      source        TEXT DEFAULT 'manual',
+      video_id      INTEGER
+    )
+  `);
+} catch (_) {}
+
+// Resource bookmarks
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS resource_bookmarks (
+      user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      resource_id INTEGER NOT NULL REFERENCES resources(id) ON DELETE CASCADE,
+      saved_at    TEXT NOT NULL DEFAULT (datetime('now')),
+      PRIMARY KEY (user_id, resource_id)
+    )
+  `);
+} catch (_) {}
+
 module.exports = db;

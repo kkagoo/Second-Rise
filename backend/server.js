@@ -20,8 +20,10 @@ const healthRoutes      = require('./routes/healthRoutes');
 const biometricsRoutes  = require('./routes/biometricsRoutes');
 const watchRoutes       = require('./routes/watchRoutes');
 const wearableReviewRoutes = require('./routes/wearableReviewRoutes');
-const deleteAccountRoutes  = require('./routes/deleteAccountRoutes');
-const adminRoutes          = require('./routes/adminRoutes');
+const deleteAccountRoutes       = require('./routes/deleteAccountRoutes');
+const adminRoutes               = require('./routes/adminRoutes');
+const activityRoutes            = require('./routes/activityRoutes');
+const publicResourcesRoutes     = require('./routes/publicResourcesRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -68,6 +70,8 @@ app.use('/api/watch',       watchRoutes);
 app.use('/api/wearable-review', wearableReviewRoutes);
 app.use('/api/account',        deleteAccountRoutes);
 app.use('/api/admin',          adminRoutes);
+app.use('/api/activity',       activityRoutes);
+app.use('/api/resources',      publicResourcesRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

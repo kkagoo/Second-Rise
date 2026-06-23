@@ -19,11 +19,28 @@ function HistoryIcon({ active }) {
   );
 }
 
+function PlusIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
 function VideosIcon({ active }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="5" width="20" height="14" rx="2" />
       <path d="M10 9l6 3-6 3V9z" fill={active ? 'currentColor' : 'none'} />
+    </svg>
+  );
+}
+
+function ResourcesIcon({ active }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
   );
 }
@@ -37,11 +54,13 @@ function ProfileIcon({ active }) {
   );
 }
 
+// label: null = center FAB
 const TABS = [
-  { label: 'Home',    path: '/',         Icon: HomeIcon },
-  { label: 'History', path: '/history',  Icon: HistoryIcon },
-  { label: 'Videos',  path: '/videos',   Icon: VideosIcon },
-  { label: 'Profile', path: '/profile',  Icon: ProfileIcon },
+  { label: 'Home',      path: '/',            Icon: HomeIcon },
+  { label: 'History',   path: '/history',     Icon: HistoryIcon },
+  { label: null,        path: '/log-activity', Icon: PlusIcon },
+  { label: 'Videos',    path: '/videos',      Icon: VideosIcon },
+  { label: 'Resources', path: '/resources',   Icon: ResourcesIcon },
 ];
 
 export default function BottomNav() {
@@ -52,12 +71,30 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex safe-bottom z-50">
       {TABS.map(({ label, path, Icon }) => {
         const active = pathname === path || (path !== '/' && pathname.startsWith(path));
+
+        // Center FAB
+        if (label === null) {
+          return (
+            <button
+              key={path}
+              onClick={() => navigate(path)}
+              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 tap-target"
+            >
+              <div className="w-11 h-11 rounded-full bg-blue-400 flex items-center justify-center shadow-md text-white -mt-5">
+                <PlusIcon />
+              </div>
+              <span className="text-[10px] font-semibold text-gray-400">Log</span>
+            </button>
+          );
+        }
+
         return (
           <button
             key={path}
             onClick={() => navigate(path)}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 tap-target transition-colors
-              ${active ? 'text-blue-400' : 'text-gray-400'}`}
+            className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 tap-target transition-colors ${
+              active ? 'text-blue-400' : 'text-gray-400'
+            }`}
           >
             <Icon active={active} />
             <span className={`text-[10px] font-semibold ${active ? 'text-blue-400' : 'text-gray-400'}`}>
