@@ -75,7 +75,7 @@ function StatPill({ icon, label, value, source }) {
 }
 
 export default function HomePage() {
-  const { logout } = useAuth();
+  useAuth();
   const navigate = useNavigate();
   const [todayCheckin, setTodayCheckin] = useState(undefined);
   const [biometrics, setBiometrics]     = useState(null);
@@ -110,6 +110,17 @@ export default function HomePage() {
 
       {/* ── Hero banner ── */}
       <div className="relative bg-sky-card overflow-hidden">
+        {/* Profile avatar — top right */}
+        <button
+          onClick={() => navigate('/profile')}
+          className="absolute top-12 right-4 z-20 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center tap-target"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="7" r="4" />
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          </svg>
+        </button>
+
         <div className="px-6 pt-12 pb-5 relative z-10 max-w-[62%]">
 
           {/* Welcome + weekly streak */}
@@ -283,13 +294,26 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Sign out */}
+        {/* Resources card */}
         <button
-          onClick={() => { logout(); navigate('/login'); }}
-          className="text-center text-xs text-gray-300 hover:text-gray-500 tap-target transition-colors"
+          onClick={() => navigate('/resources')}
+          className="w-full flex items-center gap-4 bg-purple-50 hover:bg-purple-100 rounded-2xl p-4 transition-colors text-left border border-purple-100"
         >
-          Sign out
+          <div className="w-14 h-14 rounded-xl bg-purple-100 flex-shrink-0 flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9333EA" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-purple-700 text-sm">Wellness resources</p>
+            <p className="text-xs text-purple-400 mt-0.5">Articles, podcasts & videos for perimenopause</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
         </button>
+
       </div>
     </div>
   );

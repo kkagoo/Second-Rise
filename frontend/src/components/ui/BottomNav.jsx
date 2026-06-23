@@ -10,6 +10,15 @@ function HomeIcon({ active }) {
   );
 }
 
+function VideosIcon({ active }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M10 9l6 3-6 3V9z" fill={active ? 'currentColor' : 'none'} />
+    </svg>
+  );
+}
+
 function HistoryIcon({ active }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -27,40 +36,13 @@ function PlusIcon() {
   );
 }
 
-function VideosIcon({ active }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="5" width="20" height="14" rx="2" />
-      <path d="M10 9l6 3-6 3V9z" fill={active ? 'currentColor' : 'none'} />
-    </svg>
-  );
-}
-
-function ResourcesIcon({ active }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function ProfileIcon({ active }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="7" r="4" />
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-    </svg>
-  );
-}
-
-// label: null = center FAB
+// Home | [+ FAB] | Videos | History
+// Profile lives as avatar in Home header; Resources is a card on Home
 const TABS = [
-  { label: 'Home',      path: '/',            Icon: HomeIcon },
-  { label: 'History',   path: '/history',     Icon: HistoryIcon },
-  { label: null,        path: '/log-activity', Icon: PlusIcon },
-  { label: 'Videos',    path: '/videos',      Icon: VideosIcon },
-  { label: 'Resources', path: '/resources',   Icon: ResourcesIcon },
+  { label: 'Home',    path: '/',        Icon: HomeIcon },
+  { label: null,      path: '/log-activity', Icon: PlusIcon }, // center FAB
+  { label: 'Videos',  path: '/videos',  Icon: VideosIcon },
+  { label: 'History', path: '/history', Icon: HistoryIcon },
 ];
 
 export default function BottomNav() {
@@ -72,7 +54,6 @@ export default function BottomNav() {
       {TABS.map(({ label, path, Icon }) => {
         const active = pathname === path || (path !== '/' && pathname.startsWith(path));
 
-        // Center FAB
         if (label === null) {
           return (
             <button
@@ -80,7 +61,7 @@ export default function BottomNav() {
               onClick={() => navigate(path)}
               className="flex-1 flex flex-col items-center justify-center gap-1 py-2 tap-target"
             >
-              <div className="w-11 h-11 rounded-full bg-blue-400 flex items-center justify-center shadow-md text-white -mt-5">
+              <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-md text-white -mt-5">
                 <PlusIcon />
               </div>
               <span className="text-[10px] font-semibold text-gray-400">Log</span>
