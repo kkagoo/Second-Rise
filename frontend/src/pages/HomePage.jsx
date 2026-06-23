@@ -82,7 +82,8 @@ export default function HomePage() {
   const [weekStats, setWeekStats]       = useState(null);
 
   useEffect(() => {
-    client.get('/checkin/today')
+    const localDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+    client.get('/checkin/today', { params: { localDate } })
       .then((res) => setTodayCheckin(res.data))
       .catch(() => setTodayCheckin(null));
     client.get('/biometrics/today')

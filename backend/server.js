@@ -20,6 +20,7 @@ const healthRoutes      = require('./routes/healthRoutes');
 const biometricsRoutes  = require('./routes/biometricsRoutes');
 const watchRoutes       = require('./routes/watchRoutes');
 const wearableReviewRoutes = require('./routes/wearableReviewRoutes');
+const deleteAccountRoutes  = require('./routes/deleteAccountRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -60,6 +61,7 @@ app.use('/api/health',      healthRoutes);
 app.use('/api/biometrics',  biometricsRoutes);
 app.use('/api/watch',       watchRoutes);
 app.use('/api/wearable-review', wearableReviewRoutes);
+app.use('/api/account',        deleteAccountRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

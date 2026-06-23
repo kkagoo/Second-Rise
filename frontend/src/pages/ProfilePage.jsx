@@ -800,6 +800,13 @@ export default function ProfilePage() {
           Sign out
         </button>
 
+        <button
+          onClick={() => navigate('/delete-account')}
+          className="w-full text-sm font-semibold text-red-400 hover:text-red-600 tap-target transition-colors py-2"
+        >
+          Delete account
+        </button>
+
         <div className="h-4" />
       </div>
     </div>

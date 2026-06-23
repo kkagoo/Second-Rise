@@ -32,6 +32,7 @@ import HistoryPage          from './pages/HistoryPage';
 import WeeklyReflectionPage from './pages/WeeklyReflectionPage';
 import ProfilePage          from './pages/ProfilePage';
 import VideoLibraryPage     from './pages/VideoLibraryPage';
+import DeleteAccountPage    from './pages/DeleteAccountPage';
 
 function AuthGuard({ children }) {
   const { token, loading } = useAuth();
@@ -66,7 +67,8 @@ export default function App() {
             <Route path="/history"   element={<AuthGuard><HistoryPage /></AuthGuard>} />
             <Route path="/videos"    element={<AuthGuard><VideoLibraryPage /></AuthGuard>} />
             <Route path="/reflection" element={<AuthGuard><WeeklyReflectionPage /></AuthGuard>} />
-            <Route path="/profile"   element={<AuthGuard><ProfilePage /></AuthGuard>} />
+            <Route path="/profile"          element={<AuthGuard><ProfilePage /></AuthGuard>} />
+            <Route path="/delete-account"   element={<AuthGuard><DeleteAccountPage /></AuthGuard>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

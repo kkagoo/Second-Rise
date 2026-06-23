@@ -102,11 +102,13 @@ function submitCheckin(req, res, next) {
 
 function getTodayCheckin(req, res, next) {
   try {
+    // Use client-provided local date if available, fall back to UTC
+    const today = req.query.localDate || new Date().toISOString().slice(0, 10);
     const checkin = db.prepare(`
       SELECT * FROM daily_checkins
-      WHERE user_id = ? AND date(timestamp) = date('now')
+      WHERE user_id = ? AND date(timestamp) = ?
       ORDER BY timestamp DESC LIMIT 1
-    `).get(req.userId);
+    `).get(req.userId, today);
 
     if (!checkin) return res.json(null);
 
