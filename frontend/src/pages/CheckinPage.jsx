@@ -60,6 +60,7 @@ export default function CheckinPage() {
         body_map_flags:     l2.body_map_flags,
         secondary_flags:    l2.secondary_flags,
         workout_preference: l1.workoutPref,
+        localDate:          new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD in user's local timezone
       });
       const res = await client.get('/recommend');
       clearInterval(msgTimer);
