@@ -4,12 +4,15 @@ const db = require('../db/database');
 function getResources(req, res, next) {
   try {
     const { type, q, featured } = req.query;
-    let query = 'SELECT * FROM resources WHERE active = 1';
+    let query = `
+      SELECT r.*,
+        (SELECT COUNT(*) FROM resource_bookmarks rb WHERE rb.resource_id = r.id) AS saves_count
+      FROM resources r WHERE r.active = 1`;
     const params = [];
-    if (type)            { query += ' AND type = ?'; params.push(type); }
-    if (q)               { query += ' AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)'; params.push(`%${q}%`, `%${q}%`, `%${q}%`); }
-    if (featured === 'true') { query += ' AND featured = 1'; }
-    query += ' ORDER BY featured DESC, date_added DESC';
+    if (type)            { query += ' AND r.type = ?'; params.push(type); }
+    if (q)               { query += ' AND (r.title LIKE ? OR r.description LIKE ? OR r.tags LIKE ?)'; params.push(`%${q}%`, `%${q}%`, `%${q}%`); }
+    if (featured === 'true') { query += ' AND r.featured = 1'; }
+    query += ' ORDER BY r.featured DESC, r.date_added DESC';
 
     const resources = db.prepare(query).all(...params);
 
