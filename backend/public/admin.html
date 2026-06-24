@@ -193,6 +193,10 @@
       <label>Tags (comma-separated)</label>
       <input type="text" id="res-tags" placeholder="hormones, fitness, nutrition" />
     </div>
+    <div class="form-group">
+      <label>Thumbnail URL (optional)</label>
+      <input type="url" id="res-thumbnail" placeholder="https://… (image shown on card)" />
+    </div>
     <div class="form-group" style="display:flex;align-items:center;gap:10px">
       <input type="checkbox" id="res-featured" style="width:auto" />
       <label for="res-featured" style="text-transform:none;font-size:14px;font-weight:500">Feature this resource (shown at the top)</label>
@@ -359,7 +363,7 @@ function openResourceModal(id) {
   document.getElementById('modal-title').textContent = id ? 'Edit Resource' : 'Add Resource';
   document.getElementById('res-id').value = id || '';
   if (!id) {
-    ['res-title','res-author','res-url','res-desc','res-tags'].forEach(f => document.getElementById(f).value = '');
+    ['res-title','res-author','res-url','res-desc','res-tags','res-thumbnail'].forEach(f => document.getElementById(f).value = '');
     document.getElementById('res-type').value = 'article';
     document.getElementById('res-featured').checked = false;
   }
@@ -376,6 +380,7 @@ function editResource(id) {
   document.getElementById('res-url').value = r.url;
   document.getElementById('res-desc').value = r.description || '';
   document.getElementById('res-tags').value = (JSON.parse(r.tags || '[]')).join(', ');
+  document.getElementById('res-thumbnail').value = r.thumbnail_url || '';
   document.getElementById('res-featured').checked = !!r.featured;
   document.getElementById('modal-title').textContent = 'Edit Resource';
   document.getElementById('resource-modal').classList.add('open');
@@ -393,8 +398,9 @@ async function saveResource() {
     author:      document.getElementById('res-author').value.trim(),
     url:         document.getElementById('res-url').value.trim(),
     description: document.getElementById('res-desc').value.trim(),
-    tags:        document.getElementById('res-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-    featured:    document.getElementById('res-featured').checked,
+    tags:          document.getElementById('res-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    thumbnail_url: document.getElementById('res-thumbnail').value.trim() || null,
+    featured:      document.getElementById('res-featured').checked,
     active:      true,
   };
   if (!body.title || !body.url) { alert('Title and URL are required.'); return; }

@@ -42,19 +42,34 @@ function ResourceCard({ resource, onToggleBookmark }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block bg-white border border-gray-100 rounded-2xl p-4 shadow-sm tap-target"
+      className="block bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm tap-target"
     >
-      <div className="flex items-start justify-between gap-2">
+      {/* Thumbnail */}
+      {resource.thumbnail_url && (
+        <img
+          src={resource.thumbnail_url}
+          alt={resource.title}
+          className="w-full h-36 object-cover"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+      )}
+
+      <div className="flex items-start justify-between gap-2 p-4">
         <div className="flex-1 min-w-0">
-          {/* Type badge */}
-          <span className={`inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 mb-2 ${TYPE_COLOR[resource.type] || 'bg-gray-100 text-gray-500'}`}>
-            {resource.type}
-          </span>
-          {resource.featured && (
-            <span className="ml-1.5 inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 mb-2 bg-yellow-50 text-yellow-600">
-              ⭐ Featured
+          {/* Type badge + saves count */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 ${TYPE_COLOR[resource.type] || 'bg-gray-100 text-gray-500'}`}>
+              {resource.type}
             </span>
-          )}
+            {resource.featured && (
+              <span className="inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 bg-yellow-50 text-yellow-600">
+                ⭐ Featured
+              </span>
+            )}
+            {resource.saves_count >= 10 && (
+              <span className="text-xs text-gray-400">{resource.saves_count} saves</span>
+            )}
+          </div>
           <h3 className="text-sm font-bold text-gray-900 leading-snug mb-1">{resource.title}</h3>
           {resource.author && (
             <p className="text-xs text-gray-400 mb-1.5">by {resource.author}</p>

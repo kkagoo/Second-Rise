@@ -62,12 +62,12 @@ function getResources(req, res, next) {
 
 function createResource(req, res, next) {
   try {
-    const { title, type, author, url, description, tags, featured } = req.body;
+    const { title, type, author, url, description, tags, featured, thumbnail_url } = req.body;
     if (!title || !url) return res.status(400).json({ error: 'title and url are required' });
     const result = db.prepare(`
-      INSERT INTO resources (title, type, author, url, description, tags, featured)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(title, type || 'article', author || '', url, description || '', JSON.stringify(tags || []), featured ? 1 : 0);
+      INSERT INTO resources (title, type, author, url, description, tags, featured, thumbnail_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(title, type || 'article', author || '', url, description || '', JSON.stringify(tags || []), featured ? 1 : 0, thumbnail_url || null);
     res.status(201).json({ id: result.lastInsertRowid });
   } catch (err) { next(err); }
 }
@@ -75,22 +75,24 @@ function createResource(req, res, next) {
 function updateResource(req, res, next) {
   try {
     const { id } = req.params;
-    const { title, type, author, url, description, tags, featured, active } = req.body;
+    const { title, type, author, url, description, tags, featured, active, thumbnail_url } = req.body;
     db.prepare(`
       UPDATE resources SET
-        title       = COALESCE(?, title),
-        type        = COALESCE(?, type),
-        author      = COALESCE(?, author),
-        url         = COALESCE(?, url),
-        description = COALESCE(?, description),
-        tags        = COALESCE(?, tags),
-        featured    = COALESCE(?, featured),
-        active      = COALESCE(?, active)
+        title         = COALESCE(?, title),
+        type          = COALESCE(?, type),
+        author        = COALESCE(?, author),
+        url           = COALESCE(?, url),
+        description   = COALESCE(?, description),
+        tags          = COALESCE(?, tags),
+        featured      = COALESCE(?, featured),
+        active        = COALESCE(?, active),
+        thumbnail_url = ?
       WHERE id = ?
     `).run(title, type, author, url, description,
            tags !== undefined ? JSON.stringify(tags) : undefined,
            featured !== undefined ? (featured ? 1 : 0) : undefined,
            active !== undefined ? (active ? 1 : 0) : undefined,
+           thumbnail_url !== undefined ? thumbnail_url : null,
            id);
     res.json({ message: 'Updated.' });
   } catch (err) { next(err); }
