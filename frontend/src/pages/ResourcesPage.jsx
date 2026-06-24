@@ -44,17 +44,19 @@ function ResourceCard({ resource, onToggleBookmark }) {
       rel="noopener noreferrer"
       className="block bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm tap-target"
     >
-      {/* Thumbnail */}
-      {resource.thumbnail_url && (
-        <img
-          src={resource.thumbnail_url}
-          alt={resource.title}
-          className="w-full h-36 object-cover"
-          onError={(e) => { e.target.style.display = 'none'; }}
-        />
-      )}
+      <div className="flex items-start gap-3 p-4">
+        {/* Thumbnail — portrait on the left */}
+        {resource.thumbnail_url && (
+          <div className="flex-shrink-0 w-16 h-20 rounded-xl overflow-hidden bg-gray-100">
+            <img
+              src={resource.thumbnail_url}
+              alt={resource.title}
+              className="w-full h-full object-cover"
+              onError={(e) => { e.target.parentElement.style.display = 'none'; }}
+            />
+          </div>
+        )}
 
-      <div className="flex items-start justify-between gap-2 p-4">
         <div className="flex-1 min-w-0">
           {/* Type badge + saves count */}
           <div className="flex items-center gap-2 mb-2">
@@ -66,7 +68,7 @@ function ResourceCard({ resource, onToggleBookmark }) {
                 ⭐ Featured
               </span>
             )}
-            {resource.saves_count >= 10 && (
+            {resource.saves_count != null && resource.saves_count >= 10 && (
               <span className="text-xs text-gray-400">{resource.saves_count} saves</span>
             )}
           </div>
