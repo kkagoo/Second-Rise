@@ -3,7 +3,7 @@ const { computeReadiness } = require('../services/readinessEngine');
 
 function submitCheckin(req, res, next) {
   try {
-    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, workout_preference } = req.body;
+    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, workout_preference, localDate } = req.body;
 
     if (!layer1_energy || !layer1_time_avail) {
       return res.status(400).json({ error: 'Energy and time available are required' });
@@ -17,7 +17,8 @@ function submitCheckin(req, res, next) {
       secondary_flags: secondary_flags ? JSON.stringify(secondary_flags) : null,
     };
 
-    const today = new Date().toISOString().slice(0, 10);
+    // Use client's local date if provided (avoids UTC midnight rollover bug)
+    const today = localDate || new Date().toISOString().slice(0, 10);
     let biometrics = null;
     try {
       const oura = db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
@@ -81,8 +82,8 @@ function submitCheckin(req, res, next) {
 
     const result = db.prepare(`
       INSERT INTO daily_checkins
-        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness, workout_preference)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness, workout_preference, checkin_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       req.userId,
       layer1_energy,
@@ -92,6 +93,7 @@ function submitCheckin(req, res, next) {
       checkinData.secondary_flags,
       readiness,
       workout_preference || null,
+      today,
     );
 
     res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness });
@@ -106,7 +108,8 @@ function getTodayCheckin(req, res, next) {
     const today = req.query.localDate || new Date().toISOString().slice(0, 10);
     const checkin = db.prepare(`
       SELECT * FROM daily_checkins
-      WHERE user_id = ? AND date(timestamp) = ?
+      WHERE user_id = ?
+        AND COALESCE(checkin_date, date(timestamp)) = ?
       ORDER BY timestamp DESC LIMIT 1
     `).get(req.userId, today);
 
