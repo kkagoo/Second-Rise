@@ -1,44 +1,47 @@
 /**
  * emailService.js
- * Sends transactional emails via Gmail SMTP using nodemailer.
+ * Sends transactional emails via SendGrid HTTP API (port 443 — works on Railway).
  *
- * Required Railway env vars:
- *   GMAIL_USER  — your Gmail address (e.g. secondrise.app@gmail.com)
- *   GMAIL_PASS  — a Gmail App Password (NOT your regular password)
- *
- * How to create an App Password:
- *   1. Go to myaccount.google.com → Security
- *   2. Enable 2-Step Verification if not already on
- *   3. Search "App Passwords" in the search bar
- *   4. Create one named "Second Rise Railway"
- *   5. Copy the 16-character code → use as GMAIL_PASS
+ * Setup (one-time):
+ *   1. Sign up free at https://sendgrid.com
+ *   2. Go to Settings → Sender Authentication → Single Sender Verification
+ *   3. Add and verify your Gmail address as a sender
+ *   4. Go to Settings → API Keys → Create API Key (Full Access)
+ *   5. In Railway → backend service → Variables, add:
+ *        SENDGRID_API_KEY = SG.xxxxxxxxxxxx
+ *        SENDGRID_FROM    = your-verified@gmail.com
  */
 
-const nodemailer = require('nodemailer');
-
-function createTransport() {
-  const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_PASS;
-  if (!user || !pass) return null;
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user, pass },
-  });
-}
-
 async function sendEmail({ to, subject, html }) {
-  const transporter = createTransport();
-  if (!transporter) {
-    console.warn('[email] GMAIL_USER / GMAIL_PASS not set — skipping email to', to);
+  const apiKey  = process.env.SENDGRID_API_KEY;
+  const fromEmail = process.env.SENDGRID_FROM;
+
+  if (!apiKey || !fromEmail) {
+    console.warn('[email] SENDGRID_API_KEY / SENDGRID_FROM not set — skipping email to', to);
     return;
   }
+
   try {
-    await transporter.sendMail({
-      from: `"Second Rise" <${process.env.GMAIL_USER}>`,
-      to,
-      subject,
-      html,
+    const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: to }] }],
+        from: { email: fromEmail, name: 'Second Rise' },
+        subject,
+        content: [{ type: 'text/html', value: html }],
+      }),
     });
+
+    if (!res.ok) {
+      const body = await res.text();
+      console.error('[email] SendGrid error:', res.status, body);
+    } else {
+      console.log('[email] Welcome email sent to', to);
+    }
   } catch (err) {
     console.error('[email] Failed to send email:', err.message);
   }
