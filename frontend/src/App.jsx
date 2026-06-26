@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CheckinProvider } from './context/CheckinContext';
@@ -51,7 +52,8 @@ function AuthGuard({ children }) {
   const location = useLocation();
   if (loading) return <Spinner />;
   if (!token) return <Navigate to="/login" replace />;
-  if (profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
+  // Only force onboarding on native app — web users go straight to home
+  if (Capacitor.isNativePlatform() && profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
   return <AppLayout>{children}</AppLayout>;

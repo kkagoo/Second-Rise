@@ -345,10 +345,21 @@ export default function ProfilePage() {
       client.get('/fitbit/status').then((r) => { if (r.data?.connected) setFitbitStatus('connected'); }).catch(() => {});
       client.get('/withings/status').then((r) => { if (r.data?.connected) setWithingsStatus('connected'); }).catch(() => {});
     }
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') refreshStatuses();
-    });
-    return () => document.removeEventListener('visibilitychange', refreshStatuses);
+
+    // visibilitychange fires when WebView regains focus (both iOS and Android)
+    const onVisibility = () => { if (document.visibilityState === 'visible') refreshStatuses(); };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Capacitor Browser emits browserFinished when the in-app browser closes
+    let browserListener = null;
+    import('@capacitor/browser').then(({ Browser }) => {
+      Browser.addListener('browserFinished', refreshStatuses).then((l) => { browserListener = l; });
+    }).catch(() => {});
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      if (browserListener) browserListener.remove();
+    };
   }, []);
 
   async function handleOuraConnect() {
