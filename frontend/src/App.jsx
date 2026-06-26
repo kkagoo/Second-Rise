@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CheckinProvider } from './context/CheckinContext';
 import AppLayout from './components/ui/AppLayout';
@@ -37,9 +37,11 @@ import LogActivityPage      from './pages/LogActivityPage';
 import PainHistoryPage      from './pages/PainHistoryPage';
 import ResourcesPage        from './pages/ResourcesPage';
 import ActivityChoicePage   from './pages/ActivityChoicePage';
+import OnboardingPage       from './pages/OnboardingPage';
 
 function AuthGuard({ children }) {
-  const { token, loading } = useAuth();
+  const { token, loading, profile } = useAuth();
+  const location = useLocation();
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -48,6 +50,10 @@ function AuthGuard({ children }) {
     );
   }
   if (!token) return <Navigate to="/login" replace />;
+  // Redirect new users to onboarding (skip if already on /onboarding)
+  if (profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
   return <AppLayout>{children}</AppLayout>;
 }
 
@@ -77,6 +83,7 @@ export default function App() {
             <Route path="/pain-history"     element={<AuthGuard><PainHistoryPage /></AuthGuard>} />
             <Route path="/resources"        element={<AuthGuard><ResourcesPage /></AuthGuard>} />
             <Route path="/move"             element={<AuthGuard><ActivityChoicePage /></AuthGuard>} />
+            <Route path="/onboarding"       element={<AuthGuard><OnboardingPage /></AuthGuard>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

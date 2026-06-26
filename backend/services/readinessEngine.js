@@ -64,6 +64,20 @@ function computeReadiness(userId, checkinData, profile, biometrics = null) {
     }
   }
 
+  // Self-reported sleep quality (1–5 scale) — only applied when no wearable biometrics
+  if (!biometrics && checkinData.sleep_quality != null) {
+    const sq = Number(checkinData.sleep_quality);
+    if (sq === 1)      score -= 15;
+    else if (sq === 2) score -= 10;
+    else if (sq === 3) score -= 3;
+    else if (sq >= 5)  score += 3;
+  }
+
+  // Menstruation signal — mild fatigue adjustment
+  if (checkinData.menstruating === 'yes') {
+    score -= 5;
+  }
+
   // Biometric modifiers
   if (biometrics) {
     const hrv = biometrics.hrv_balance ?? null;

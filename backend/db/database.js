@@ -60,6 +60,8 @@ try {
     )
   `);
 } catch (_) {}
+try { db.exec("ALTER TABLE daily_checkins ADD COLUMN sleep_quality INTEGER"); }      catch (_) {}
+try { db.exec("ALTER TABLE daily_checkins ADD COLUMN menstruating TEXT"); }          catch (_) {}
 try { db.exec("ALTER TABLE recommendations ADD COLUMN body_focus TEXT"); }          catch (_) {}
 try { db.exec("ALTER TABLE daily_wearable_reviews ADD COLUMN cardio_load REAL"); }  catch (_) {}
 

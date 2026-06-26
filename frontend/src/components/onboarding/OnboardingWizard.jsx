@@ -14,6 +14,23 @@ const STEPS = [
     ],
   },
   {
+    title: 'Your menopause journey',
+    fields: [
+      {
+        key: 'menopause_stage',
+        label: 'Where are you in your journey?',
+        options: [
+          { value: 'perimenopause',      label: 'Perimenopause — periods are changing' },
+          { value: 'early_menopause',    label: 'Early menopause (within 5 years)' },
+          { value: 'postmenopause',      label: 'Postmenopause (5+ years)' },
+          { value: 'surgical_menopause', label: 'Surgical menopause' },
+          { value: 'not_sure',           label: 'Not sure / still figuring it out' },
+          { value: 'not_applicable',     label: 'Not applicable' },
+        ],
+      },
+    ],
+  },
+  {
     title: 'Activity & equipment',
     fields: [
       {
@@ -32,6 +49,19 @@ const STEPS = [
       },
     ],
   },
+  {
+    title: 'Connect your device',
+    custom: 'wearable',
+  },
+];
+
+const WEARABLES = [
+  { label: 'Oura Ring',                icon: '💍', color: 'bg-violet-50 border-violet-200' },
+  { label: 'Whoop',                    icon: '⌚', color: 'bg-blue-50 border-blue-200' },
+  { label: 'Apple Health',             icon: '🍎', color: 'bg-red-50 border-red-200' },
+  { label: 'Google Fit / Pixel Watch', icon: '📱', color: 'bg-green-50 border-green-200' },
+  { label: 'Fitbit',                   icon: '🔴', color: 'bg-teal-50 border-teal-200' },
+  { label: 'Withings',                 icon: '🔵', color: 'bg-cyan-50 border-cyan-200' },
 ];
 
 function OptionButton({ label, selected, onClick }) {
@@ -56,6 +86,7 @@ export default function OnboardingWizard({ onComplete }) {
   const [error, setError] = useState('');
 
   const currentStep = STEPS[step];
+  const isLast = step === STEPS.length - 1;
 
   function setValue(key, value, multi = false) {
     if (multi) {
@@ -72,6 +103,7 @@ export default function OnboardingWizard({ onComplete }) {
   }
 
   function isStepComplete() {
+    if (currentStep.custom === 'wearable') return true; // optional step
     return currentStep.fields.every((f) => {
       const val = answers[f.key];
       if (f.multi) return true; // multi is optional
@@ -92,11 +124,9 @@ export default function OnboardingWizard({ onComplete }) {
     }
   }
 
-  const isLast = step === STEPS.length - 1;
-
   return (
     <div className="min-h-screen bg-cream flex flex-col px-5 pt-12 pb-8 safe-bottom">
-      {/* Progress dots */}
+      {/* Progress bar */}
       <div className="flex gap-2 mb-8">
         {STEPS.map((_, i) => (
           <div
@@ -124,29 +154,51 @@ export default function OnboardingWizard({ onComplete }) {
             <h1 className="text-2xl font-bold text-earth-900">{currentStep.title}</h1>
           </div>
 
-          {currentStep.fields.map((field) => (
-            <div key={field.key}>
-              <p className="text-sm font-semibold text-earth-700 mb-3">{field.label}</p>
-              <div className="flex flex-col gap-2">
-                {field.options.map((opt) => {
-                  const val  = typeof opt === 'string' ? opt : opt.value;
-                  const lbl  = typeof opt === 'string' ? opt : opt.label;
-                  const curr = answers[field.key];
-                  const selected = field.multi
-                    ? (curr || []).includes(val)
-                    : curr === val;
-                  return (
-                    <OptionButton
-                      key={String(val)}
-                      label={lbl}
-                      selected={selected}
-                      onClick={() => setValue(field.key, val, field.multi)}
-                    />
-                  );
-                })}
+          {currentStep.custom === 'wearable' ? (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-earth-600">
+                Second Rise works best with your sleep and recovery data. Connect your device anytime from your Profile.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {WEARABLES.map((w) => (
+                  <div
+                    key={w.label}
+                    className={`rounded-2xl border-2 px-3 py-3 text-sm font-medium flex items-center gap-2 ${w.color}`}
+                  >
+                    <span className="text-lg">{w.icon}</span>
+                    <span className="text-earth-700 leading-tight">{w.label}</span>
+                  </div>
+                ))}
               </div>
+              <p className="text-xs text-earth-400 mt-1">
+                No wearable? No problem — you can log how you feel each day and still get a great workout recommendation.
+              </p>
             </div>
-          ))}
+          ) : (
+            currentStep.fields.map((field) => (
+              <div key={field.key}>
+                <p className="text-sm font-semibold text-earth-700 mb-3">{field.label}</p>
+                <div className="flex flex-col gap-2">
+                  {field.options.map((opt) => {
+                    const val  = typeof opt === 'string' ? opt : opt.value;
+                    const lbl  = typeof opt === 'string' ? opt : opt.label;
+                    const curr = answers[field.key];
+                    const selected = field.multi
+                      ? (curr || []).includes(val)
+                      : curr === val;
+                    return (
+                      <OptionButton
+                        key={String(val)}
+                        label={lbl}
+                        selected={selected}
+                        onClick={() => setValue(field.key, val, field.multi)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
         </motion.div>
       </AnimatePresence>
 
@@ -163,7 +215,7 @@ export default function OnboardingWizard({ onComplete }) {
           disabled={!isStepComplete() || saving}
           className="flex-1"
         >
-          {saving ? 'Saving…' : isLast ? 'Finish setup' : 'Next →'}
+          {saving ? 'Saving…' : isLast ? 'Start my journey →' : 'Next →'}
         </Button>
       </div>
     </div>

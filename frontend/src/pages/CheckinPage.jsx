@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import client from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import Layer1Form from '../components/checkin/Layer1Form';
 import Layer2BodyMap from '../components/checkin/Layer2BodyMap';
 import AnimatedTransition from '../components/ui/AnimatedTransition';
@@ -23,6 +24,7 @@ export default function CheckinPage() {
   const [error, setError] = useState('');
   const [biometrics, setBiometrics] = useState(null);
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   useEffect(() => {
     client.get('/biometrics/today')
@@ -61,6 +63,8 @@ export default function CheckinPage() {
         secondary_flags:    l2.secondary_flags,
         workout_preference: l1.workoutPref,
         localDate:          new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD in user's local timezone
+        sleep_quality:      l1.sleepQuality ?? null,
+        menstruating:       l1.menstruating ?? null,
       });
       const res = await client.get('/recommend');
       clearInterval(msgTimer);
@@ -123,7 +127,9 @@ export default function CheckinPage() {
                               ? 'Google Fit'
                             : s === 'fitbit'
                               ? 'Fitbit'
-                              : 'Apple Health')
+                              : s === 'withings'
+                                ? 'Withings'
+                                : 'Apple Health')
                         .filter((v, i, a) => a.indexOf(v) === i)
                         .join(' + ')} today
                     </p>
@@ -143,6 +149,8 @@ export default function CheckinPage() {
                   onComplete={handleLayer1Complete}
                   suggestion={biometrics?.energy_suggestion}
                   tempFlag={biometrics?.temp_flag}
+                  menopauseStage={profile?.menopause_stage ?? null}
+                  hasBiometrics={!!biometrics}
                 />
               </>
             ) : (

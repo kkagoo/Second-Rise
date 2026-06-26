@@ -20,6 +20,28 @@ function deriveBodyFocus(video) {
   return type || null;
 }
 
+// Get 7-day checkin trend for longitudinal recommendations
+function getCheckinTrend(userId) {
+  try {
+    return db.prepare(`
+      SELECT
+        COALESCE(checkin_date, date(timestamp)) AS date,
+        layer1_energy,
+        computed_readiness,
+        pain_flagged,
+        sleep_quality,
+        menstruating,
+        body_map_flags
+      FROM daily_checkins
+      WHERE user_id = ?
+        AND COALESCE(checkin_date, date(timestamp)) >= date('now', '-7 days')
+      ORDER BY timestamp DESC
+    `).all(userId);
+  } catch {
+    return [];
+  }
+}
+
 // Get last 7 days of workout schedule for balance tracking
 function getWeeklySchedule(userId) {
   const rows = db.prepare(`
@@ -193,9 +215,12 @@ async function getRecommendation(req, res, next) {
       weeklySchedule = getWeeklySchedule(req.userId);
     } catch { /* no history */ }
 
+    // 7-day checkin trend (available for all users, not just Oura)
+    const checkinTrend = getCheckinTrend(req.userId);
+
     const { primary, alternatives } = await generateRecommendation(
       profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos,
-      biometrics, history, baseline, weeklySchedule
+      biometrics, history, baseline, weeklySchedule, checkinTrend
     );
 
     const bodyFocus = deriveBodyFocus(primary);

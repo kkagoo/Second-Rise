@@ -3,7 +3,7 @@ const { computeReadiness } = require('../services/readinessEngine');
 
 function submitCheckin(req, res, next) {
   try {
-    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, workout_preference, localDate } = req.body;
+    const { layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, workout_preference, localDate, sleep_quality, menstruating } = req.body;
 
     if (!layer1_energy || !layer1_time_avail) {
       return res.status(400).json({ error: 'Energy and time available are required' });
@@ -15,6 +15,8 @@ function submitCheckin(req, res, next) {
       layer1_energy,
       body_map_flags: body_map_flags ? JSON.stringify(body_map_flags) : null,
       secondary_flags: secondary_flags ? JSON.stringify(secondary_flags) : null,
+      sleep_quality: sleep_quality != null ? Number(sleep_quality) : null,
+      menstruating: menstruating || null,
     };
 
     // Use client's local date if provided (avoids UTC midnight rollover bug)
@@ -82,8 +84,8 @@ function submitCheckin(req, res, next) {
 
     const result = db.prepare(`
       INSERT INTO daily_checkins
-        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness, workout_preference, checkin_date)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (user_id, layer1_energy, layer1_time_avail, pain_flagged, body_map_flags, secondary_flags, computed_readiness, workout_preference, checkin_date, sleep_quality, menstruating)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       req.userId,
       layer1_energy,
@@ -94,6 +96,8 @@ function submitCheckin(req, res, next) {
       readiness,
       workout_preference || null,
       today,
+      checkinData.sleep_quality,
+      checkinData.menstruating,
     );
 
     res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness });

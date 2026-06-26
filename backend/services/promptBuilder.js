@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = []) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = []) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -158,6 +158,41 @@ Start with what feels best today — a strength session (full body or lower body
     ? `\nUSER'S WORKOUT PREFERENCE TODAY: "${checkin.workout_preference}" — honour this request if it's safe and appropriate given recovery data. If it conflicts with safety (e.g. she wants high-intensity strength but her recovery is very low), choose a gentler version of that type and explain why.\n`
     : '\nUSER\'S WORKOUT PREFERENCE TODAY: "Surprise me" — use your best judgement based on recovery data and weekly balance.\n';
 
+  // 7-day checkin trend section (all users, not just wearable users)
+  let checkinTrendSection = '';
+  if (checkinTrend.length >= 2) {
+    const avgEnergy = Math.round(checkinTrend.reduce((s, d) => s + (d.layer1_energy || 0), 0) / checkinTrend.length);
+    const avgReadiness = Math.round(checkinTrend.reduce((s, d) => s + (d.computed_readiness || 0), 0) / checkinTrend.length);
+    const painDays = checkinTrend.filter((d) => d.pain_flagged).length;
+    const sleepEntries = checkinTrend.filter((d) => d.sleep_quality != null);
+    const avgSleep = sleepEntries.length > 0
+      ? (sleepEntries.reduce((s, d) => s + d.sleep_quality, 0) / sleepEntries.length).toFixed(1)
+      : null;
+    const menstruatingDays = checkinTrend.filter((d) => d.menstruating === 'yes').length;
+
+    const dayLines = checkinTrend.map((d) => {
+      const parts = [
+        `energy=${d.layer1_energy}`,
+        `readiness=${d.computed_readiness}`,
+        d.pain_flagged ? 'pain=yes' : 'pain=no',
+        d.sleep_quality != null ? `sleep_quality=${d.sleep_quality}/5` : null,
+        d.menstruating ? `menstruating=${d.menstruating}` : null,
+      ].filter(Boolean);
+      return `  ${d.date}: ${parts.join(', ')}`;
+    }).join('\n');
+
+    checkinTrendSection = `
+7-DAY CHECK-IN TREND (self-reported):
+${dayLines}
+
+Pattern summary:
+- Average self-reported energy: ${avgEnergy}/85 | Average readiness: ${avgReadiness}/85
+- Pain flagged: ${painDays}/${checkinTrend.length} days this week${avgSleep != null ? `\n- Average sleep quality (self-reported): ${avgSleep}/5` : ''}${menstruatingDays > 0 ? `\n- Menstruating: ${menstruatingDays} day(s) this week` : ''}
+
+Use this trend to inform today's recommendation: if energy has been consistently low, prefer recovery-focused sessions even if today's score looks moderate.
+`;
+  }
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -176,7 +211,7 @@ ${bodyFlagsText}
 ${secondaryText}
 ${workoutPrefText}
 COMPUTED READINESS: ${readiness} / 85
-${biometricsSection}${trendsSection}${weeklyScheduleSection}
+${biometricsSection}${checkinTrendSection}${trendsSection}${weeklyScheduleSection}
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):
