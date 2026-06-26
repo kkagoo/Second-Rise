@@ -183,6 +183,11 @@ export default function ProfilePage() {
   const [fitbitLastSync, setFitbitLastSync] = useState(null);
   const [fitbitError, setFitbitError] = useState('');
 
+  // Withings state
+  const [withingsStatus, setWithingsStatus] = useState(null);
+  const [withingsLastSync, setWithingsLastSync] = useState(null);
+  const [withingsError, setWithingsError] = useState('');
+
   useEffect(() => {
     if (profile) {
       setForm({
@@ -234,6 +239,28 @@ export default function ProfilePage() {
           }).catch(() => {});
         }
       }).catch(() => {});
+
+      client.get('/withings/status').then((r) => {
+        if (r.data?.connected) {
+          setWithingsStatus('connected');
+          client.get('/withings/today').then((t) => {
+            if (t.data?.synced_at) setWithingsLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
+      const withingsResult = params.get('withings');
+      if (withingsResult === 'connected') {
+        setWithingsStatus('connected');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (withingsResult === 'denied') {
+        setWithingsStatus('denied');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (withingsResult === 'error') {
+        setWithingsStatus('error');
+        setWithingsError('Something went wrong during Withings authorization.');
+        window.history.replaceState({}, '', window.location.pathname);
+      }
 
       // Handle OAuth callback result in URL params
       const params = new URLSearchParams(window.location.search);
@@ -300,6 +327,7 @@ export default function ProfilePage() {
       client.get('/whoop/status').then((r) => { if (r.data?.connected) setWhoopStatus('connected'); }).catch(() => {});
       client.get('/googlefit/status').then((r) => { if (r.data?.connected) setGoogleFitStatus('connected'); }).catch(() => {});
       client.get('/fitbit/status').then((r) => { if (r.data?.connected) setFitbitStatus('connected'); }).catch(() => {});
+      client.get('/withings/status').then((r) => { if (r.data?.connected) setWithingsStatus('connected'); }).catch(() => {});
     }
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') refreshStatuses();
@@ -432,6 +460,32 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleWithingsConnect() {
+    setWithingsStatus('connecting');
+    setWithingsError('');
+    try {
+      const res = await client.get('/withings/connect', { params: { returnTo: '/profile' } });
+      await openOAuth(res.data.url);
+      setWithingsStatus(null);
+    } catch (err) {
+      setWithingsStatus('error');
+      setWithingsError(err.response?.data?.error || 'Could not start Withings authorization.');
+    }
+  }
+
+  async function handleWithingsSync() {
+    setWithingsStatus('connecting');
+    setWithingsError('');
+    try {
+      const syncRes = await client.post('/withings/sync');
+      setWithingsStatus('connected');
+      setWithingsLastSync(syncRes.data?.synced_at ?? null);
+    } catch (err) {
+      setWithingsStatus('error');
+      setWithingsError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
   function set(key, val) {
     setForm((f) => ({ ...f, [key]: val }));
     setSaved(false);
@@ -508,6 +562,12 @@ export default function ProfilePage() {
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
               <span>🍎</span> Apple Health
+            </a>
+            <a
+              href="#withings-section"
+              className="flex items-center gap-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+            >
+              <span>⬜</span> Withings
             </a>
           </div>
         </div>
@@ -688,6 +748,55 @@ export default function ProfilePage() {
           )}
           {appleError && (
             <p className="text-red-500 text-xs">{appleError}</p>
+          )}
+        </Section>
+        </div>
+
+        {/* Withings */}
+        <div id="withings-section">
+        <Section title="Withings" subtitle="Sleep, resting heart rate, and activity from ScanWatch, Sleep Analyzer, and other Withings devices">
+          {withingsStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                <p className="text-sm text-green-600 font-semibold">
+                  Connected{withingsLastSync ? ` — synced ${new Date(withingsLastSync).toLocaleString()}` : ''}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleWithingsSync}
+                disabled={withingsStatus === 'connecting'}
+                className="w-full border-2 border-teal-300 text-teal-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-teal-50 disabled:opacity-50"
+              >
+                {withingsStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+              </button>
+              <button
+                type="button"
+                onClick={handleWithingsConnect}
+                disabled={withingsStatus === 'connecting'}
+                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+              >
+                Reconnect Withings
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {withingsStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
+              <button
+                type="button"
+                onClick={handleWithingsConnect}
+                disabled={withingsStatus === 'connecting'}
+                className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {withingsStatus === 'connecting' ? 'Redirecting…' : 'Connect with Withings'}
+              </button>
+            </div>
+          )}
+          {withingsError && (
+            <p className="text-red-500 text-xs">{withingsError}</p>
           )}
         </Section>
         </div>

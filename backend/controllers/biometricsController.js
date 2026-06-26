@@ -150,7 +150,31 @@ function getToday(req, res, next) {
       });
     }
 
-    // Priority 4: Apple Health
+    // Priority 4: Withings
+    const withings = db.prepare(
+      'SELECT * FROM withings_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    if (withings) {
+      return res.json({
+        sleep_source:        'withings',
+        recovery_source:     null,
+        sleep_score:         null,
+        recovery_score:      null,
+        hrv_balance:         null,
+        hrv_rmssd_ms:        null,
+        resting_hr:          withings.resting_hr,
+        total_sleep_min:     withings.total_sleep_min,
+        rem_sleep_min:       withings.rem_sleep_min,
+        deep_sleep_min:      withings.deep_sleep_min,
+        body_temp_deviation: null,
+        steps:               null,
+        energy_suggestion:   energySuggestionFromFitbit(withings.resting_hr, withings.total_sleep_min),
+        temp_flag:           false,
+      });
+    }
+
+    // Priority 5: Apple Health
     const apple = db.prepare(
       'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);

@@ -39,6 +39,27 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN fitbit_user_id TEXT"); }    
 try { db.exec("ALTER TABLE daily_checkins ADD COLUMN workout_preference TEXT"); }   catch (_) {}
 try { db.exec("ALTER TABLE daily_checkins ADD COLUMN checkin_date TEXT"); }         catch (_) {}
 try { db.exec("ALTER TABLE resources ADD COLUMN thumbnail_url TEXT"); }             catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN withings_access_token TEXT"); }   catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN withings_refresh_token TEXT"); }  catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN withings_token_expires_at TEXT"); } catch (_) {}
+
+// Withings daily data table
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS withings_daily_data (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      date            TEXT NOT NULL,
+      resting_hr      INTEGER,
+      total_sleep_min INTEGER,
+      rem_sleep_min   INTEGER,
+      deep_sleep_min  INTEGER,
+      light_sleep_min INTEGER,
+      synced_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, date)
+    )
+  `);
+} catch (_) {}
 try { db.exec("ALTER TABLE recommendations ADD COLUMN body_focus TEXT"); }          catch (_) {}
 try { db.exec("ALTER TABLE daily_wearable_reviews ADD COLUMN cardio_load REAL"); }  catch (_) {}
 
