@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
 
@@ -59,8 +59,11 @@ export default function LogActivityPage() {
   const [saving, setSaving]         = useState(false);
   const [done, setDone]             = useState(false);
   const [error, setError]           = useState('');
+  const savingRef                   = useRef(false); // prevents double-tap race condition
 
   async function save() {
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     setError('');
     try {
@@ -78,6 +81,7 @@ export default function LogActivityPage() {
     } catch {
       setError('Could not save. Please try again.');
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }
