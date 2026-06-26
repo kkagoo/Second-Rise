@@ -7,9 +7,16 @@ export default function OnboardingPage() {
   const { refreshProfile } = useAuth();
   const navigate = useNavigate();
 
-  async function handleComplete() {
+  async function handleComplete(selectedWearable) {
     await refreshProfile();
-    navigate('/');
+    if (selectedWearable === 'apple_health') {
+      navigate('/profile');
+    } else if (selectedWearable) {
+      // Route to Profile with autoconnect param — Profile fires OAuth and receives the callback
+      navigate(`/profile?autoconnect=${selectedWearable}`);
+    } else {
+      navigate('/');
+    }
   }
 
   return <OnboardingWizard onComplete={handleComplete} />;

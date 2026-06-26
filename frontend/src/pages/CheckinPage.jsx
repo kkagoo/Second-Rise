@@ -124,9 +124,9 @@ export default function CheckinPage() {
                           : s === 'whoop'
                             ? 'Whoop'
                             : s === 'google_fit'
-                              ? 'Google Fit'
+                              ? 'Google Health'
                             : s === 'fitbit'
-                              ? 'Fitbit'
+                              ? 'Google Health'
                               : s === 'withings'
                                 ? 'Withings'
                                 : 'Apple Health')

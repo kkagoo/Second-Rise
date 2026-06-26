@@ -3,6 +3,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../ui/Button';
 import client from '../../api/client';
 
+async function openOAuth(url) {
+  try {
+    const { Browser } = await import('@capacitor/browser');
+    await Browser.open({ url });
+  } catch {
+    window.location.href = url;
+  }
+}
+
+const WEARABLE_ENDPOINTS = {
+  oura:         '/oura/connect',
+  whoop:        '/whoop/connect',
+  google_fit:   '/googlefit/connect', // covers Fitbit via Google Health
+  withings:     '/withings/connect',
+  apple_health: null, // file upload — handled in Profile
+};
+
 const STEPS = [
   {
     title: 'About you',
@@ -55,13 +72,13 @@ const STEPS = [
   },
 ];
 
+// id matches the profile page connect button keys
 const WEARABLES = [
-  { label: 'Oura Ring',                icon: '💍', color: 'bg-violet-50 border-violet-200' },
-  { label: 'Whoop',                    icon: '⌚', color: 'bg-blue-50 border-blue-200' },
-  { label: 'Apple Health',             icon: '🍎', color: 'bg-red-50 border-red-200' },
-  { label: 'Google Fit / Pixel Watch', icon: '📱', color: 'bg-green-50 border-green-200' },
-  { label: 'Fitbit',                   icon: '🔴', color: 'bg-teal-50 border-teal-200' },
-  { label: 'Withings',                 icon: '🔵', color: 'bg-cyan-50 border-cyan-200' },
+  { id: 'oura',         label: 'Oura Ring',     badge: 'O', bg: '#1a1a2e', fg: '#fff' },
+  { id: 'whoop',        label: 'Whoop',          badge: 'W', bg: '#111827', fg: '#fff' },
+  { id: 'apple_health', label: 'Apple Health',   badge: 'A', bg: '#ef4444', fg: '#fff', note: 'file import' },
+  { id: 'google_fit',   label: 'Google Health',  badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
+  { id: 'withings',     label: 'Withings',       badge: 'W', bg: '#0070CC', fg: '#fff' },
 ];
 
 function OptionButton({ label, selected, onClick }) {
@@ -80,8 +97,10 @@ function OptionButton({ label, selected, onClick }) {
 }
 
 export default function OnboardingWizard({ onComplete }) {
+  const [welcomed, setWelcomed] = useState(false);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [selectedWearable, setSelectedWearable] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -116,7 +135,8 @@ export default function OnboardingWizard({ onComplete }) {
     setError('');
     try {
       await client.put('/profile', { ...answers, onboarding_complete: true });
-      onComplete();
+      // Hand off to OnboardingPage — Profile handles all OAuth so the callback lands there
+      onComplete(selectedWearable);
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');
     } finally {
@@ -124,19 +144,50 @@ export default function OnboardingWizard({ onComplete }) {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-cream flex flex-col px-5 pt-12 pb-8 safe-bottom">
-      {/* Progress bar */}
-      <div className="flex gap-2 mb-8">
-        {STEPS.map((_, i) => (
-          <div
-            key={i}
-            className={`h-2 flex-1 rounded-full transition-all duration-300 ${
-              i <= step ? 'bg-sunrise-500' : 'bg-earth-100'
-            }`}
-          />
-        ))}
+  if (!welcomed) {
+    return (
+      <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '64px 20px 20px' }}>
+          <div className="text-4xl mb-6">🌅</div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+            Welcome — we're so glad you're here.
+          </h1>
+          <p className="text-gray-600 text-base leading-relaxed mb-4">
+            Second Rise is built for women navigating perimenopause and beyond. Every recommendation is shaped around you — your energy, your body, your stage.
+          </p>
+          <p className="text-gray-600 text-base leading-relaxed mb-4">
+            We have a few quick questions to make things as useful as possible. Everything is optional — you can always skip and update from your Profile later.
+          </p>
+          <p className="text-gray-400 text-sm">Takes about 1 minute.</p>
+        </div>
+
+        <div style={{ padding: '12px 20px 40px', borderTop: '1px solid #f3f4f6', background: '#fff' }}>
+          <button
+            onClick={() => setWelcomed(true)}
+            style={{ width: '100%', background: '#4BA3E3', color: '#fff', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none' }}
+          >
+            Let's go →
+          </button>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
+      {/* Scrollable content area */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '48px 20px 16px' }}>
+        {/* Progress bar */}
+        <div className="flex gap-2 mb-8">
+          {STEPS.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 flex-1 rounded-full transition-all duration-300 ${
+                i <= step ? 'bg-sunrise-500' : 'bg-earth-100'
+              }`}
+            />
+          ))}
+        </div>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -145,7 +196,7 @@ export default function OnboardingWizard({ onComplete }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="flex-1 flex flex-col gap-6"
+          className="flex flex-col gap-6"
         >
           <div>
             <p className="text-xs font-semibold text-earth-400 uppercase tracking-widest mb-1">
@@ -156,23 +207,54 @@ export default function OnboardingWizard({ onComplete }) {
 
           {currentStep.custom === 'wearable' ? (
             <div className="flex flex-col gap-4">
-              <p className="text-sm text-earth-600">
-                Second Rise works best with your sleep and recovery data. Connect your device anytime from your Profile.
+              <p className="text-sm text-gray-600">
+                Do you have a wearable? Tap it below and we'll take you straight to connect it. You can also do this anytime from your Profile.
               </p>
-              <div className="grid grid-cols-2 gap-2">
-                {WEARABLES.map((w) => (
-                  <div
-                    key={w.label}
-                    className={`rounded-2xl border-2 px-3 py-3 text-sm font-medium flex items-center gap-2 ${w.color}`}
-                  >
-                    <span className="text-lg">{w.icon}</span>
-                    <span className="text-earth-700 leading-tight">{w.label}</span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 gap-3">
+                {WEARABLES.map((w) => {
+                  const isSelected = selectedWearable === w.id;
+                  return (
+                    <button
+                      key={w.id}
+                      onClick={() => setSelectedWearable(isSelected ? null : w.id)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '10px',
+                        padding: '12px', borderRadius: '14px', border: 'none',
+                        background: isSelected ? w.bg : '#f9fafb',
+                        cursor: 'pointer', textAlign: 'left',
+                        outline: isSelected ? `2px solid ${w.bg}` : '2px solid transparent',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      <div style={{
+                        width: 36, height: 36, borderRadius: '50%',
+                        background: isSelected ? '#fff3' : w.bg,
+                        color: isSelected ? '#fff' : w.fg,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: 700, fontSize: 15, flexShrink: 0,
+                      }}>
+                        {w.badge}
+                      </div>
+                      <span style={{ lineHeight: 1.3 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: isSelected ? '#fff' : '#374151', display: 'block' }}>
+                          {w.label}
+                        </span>
+                        {w.note && (
+                          <span style={{ fontSize: 11, color: isSelected ? '#ffffffaa' : '#9ca3af' }}>
+                            {w.note}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-              <p className="text-xs text-earth-400 mt-1">
-                No wearable? No problem — you can log how you feel each day and still get a great workout recommendation.
-              </p>
+              <button
+                onClick={() => setSelectedWearable(null)}
+                style={{ fontSize: 13, color: '#9ca3af', background: 'none', border: 'none', padding: '4px 0', textAlign: 'left', cursor: 'pointer', textDecoration: selectedWearable === null ? 'underline' : 'none' }}
+              >
+                I don't have a wearable right now
+              </button>
             </div>
           ) : (
             currentStep.fields.map((field) => (
@@ -203,20 +285,25 @@ export default function OnboardingWizard({ onComplete }) {
       </AnimatePresence>
 
       {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+      </div>{/* end scrollable area */}
 
-      <div className="flex gap-3 mt-8">
+      {/* Sticky bottom nav — always visible */}
+      <div style={{ padding: '12px 20px 40px', borderTop: '1px solid #f3f4f6', background: '#fff', display: 'flex', gap: '12px' }}>
         {step > 0 && (
-          <Button variant="secondary" onClick={() => setStep((s) => s - 1)} className="flex-1">
+          <button
+            onClick={() => setStep((s) => s - 1)}
+            style={{ flex: 1, background: '#f3f4f6', color: '#374151', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none' }}
+          >
             Back
-          </Button>
+          </button>
         )}
-        <Button
+        <button
           onClick={isLast ? handleFinish : () => setStep((s) => s + 1)}
           disabled={!isStepComplete() || saving}
-          className="flex-1"
+          style={{ flex: 1, background: (!isStepComplete() || saving) ? '#93c5fd' : '#4BA3E3', color: '#fff', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none', opacity: (!isStepComplete() || saving) ? 0.6 : 1 }}
         >
-          {saving ? 'Saving…' : isLast ? 'Start my journey →' : 'Next →'}
-        </Button>
+          {saving ? 'Saving…' : isLast ? (selectedWearable ? 'Connect my device →' : 'Start my journey →') : 'Next →'}
+        </button>
       </div>
     </div>
   );

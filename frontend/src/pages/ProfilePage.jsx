@@ -249,6 +249,9 @@ export default function ProfilePage() {
         }
       }).catch(() => {});
 
+      // Handle OAuth callback result in URL params
+      const params = new URLSearchParams(window.location.search);
+
       const withingsResult = params.get('withings');
       if (withingsResult === 'connected') {
         setWithingsStatus('connected');
@@ -261,9 +264,6 @@ export default function ProfilePage() {
         setWithingsError('Something went wrong during Withings authorization.');
         window.history.replaceState({}, '', window.location.pathname);
       }
-
-      // Handle OAuth callback result in URL params
-      const params = new URLSearchParams(window.location.search);
       const ouraResult = params.get('oura');
       if (ouraResult === 'connected') {
         setOuraStatus('connected');
@@ -319,6 +319,22 @@ export default function ProfilePage() {
       }
     }
   }, [profile]);
+
+  // Auto-trigger connect when routed here from onboarding with ?autoconnect=X
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const autoconnect = params.get('autoconnect');
+    if (!autoconnect) return;
+    window.history.replaceState({}, '', window.location.pathname);
+    // Small delay so the component is fully mounted before opening a browser
+    const t = setTimeout(() => {
+      if (autoconnect === 'oura')       handleOuraConnect();
+      else if (autoconnect === 'whoop') handleWhoopConnect();
+      else if (autoconnect === 'google_fit') handleGoogleFitConnect();
+      else if (autoconnect === 'withings') handleWithingsConnect();
+    }, 400);
+    return () => clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Refresh wearable statuses when app resumes from OAuth browser
   useEffect(() => {
@@ -555,7 +571,7 @@ export default function ProfilePage() {
               href="#googlefit-section"
               className="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>🟢</span> Google Fit / Pixel Watch
+              <span>🟢</span> Google Health
             </a>
             <a
               href="#apple-section"
@@ -671,15 +687,15 @@ export default function ProfilePage() {
         </Section>
         </div>
 
-        {/* Google Fit / Pixel Watch */}
+        {/* Google Health (incl. Pixel Watch + Fitbit) */}
         <div id="googlefit-section">
-        <Section title="Google Fit / Pixel Watch" subtitle="Connect Google Fit to sync steps, heart rate summaries, and sleep sessions for Pixel Watch-compatible Google health data">
-          {googleFitStatus === 'connected' ? (
+        <Section title="Google Health" subtitle="Covers Pixel Watch, Fitbit, and other Android wearables — syncs steps, heart rate, and sleep via Google Health">
+          {googleFitStatus === 'connected' || fitbitStatus === 'connected' ? (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
                 <p className="text-sm text-green-600 font-semibold">
-                  Connected{googleFitLastSync ? ` — synced ${new Date(googleFitLastSync).toLocaleString()}` : ''}
+                  Connected{(googleFitLastSync || fitbitLastSync) ? ` — synced ${new Date(googleFitLastSync || fitbitLastSync).toLocaleString()}` : ''}
                 </p>
               </div>
               <button
@@ -696,11 +712,8 @@ export default function ProfilePage() {
                 disabled={googleFitStatus === 'connecting'}
                 className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
               >
-                Reconnect Google Fit
+                Reconnect Google Health
               </button>
-              <p className="text-xs text-amber-700">
-                Google Fit APIs are being deprecated in 2026, so treat this as a bridge rather than the long-term Android strategy.
-              </p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -713,7 +726,7 @@ export default function ProfilePage() {
                 disabled={googleFitStatus === 'connecting'}
                 className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
               >
-                {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Fit'}
+                {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Health'}
               </button>
             </div>
           )}

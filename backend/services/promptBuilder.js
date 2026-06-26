@@ -47,7 +47,7 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
             : biometrics.sleep_source === 'whoop'
               ? 'Whoop'
               : biometrics.sleep_source === 'google_fit'
-                ? 'Google Fit / Pixel Watch'
+                ? 'Google Health'
               : biometrics.sleep_source === 'fitbit'
                 ? 'Fitbit / Pixel Watch'
                 : 'Apple Health'

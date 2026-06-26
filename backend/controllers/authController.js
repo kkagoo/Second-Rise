@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db/database');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 function signup(req, res, next) {
   try {
@@ -20,6 +21,10 @@ function signup(req, res, next) {
     db.prepare('INSERT INTO user_profiles (user_id) VALUES (?)').run(result.lastInsertRowid);
 
     const token = jwt.sign({ userId: result.lastInsertRowid }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    // Fire-and-forget — don't let email failure block signup
+    sendWelcomeEmail(email.toLowerCase().trim()).catch((e) => console.error('[signup] welcome email failed:', e));
+
     res.status(201).json({ token, userId: result.lastInsertRowid });
   } catch (err) {
     next(err);

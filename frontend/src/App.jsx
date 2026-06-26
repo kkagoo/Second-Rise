@@ -39,22 +39,30 @@ import ResourcesPage        from './pages/ResourcesPage';
 import ActivityChoicePage   from './pages/ActivityChoicePage';
 import OnboardingPage       from './pages/OnboardingPage';
 
+const Spinner = () => (
+  <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="w-10 h-10 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
+// Full app layout with bottom nav
 function AuthGuard({ children }) {
   const { token, loading, profile } = useAuth();
   const location = useLocation();
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <Spinner />;
   if (!token) return <Navigate to="/login" replace />;
-  // Redirect new users to onboarding (skip if already on /onboarding)
   if (profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
   return <AppLayout>{children}</AppLayout>;
+}
+
+// No bottom nav — used for fullscreen flows like onboarding
+function BareAuthGuard({ children }) {
+  const { token, loading } = useAuth();
+  if (loading) return <Spinner />;
+  if (!token) return <Navigate to="/login" replace />;
+  return <>{children}</>;
 }
 
 export default function App() {
@@ -83,7 +91,7 @@ export default function App() {
             <Route path="/pain-history"     element={<AuthGuard><PainHistoryPage /></AuthGuard>} />
             <Route path="/resources"        element={<AuthGuard><ResourcesPage /></AuthGuard>} />
             <Route path="/move"             element={<AuthGuard><ActivityChoicePage /></AuthGuard>} />
-            <Route path="/onboarding"       element={<AuthGuard><OnboardingPage /></AuthGuard>} />
+            <Route path="/onboarding"       element={<BareAuthGuard><OnboardingPage /></BareAuthGuard>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
