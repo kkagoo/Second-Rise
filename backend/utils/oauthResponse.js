@@ -20,7 +20,18 @@ const BASE_STYLES = `
   p  { color: #6b7280; font-size: 15px; line-height: 1.5; margin: 0; }
 `;
 
-const CLOSE_SCRIPT = `<script>try { window.close(); } catch(e) {}</script>`;
+// On native (Capacitor Browser), window.close() shuts the in-app browser immediately.
+// On web, browsers block window.close() for tabs not opened by script, so we fall back
+// to redirecting to /profile after 1.5 s — giving the close attempt time to fire first.
+const CLOSE_SCRIPT = `
+<script>
+  var closed = false;
+  try { window.close(); closed = true; } catch(e) {}
+  // Fallback for web browsers where window.close() is blocked
+  if (!closed) {
+    setTimeout(function() { window.location.href = '/profile'; }, 1500);
+  }
+<\/script>`;
 
 function oauthSuccessPage(device) {
   return `<!DOCTYPE html>
@@ -29,13 +40,16 @@ function oauthSuccessPage(device) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${device} Connected</title>
-  <style>${BASE_STYLES}</style>
+  <style>${BASE_STYLES}
+  .link { display: inline-block; margin-top: 20px; color: #4BA3E3; font-size: 14px; text-decoration: none; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div>
     <div class="icon">✅</div>
     <h1>${device} connected!</h1>
     <p>You can close this tab and return to Second Rise.</p>
+    <a class="link" href="/profile">Return to Second Rise →</a>
   </div>
   ${CLOSE_SCRIPT}
 </body>
@@ -49,13 +63,16 @@ function oauthDeniedPage(device) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Authorization Cancelled</title>
-  <style>${BASE_STYLES}</style>
+  <style>${BASE_STYLES}
+  .link { display: inline-block; margin-top: 20px; color: #4BA3E3; font-size: 14px; text-decoration: none; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div>
     <div class="icon">↩️</div>
     <h1>Authorization cancelled</h1>
     <p>No problem — you can connect ${device} later from your Profile.</p>
+    <a class="link" href="/profile">Return to Second Rise →</a>
   </div>
   ${CLOSE_SCRIPT}
 </body>
@@ -69,13 +86,16 @@ function oauthErrorPage(device, detail = '') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Connection Error</title>
-  <style>${BASE_STYLES}</style>
+  <style>${BASE_STYLES}
+  .link { display: inline-block; margin-top: 20px; color: #4BA3E3; font-size: 14px; text-decoration: none; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div>
     <div class="icon">⚠️</div>
     <h1>Couldn't connect ${device}</h1>
     <p>${detail || 'Please close this tab and try again from the app.'}</p>
+    <a class="link" href="/profile">Return to Second Rise →</a>
   </div>
   ${CLOSE_SCRIPT}
 </body>
