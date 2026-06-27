@@ -100,13 +100,17 @@ const AGE_RANGES = [
   { label: '45–49', value: '45-49' },
   { label: '50–54', value: '50-54' },
   { label: '55–60', value: '55-60' },
+  { label: '61–65', value: '61-65' },
+  { label: '65+',   value: '65+' },
 ];
 
 const MENO_STAGES = [
-  { label: 'Perimenopause',  value: 'perimenopause' },
-  { label: 'Postmenopause',  value: 'postmenopause' },
-  { label: 'Surgical',       value: 'surgical' },
-  { label: 'Not sure',       value: 'unsure' },
+  { label: 'Perimenopause',        value: 'perimenopause' },
+  { label: 'Early menopause',      value: 'early_menopause' },
+  { label: 'Postmenopause',        value: 'postmenopause' },
+  { label: 'Surgical menopause',   value: 'surgical_menopause' },
+  { label: 'Not sure',             value: 'not_sure' },
+  { label: 'Not applicable',       value: 'not_applicable' },
 ];
 
 const HRT_OPTIONS = [

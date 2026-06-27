@@ -50,7 +50,7 @@ async function sendEmail({ to, subject, html }) {
 async function sendWelcomeEmail(email) {
   await sendEmail({
     to: email,
-    subject: 'Welcome to Second Rise 🌅',
+    subject: 'Your Second Rise account is ready',
     html: `
       <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #1f2937;">
         <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #111827;">

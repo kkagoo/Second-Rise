@@ -26,7 +26,7 @@ const STEPS = [
     fields: [
       {
         key: 'age_range', label: 'Age range',
-        options: ['40-44', '45-49', '50-54', '55-60'],
+        options: ['40-44', '45-49', '50-54', '55-60', '61-65', '65+'],
       },
     ],
   },
