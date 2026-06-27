@@ -94,8 +94,9 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const loading = todayCheckin === undefined;
+  const loading     = todayCheckin === undefined;
   const checkinDone = !!todayCheckin;
+  const sessionDone = !!todayCheckin?.session_done;
 
   // Energy suggestion label derived from recovery/sleep
   const energyScore = biometrics?.energy_suggestion;
@@ -167,15 +168,24 @@ export default function HomePage() {
           )}
 
           <h1 className="text-2xl font-bold text-gray-900 leading-tight">
-            {checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
+            {sessionDone ? 'Great work\ntoday 🎉' : checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
           </h1>
 
-          <button
-            onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
-            className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
-          >
-            {checkinDone ? 'View workout →' : 'Start check-in →'}
-          </button>
+          {sessionDone ? (
+            <button
+              onClick={() => navigate('/recommend')}
+              className="mt-4 bg-gray-100 text-gray-600 font-semibold rounded-2xl px-6 py-3 text-sm"
+            >
+              See end-of-day review →
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
+              className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
+            >
+              {checkinDone ? 'View workout →' : 'Start check-in →'}
+            </button>
+          )}
         </div>
 
         {/* Illustration — sits top-right, no spacer div needed */}

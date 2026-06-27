@@ -122,7 +122,16 @@ function getTodayCheckin(req, res, next) {
     if (checkin.body_map_flags) checkin.body_map_flags = JSON.parse(checkin.body_map_flags);
     if (checkin.secondary_flags) checkin.secondary_flags = JSON.parse(checkin.secondary_flags);
 
-    res.json(checkin);
+    // Check if the user already completed a session today (feedback submitted)
+    const feedbackToday = db.prepare(`
+      SELECT 1 FROM post_session_feedback psf
+      JOIN recommendations r ON r.rec_id = psf.rec_id
+      WHERE psf.user_id = ?
+        AND date(psf.timestamp) = ?
+      LIMIT 1
+    `).get(req.userId, today);
+
+    res.json({ ...checkin, session_done: !!feedbackToday });
   } catch (err) {
     next(err);
   }
