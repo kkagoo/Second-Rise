@@ -261,12 +261,13 @@ export default function HomePage() {
             <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-2">Post-workout review</p>
             {workoutReview ? (
               <>
-                <p className="text-base font-bold text-orange-700 mb-1">
-                  {workoutReview.adherence_status === 'followed' && 'On plan ✓'}
-                  {workoutReview.adherence_status === 'over' && 'Went above plan'}
-                  {workoutReview.adherence_status === 'under' && 'Below plan'}
-                  {workoutReview.adherence_status === 'unknown' && 'Waiting for wearable data'}
-                </p>
+                {workoutReview.adherence_status !== 'unknown' && (
+                  <p className="text-base font-bold text-orange-700 mb-1">
+                    {workoutReview.adherence_status === 'followed' && 'On plan ✓'}
+                    {workoutReview.adherence_status === 'over' && 'Went above plan'}
+                    {workoutReview.adherence_status === 'under' && 'Below plan'}
+                  </p>
+                )}
                 <p className="text-sm text-gray-600 leading-relaxed">{workoutReview.summary}</p>
                 {workoutReview.recommendation && (
                   <p className="text-sm text-gray-700 font-medium leading-relaxed mt-2">{workoutReview.recommendation}</p>

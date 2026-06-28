@@ -138,12 +138,13 @@ export default function RecommendationPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">End-of-day review</p>
-                    <h2 className="text-base font-bold text-gray-900 mt-1">
-                      {review.adherence_status === 'followed' && 'On plan'}
-                      {review.adherence_status === 'over' && 'Went over plan'}
-                      {review.adherence_status === 'under' && 'Below plan'}
-                      {review.adherence_status === 'unknown' && 'Waiting for data'}
-                    </h2>
+                    {review.adherence_status !== 'unknown' && (
+                      <h2 className="text-base font-bold text-gray-900 mt-1">
+                        {review.adherence_status === 'followed' && 'On plan'}
+                        {review.adherence_status === 'over' && 'Went over plan'}
+                        {review.adherence_status === 'under' && 'Below plan'}
+                      </h2>
+                    )}
                   </div>
                   <span className="bg-gray-50 text-gray-500 text-xs font-semibold rounded-full px-3 py-1">
                     {review.actual_load}
