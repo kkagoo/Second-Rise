@@ -63,7 +63,7 @@ function ResourceCard({ resource, onToggleBookmark }) {
             <span className={`inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 ${TYPE_COLOR[resource.type] || 'bg-gray-100 text-gray-500'}`}>
               {resource.type}
             </span>
-            {resource.featured && (
+            {!!resource.featured && (
               <span className="inline-block text-xs font-semibold rounded-full px-2.5 py-0.5 bg-yellow-50 text-yellow-600">
                 ⭐ Featured
               </span>

@@ -192,6 +192,11 @@ export default function ProfilePage() {
   const [withingsLastSync, setWithingsLastSync] = useState(null);
   const [withingsError, setWithingsError] = useState('');
 
+  // Garmin state
+  const [garminStatus, setGarminStatus] = useState(null);
+  const [garminLastSync, setGarminLastSync] = useState(null);
+  const [garminError, setGarminError] = useState('');
+
   useEffect(() => {
     if (profile) {
       setForm({
@@ -249,6 +254,15 @@ export default function ProfilePage() {
           setWithingsStatus('connected');
           client.get('/withings/today').then((t) => {
             if (t.data?.synced_at) setWithingsLastSync(t.data.synced_at);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+
+      client.get('/garmin/status').then((r) => {
+        if (r.data?.connected) {
+          setGarminStatus('connected');
+          client.get('/garmin/today').then((t) => {
+            if (t.data?.synced_at) setGarminLastSync(t.data.synced_at);
           }).catch(() => {});
         }
       }).catch(() => {});
@@ -336,6 +350,7 @@ export default function ProfilePage() {
       else if (autoconnect === 'whoop') handleWhoopConnect();
       else if (autoconnect === 'google_fit') handleGoogleFitConnect();
       else if (autoconnect === 'withings') handleWithingsConnect();
+      else if (autoconnect === 'garmin') handleGarminConnect();
     }, 400);
     return () => clearTimeout(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -348,6 +363,7 @@ export default function ProfilePage() {
       client.get('/googlefit/status').then((r) => { if (r.data?.connected) setGoogleFitStatus('connected'); }).catch(() => {});
       client.get('/fitbit/status').then((r) => { if (r.data?.connected) setFitbitStatus('connected'); }).catch(() => {});
       client.get('/withings/status').then((r) => { if (r.data?.connected) setWithingsStatus('connected'); }).catch(() => {});
+      client.get('/garmin/status').then((r) => { if (r.data?.connected) setGarminStatus('connected'); }).catch(() => {});
     }
 
     // visibilitychange fires when WebView regains focus (both iOS and Android)
@@ -514,6 +530,32 @@ export default function ProfilePage() {
     } catch (err) {
       setWithingsStatus('error');
       setWithingsError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleGarminConnect() {
+    setGarminStatus('connecting');
+    setGarminError('');
+    try {
+      const res = await client.get('/garmin/connect');
+      await openOAuth(res.data.url);
+      setGarminStatus(null);
+    } catch (err) {
+      setGarminStatus('error');
+      setGarminError(err.response?.data?.error || 'Could not start Garmin authorization.');
+    }
+  }
+
+  async function handleGarminDisconnect() {
+    setGarminStatus('connecting');
+    setGarminError('');
+    try {
+      await client.delete('/garmin/disconnect');
+      setGarminStatus(null);
+      setGarminLastSync(null);
+    } catch (err) {
+      setGarminStatus('error');
+      setGarminError(err.response?.data?.error || 'Disconnect failed.');
     }
   }
 
@@ -825,6 +867,48 @@ export default function ProfilePage() {
           )}
           {withingsError && (
             <p className="text-red-500 text-xs">{withingsError}</p>
+          )}
+        </Section>
+        </div>
+
+        {/* Garmin */}
+        <div id="garmin-section">
+        <Section title="Garmin" subtitle="Steps, heart rate, sleep, stress, and Body Battery from Garmin Connect — data arrives when your device syncs">
+          {garminStatus === 'connected' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                <p className="text-sm text-green-600 font-semibold">
+                  Connected{garminLastSync ? ` — last data ${new Date(garminLastSync).toLocaleString()}` : ''}
+                </p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">Garmin pushes data automatically when your watch syncs — no manual sync needed.</p>
+              <button
+                type="button"
+                onClick={handleGarminDisconnect}
+                disabled={garminStatus === 'connecting'}
+                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+              >
+                {garminStatus === 'connecting' ? 'Disconnecting…' : 'Disconnect Garmin'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {garminStatus === 'denied' && (
+                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+              )}
+              <button
+                type="button"
+                onClick={handleGarminConnect}
+                disabled={garminStatus === 'connecting'}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+              >
+                {garminStatus === 'connecting' ? 'Redirecting…' : 'Connect with Garmin'}
+              </button>
+            </div>
+          )}
+          {garminError && (
+            <p className="text-red-500 text-xs">{garminError}</p>
           )}
         </Section>
         </div>

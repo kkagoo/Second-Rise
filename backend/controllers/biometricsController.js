@@ -174,7 +174,34 @@ function getToday(req, res, next) {
       });
     }
 
-    // Priority 5: Apple Health
+    // Priority 5: Garmin
+    const garmin = db.prepare(
+      'SELECT * FROM garmin_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    if (garmin) {
+      const sleepMin = garmin.total_sleep_sec != null ? Math.round(garmin.total_sleep_sec / 60) : null;
+      return res.json({
+        sleep_source:        'garmin',
+        recovery_source:     null,
+        sleep_score:         garmin.sleep_score,
+        recovery_score:      null,
+        hrv_balance:         null,
+        hrv_rmssd_ms:        null,
+        resting_hr:          garmin.resting_hr,
+        total_sleep_min:     sleepMin,
+        rem_sleep_min:       garmin.rem_sleep_sec != null ? Math.round(garmin.rem_sleep_sec / 60) : null,
+        deep_sleep_min:      garmin.deep_sleep_sec != null ? Math.round(garmin.deep_sleep_sec / 60) : null,
+        body_temp_deviation: null,
+        steps:               garmin.steps,
+        avg_stress:          garmin.avg_stress,
+        body_battery:        garmin.body_battery_charged,
+        energy_suggestion:   energySuggestionFromFitbit(garmin.resting_hr, sleepMin),
+        temp_flag:           false,
+      });
+    }
+
+    // Priority 6: Apple Health
     const apple = db.prepare(
       'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);

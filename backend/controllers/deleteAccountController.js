@@ -15,6 +15,7 @@ function deleteAccount(req, res, next) {
     db.prepare('DELETE FROM whoop_daily_data WHERE user_id = ?').run(uid);
     db.prepare('DELETE FROM fitbit_daily_data WHERE user_id = ?').run(uid);
     db.prepare('DELETE FROM google_fit_daily_data WHERE user_id = ?').run(uid);
+    db.prepare('DELETE FROM garmin_daily_data WHERE user_id = ?').run(uid);
     db.prepare('DELETE FROM apple_health_data WHERE user_id = ?').run(uid);
     db.prepare('DELETE FROM user_profiles WHERE user_id = ?').run(uid);
     db.prepare('DELETE FROM users WHERE id = ?').run(uid);

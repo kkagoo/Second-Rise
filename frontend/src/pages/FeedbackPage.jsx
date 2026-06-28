@@ -14,16 +14,30 @@ const FLARE_REGIONS = [
   'Wrists/Hands', 'Feet/Ankles', 'Upper Back', 'Core/Abdominal',
 ];
 
+const ENERGY_LEVELS = [
+  { value: 'high',   label: 'High',     icon: '⚡' },
+  { value: 'medium', label: 'Moderate', icon: '〰️' },
+  { value: 'low',    label: 'Low',      icon: '🪫' },
+];
+
+const SORENESS_LEVELS = [
+  { value: 'none',        label: 'None',        icon: '✓' },
+  { value: 'mild',        label: 'Mild',        icon: '~' },
+  { value: 'significant', label: 'Significant', icon: '!' },
+];
+
 export default function FeedbackPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { rec_id } = location.state || {};
 
-  const [rating, setRating]         = useState(null);
-  const [flares, setFlares]         = useState([]);
-  const [notes, setNotes]           = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError]           = useState('');
+  const [rating, setRating]           = useState(null);
+  const [flares, setFlares]           = useState([]);
+  const [notes, setNotes]             = useState('');
+  const [energyLevel, setEnergyLevel] = useState(null);
+  const [sorenessLevel, setSorenessLevel] = useState(null);
+  const [submitting, setSubmitting]   = useState(false);
+  const [error, setError]             = useState('');
 
   function toggleFlare(region) {
     setFlares((prev) =>
@@ -41,6 +55,8 @@ export default function FeedbackPage() {
         effort_rating:    rating,
         flare_up_regions: flares,
         notes:            notes || undefined,
+        energy_level:     energyLevel   || undefined,
+        soreness_level:   sorenessLevel || undefined,
       });
       navigate('/');
     } catch (err) {
@@ -96,6 +112,48 @@ export default function FeedbackPage() {
                 }`}
               >
                 {region}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Energy level */}
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-1">Energy right now? <span className="text-gray-400 font-normal">(optional)</span></p>
+          <div className="grid grid-cols-3 gap-2">
+            {ENERGY_LEVELS.map((e) => (
+              <button
+                key={e.value}
+                onClick={() => setEnergyLevel(energyLevel === e.value ? null : e.value)}
+                className={`rounded-2xl py-3 text-sm font-semibold border-2 tap-target transition-all duration-150 ${
+                  energyLevel === e.value
+                    ? 'border-blue-400 bg-sky-card text-blue-600'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                }`}
+              >
+                <span className="block text-lg mb-0.5">{e.icon}</span>
+                {e.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Soreness level */}
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-1">Any soreness? <span className="text-gray-400 font-normal">(optional)</span></p>
+          <div className="grid grid-cols-3 gap-2">
+            {SORENESS_LEVELS.map((s) => (
+              <button
+                key={s.value}
+                onClick={() => setSorenessLevel(sorenessLevel === s.value ? null : s.value)}
+                className={`rounded-2xl py-3 text-sm font-semibold border-2 tap-target transition-all duration-150 ${
+                  sorenessLevel === s.value
+                    ? 'border-blue-400 bg-sky-card text-blue-600'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                }`}
+              >
+                <span className="block text-lg mb-0.5">{s.icon}</span>
+                {s.label}
               </button>
             ))}
           </div>

@@ -114,4 +114,39 @@ try {
   `);
 } catch (_) {}
 
+// Garmin OAuth 1.0a tokens
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN garmin_oauth_token TEXT"); }        catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN garmin_oauth_token_secret TEXT"); } catch (_) {}
+
+// Garmin daily health data (pushed via Garmin Health API webhook)
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS garmin_daily_data (
+      id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id               INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      date                  TEXT NOT NULL,
+      steps                 INTEGER,
+      resting_hr            INTEGER,
+      avg_hr                INTEGER,
+      total_sleep_sec       INTEGER,
+      deep_sleep_sec        INTEGER,
+      light_sleep_sec       INTEGER,
+      rem_sleep_sec         INTEGER,
+      awake_sec             INTEGER,
+      sleep_score           INTEGER,
+      avg_stress            INTEGER,
+      spo2_avg              REAL,
+      avg_respiration       REAL,
+      body_battery_charged  INTEGER,
+      active_kcal           INTEGER,
+      synced_at             TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, date)
+    )
+  `);
+} catch (_) {}
+
+// Self-reported recovery fields on post-session feedback (no wearable fallback)
+try { db.exec("ALTER TABLE post_session_feedback ADD COLUMN energy_level TEXT"); }   catch (_) {}
+try { db.exec("ALTER TABLE post_session_feedback ADD COLUMN soreness_level TEXT"); } catch (_) {}
+
 module.exports = db;

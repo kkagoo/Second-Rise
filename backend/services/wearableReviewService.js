@@ -36,7 +36,7 @@ function loadRecommendation(userId, date) {
 function loadFeedback(userId, recId) {
   if (!recId) return null;
   return db.prepare(`
-    SELECT effort_rating, flare_up_regions, notes
+    SELECT effort_rating, flare_up_regions, notes, energy_level, soreness_level
     FROM post_session_feedback
     WHERE user_id = ? AND rec_id = ?
     ORDER BY timestamp DESC
@@ -46,11 +46,12 @@ function loadFeedback(userId, recId) {
 
 function loadWearableData(userId, date) {
   return {
-    whoop: db.prepare('SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
-    oura: db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
-    apple: db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(userId, date),
-    fitbit: db.prepare('SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
+    whoop:     db.prepare('SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
+    oura:      db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
+    apple:     db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(userId, date),
+    fitbit:    db.prepare('SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
     googleFit: db.prepare('SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
+    garmin:    db.prepare('SELECT * FROM garmin_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
   };
 }
 
@@ -64,16 +65,20 @@ function getStepCount(wearable) {
   return wearable.apple?.step_count
     ?? wearable.fitbit?.step_count
     ?? wearable.googleFit?.step_count
+    ?? wearable.garmin?.steps
     ?? wearable.oura?.steps
     ?? null;
 }
 
 function getSleepMin(wearable) {
+  const garminSleepMin = wearable.garmin?.total_sleep_sec != null
+    ? Math.round(wearable.garmin.total_sleep_sec / 60) : null;
   return wearable.whoop?.total_sleep_min
     ?? wearable.oura?.total_sleep_min
     ?? wearable.apple?.sleep_min
     ?? wearable.fitbit?.total_sleep_min
     ?? wearable.googleFit?.total_sleep_min
+    ?? garminSleepMin
     ?? null;
 }
 
@@ -121,39 +126,69 @@ function evaluateStatus(planned, actual, feedback) {
   return 'followed';
 }
 
-function buildCopy({ status, planned, strain, steps, feedback }) {
+function buildCopy({ status, planned, strain, steps, feedback, hasWearable }) {
   const metric = strain != null
     ? `WHOOP strain ended at ${strain}.`
     : steps != null
       ? `Steps ended at ${steps}.`
-      : 'There was not enough end-of-day load data.';
+      : null;
 
   if (status === 'over') {
     return {
-      summary: `You went above the ${planned} plan. ${metric}`,
+      summary: `You went above the ${planned} plan.${metric ? ` ${metric}` : ''}`,
       recommendation: 'Treat tomorrow as recovery-biased unless your morning readiness is clearly high.',
     };
   }
 
   if (status === 'under') {
     return {
-      summary: `You stayed below the ${planned} plan. ${metric}`,
+      summary: `You stayed below the ${planned} plan.${metric ? ` ${metric}` : ''}`,
       recommendation: 'Keep tomorrow flexible and avoid making up missed work in one session.',
     };
   }
 
   if (status === 'followed') {
     return {
-      summary: `You stayed close to the ${planned} plan. ${metric}`,
+      summary: `You stayed close to the ${planned} plan.${metric ? ` ${metric}` : ''}`,
       recommendation: 'Use this as a positive signal for tomorrow, while still checking sleep and soreness.',
     };
   }
 
+  // Unknown — no wearable, use self-reported energy/soreness if available
+  if (!hasWearable && feedback) {
+    const energy   = feedback.energy_level;
+    const soreness = feedback.soreness_level;
+
+    if (energy || soreness) {
+      const energyText   = energy   === 'high'        ? 'energy was high'
+                         : energy   === 'medium'      ? 'energy was moderate'
+                         : energy   === 'low'         ? 'energy was low'
+                         : null;
+      const sorenessText = soreness === 'none'        ? 'no soreness'
+                         : soreness === 'mild'        ? 'mild soreness'
+                         : soreness === 'significant' ? 'significant soreness'
+                         : null;
+
+      const parts = [energyText, sorenessText].filter(Boolean);
+      const selfReport = parts.length ? `You reported ${parts.join(' and ')}.` : '';
+
+      const rec = soreness === 'significant'
+        ? 'Give your body space to recover tomorrow — prioritise sleep and lighter movement.'
+        : energy === 'low'
+        ? 'Low energy after a session is normal. Check in with how you sleep tonight.'
+        : 'You completed your session. Keep an eye on how you feel tomorrow morning.';
+
+      return {
+        summary: `${selfReport} Session logged for the ${planned} plan.`.trim(),
+        recommendation: rec,
+      };
+    }
+  }
+
+  // True fallback — no wearable, no self-report
   return {
-    summary: `Plan was ${planned}, but actual load is not clear yet. ${metric}`,
-    recommendation: feedback
-      ? 'Use your session feedback until more wearable data is available.'
-      : 'Sync your wearable near the end of day to complete this review.',
+    summary: 'You completed your session.',
+    recommendation: 'Keep an eye on how you feel tomorrow morning.',
   };
 }
 
@@ -192,12 +227,14 @@ function evaluateDay(userId, rawDate) {
   const stepCount = getStepCount(wearable);
   const sleepMin = getSleepMin(wearable);
   const recoveryScore = getRecoveryScore(wearable);
+  const hasWearable = Object.values(wearable).some(Boolean);
   const copy = buildCopy({
     status,
     planned: plannedIntensity,
     strain: strainScore,
     steps: stepCount,
     feedback,
+    hasWearable,
   });
 
   db.prepare(`
