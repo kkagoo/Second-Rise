@@ -2,8 +2,12 @@ const wearableReviewService = require('../services/wearableReviewService');
 
 function getReview(req, res, next) {
   try {
-    const review = wearableReviewService.getReview(req.userId, req.query.date)
-      || wearableReviewService.evaluateDay(req.userId, req.query.date);
+    const cached = wearableReviewService.getReview(req.userId, req.query.date);
+    // Re-evaluate if no row yet, or if status is unknown (copy may have improved
+    // since it was last written — e.g. self-report data now available)
+    const review = (!cached || cached.adherence_status === 'unknown')
+      ? wearableReviewService.evaluateDay(req.userId, req.query.date)
+      : cached;
     res.json(review);
   } catch (err) {
     next(err);
