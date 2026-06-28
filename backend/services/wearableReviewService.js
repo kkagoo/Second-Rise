@@ -136,7 +136,7 @@ function buildCopy({ status, planned, strain, steps, feedback, hasWearable }) {
   if (status === 'over') {
     return {
       summary: `You went above the ${planned} plan.${metric ? ` ${metric}` : ''}`,
-      recommendation: 'Treat tomorrow as recovery-biased unless your morning readiness is clearly high.',
+      recommendation: 'Treat tomorrow as recovery-focused unless your morning readiness is clearly high.',
     };
   }
 
