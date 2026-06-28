@@ -80,11 +80,17 @@ export default function HomePage() {
   const [todayCheckin, setTodayCheckin] = useState(undefined);
   const [biometrics, setBiometrics]     = useState(null);
   const [weekStats, setWeekStats]       = useState(null);
+  const [workoutReview, setWorkoutReview] = useState(null);
 
   useEffect(() => {
     const localDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
     client.get('/checkin/today', { params: { localDate } })
-      .then((res) => setTodayCheckin(res.data))
+      .then((res) => {
+        setTodayCheckin(res.data);
+        if (res.data?.session_done) {
+          client.get('/wearable-review/today').then((r) => setWorkoutReview(r.data)).catch(() => {});
+        }
+      })
       .catch(() => setTodayCheckin(null));
     client.get('/biometrics/today')
       .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
@@ -171,14 +177,7 @@ export default function HomePage() {
             {sessionDone ? 'Great work\ntoday 🎉' : checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
           </h1>
 
-          {sessionDone ? (
-            <button
-              onClick={() => navigate('/recommend')}
-              className="mt-4 bg-gray-100 text-gray-600 font-semibold rounded-2xl px-6 py-3 text-sm"
-            >
-              See end-of-day review →
-            </button>
-          ) : (
+          {!sessionDone && (
             <button
               onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
               className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
@@ -256,25 +255,27 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* End of day review */}
-        {checkinDone && (
-          <button
-            onClick={() => navigate('/recommend')}
-            className="w-full flex items-center gap-4 bg-orange-50 hover:bg-orange-100 rounded-2xl p-4 transition-colors text-left border border-orange-100"
-          >
-            <div className="w-14 h-14 rounded-xl bg-orange-100 flex-shrink-0 flex items-center justify-center">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/>
-              </svg>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-orange-700 text-sm">End-of-day review</p>
-              <p className="text-xs text-orange-400 mt-0.5">See how your actual activity compared to your plan</p>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fdba74" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
+        {/* Post-workout review — inline, no navigation */}
+        {sessionDone && (
+          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+            <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-2">Post-workout review</p>
+            {workoutReview ? (
+              <>
+                <p className="text-base font-bold text-orange-700 mb-1">
+                  {workoutReview.adherence_status === 'followed' && 'On plan ✓'}
+                  {workoutReview.adherence_status === 'over' && 'Went above plan'}
+                  {workoutReview.adherence_status === 'under' && 'Below plan'}
+                  {workoutReview.adherence_status === 'unknown' && 'Waiting for wearable data'}
+                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">{workoutReview.summary}</p>
+                {workoutReview.recommendation && (
+                  <p className="text-sm text-gray-700 font-medium leading-relaxed mt-2">{workoutReview.recommendation}</p>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-orange-300">Loading review…</p>
+            )}
+          </div>
         )}
 
         {/* History teaser */}
