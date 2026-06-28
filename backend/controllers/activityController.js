@@ -144,7 +144,13 @@ function getPainHistory(req, res, next) {
     }
 
     const data = checkins.map((c) => {
-      const areas = c.body_map_flags ? (() => { try { return JSON.parse(c.body_map_flags); } catch { return []; } })() : [];
+      const areas = c.body_map_flags ? (() => {
+        try {
+          const parsed = JSON.parse(c.body_map_flags);
+          // body_map_flags stores objects {region, pain_type, severity} — extract region string
+          return parsed.map((a) => (typeof a === 'string' ? a : a.region)).filter(Boolean);
+        } catch { return []; }
+      })() : [];
 
       // Activities from day-before and two-days-before
       const prevDayActs  = actByDay[prevDay(c.day, 1)] || [];

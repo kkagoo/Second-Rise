@@ -89,7 +89,7 @@ export default function PainHistoryPage() {
         const pts = raw.map((d) => ({
           day:      d.day,
           pain:     d.pain_flagged ? 1 : 0,
-          activity: d.activity_count,
+          activity: d.same_day_count ?? d.activity_count ?? 0,
           areas:    d.body_areas || [],
           label:    d.day,
         }));
