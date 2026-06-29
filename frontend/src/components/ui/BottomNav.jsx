@@ -36,14 +36,22 @@ function PlusIcon() {
   );
 }
 
-// Home | [+ FAB] | Resources | History
-// Profile = avatar in Home header
-// Videos = under + choice sheet
+function ProfileIcon({ active }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+    </svg>
+  );
+}
+
+// Home | Resources | [+ FAB] | History | Profile
 const TABS = [
   { label: 'Home',      path: '/',          Icon: HomeIcon },
-  { label: null,        path: '/move',      Icon: PlusIcon }, // choice sheet
   { label: 'Resources', path: '/resources', Icon: ResourcesIcon },
+  { label: null,        path: '/move',      Icon: PlusIcon },
   { label: 'History',   path: '/history',   Icon: HistoryIcon },
+  { label: 'Profile',   path: '/profile',   Icon: ProfileIcon },
 ];
 
 export default function BottomNav() {

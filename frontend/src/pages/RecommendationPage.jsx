@@ -133,7 +133,7 @@ export default function RecommendationPage() {
               </div>
             </div>
 
-            {review && (
+            {review && (review.adherence_status !== 'unknown' || review.feedback_effort_rating !== null) && (
               <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>

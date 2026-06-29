@@ -40,49 +40,38 @@ export default function SessionPage() {
 
   const recId = rec?.rec_id ?? null;
 
-  // Bottom sheet that appears when user taps "I'm done"
+  // Full-screen completion screen when user taps "I'm done"
   if (showConfirm) {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
-        {/* Dimmed top area */}
-        <div
-          className="flex-1 bg-black/20"
-          onClick={() => setShowConfirm(false)}
-        />
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 pb-10">
+        <div className="text-5xl mb-5">🎉</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Nice work!</h2>
+        <p className="text-gray-400 text-sm mb-8 text-center">How did that session go?</p>
 
-        {/* Bottom sheet */}
-        <div className="bg-white rounded-t-3xl px-5 pt-6 pb-10 safe-bottom">
-          <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-6" />
-
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Nice work!</h2>
-          <p className="text-gray-400 text-sm mb-6">How did that session go?</p>
-
-          <div className="flex flex-col gap-3">
-            {recId ? (
-              <>
-                <button
-                  onClick={() => navigate('/feedback', { state: { rec_id: recId } })}
-                  className="w-full bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl py-4 transition-colors tap-target"
-                >
-                  Rate this session →
-                </button>
-                <button
-                  onClick={() => navigate('/')}
-                  className="w-full text-sm text-gray-400 hover:text-gray-600 tap-target transition-colors py-2"
-                >
-                  Done — skip rating
-                </button>
-              </>
-            ) : (
-              /* Library session — no rec_id, can't submit feedback */
+        <div className="flex flex-col gap-3 w-full max-w-sm">
+          {recId ? (
+            <>
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/feedback', { state: { rec_id: recId } })}
                 className="w-full bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl py-4 transition-colors tap-target"
               >
-                Back to home
+                Rate this session →
               </button>
-            )}
-          </div>
+              <button
+                onClick={() => navigate('/')}
+                className="w-full text-sm text-gray-400 hover:text-gray-600 tap-target transition-colors py-2"
+              >
+                Done — skip rating
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => navigate('/')}
+              className="w-full bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl py-4 transition-colors tap-target"
+            >
+              Back to home
+            </button>
+          )}
         </div>
       </div>
     );

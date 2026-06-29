@@ -610,7 +610,6 @@ export default function ProfilePage() {
         <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm flex flex-col gap-1">
           <h2 className="font-bold text-gray-900 text-base">Your data sources</h2>
           <p className="text-xs text-gray-400 mb-3">Connect your devices or import data to personalise recommendations</p>
-          <WorkProfileWarning />
           <div className="flex gap-3 flex-wrap mt-2">
             <a
               href="#oura-section"
