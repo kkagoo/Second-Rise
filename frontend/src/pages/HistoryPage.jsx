@@ -139,12 +139,20 @@ export default function HistoryPage() {
         <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-1">Activity</p>
         <div className="flex items-end justify-between">
           <h1 className="text-2xl font-bold text-gray-900">History</h1>
-          <button
-            onClick={() => navigate('/pain-history')}
-            className="text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl px-3 py-1.5 tap-target"
-          >
-            📊 Pain patterns
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate('/reflection')}
+              className="text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl px-3 py-1.5 tap-target"
+            >
+              📝 Weekly review
+            </button>
+            <button
+              onClick={() => navigate('/pain-history')}
+              className="text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl px-3 py-1.5 tap-target"
+            >
+              📊 Pain patterns
+            </button>
+          </div>
         </div>
       </div>
 
