@@ -78,4 +78,30 @@ async function sendWelcomeEmail(email) {
   });
 }
 
-module.exports = { sendWelcomeEmail };
+async function sendPasswordResetEmail(email, resetUrl) {
+  await sendEmail({
+    to: email,
+    subject: 'Reset your Second Rise password',
+    html: `
+      <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #1f2937;">
+        <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #111827;">Reset your password</h1>
+        <p style="font-size: 16px; line-height: 1.6; color: #4b5563; margin-bottom: 24px;">
+          We received a request to reset the password for your Second Rise account.
+          Click the button below to choose a new password. This link expires in 1 hour.
+        </p>
+        <a href="${resetUrl}" style="display:inline-block; background:#4BA3E3; color:#fff; font-weight:700; font-size:16px; text-decoration:none; padding:14px 28px; border-radius:12px; margin-bottom:24px;">
+          Reset my password →
+        </a>
+        <p style="font-size: 14px; color: #9ca3af; margin-top: 16px;">
+          If you didn't request this, you can safely ignore this email — your password won't change.
+        </p>
+        <p style="font-size: 12px; color: #d1d5db; margin-top: 32px; border-top: 1px solid #f3f4f6; padding-top: 16px;">
+          If the button doesn't work, copy and paste this link:<br>
+          <span style="color:#4BA3E3;">${resetUrl}</span>
+        </p>
+      </div>
+    `,
+  });
+}
+
+module.exports = { sendWelcomeEmail, sendPasswordResetEmail };

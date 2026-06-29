@@ -24,6 +24,8 @@ function OAuthRedirectGuard() {
 
 import LoginPage            from './pages/LoginPage';
 import SignupPage           from './pages/SignupPage';
+import ForgotPasswordPage  from './pages/ForgotPasswordPage';
+import ResetPasswordPage   from './pages/ResetPasswordPage';
 import HomePage             from './pages/HomePage';
 import CheckinPage          from './pages/CheckinPage';
 import RecommendationPage   from './pages/RecommendationPage';
@@ -75,8 +77,10 @@ export default function App() {
           <OAuthRedirectGuard />
           <Routes>
             {/* Public */}
-            <Route path="/login"  element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login"           element={<LoginPage />} />
+            <Route path="/signup"          element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password"  element={<ResetPasswordPage />} />
 
             {/* Protected — all wrapped in AuthGuard + AppLayout */}
             <Route path="/"          element={<AuthGuard><HomePage /></AuthGuard>} />

@@ -104,8 +104,11 @@ export default function LoginPage() {
 
         <p className="text-sm text-gray-500 mt-5">
           No account?{' '}
-          <Link to="/signup" className="text-blue-400 font-semibold">
-            Sign up
+          <Link to="/signup" className="text-blue-400 font-semibold">Sign up</Link>
+        </p>
+        <p className="text-sm mt-2">
+          <Link to="/forgot-password" className="text-gray-400 hover:text-blue-400 transition-colors">
+            Forgot password?
           </Link>
         </p>
       </div>
