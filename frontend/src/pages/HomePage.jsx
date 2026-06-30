@@ -219,11 +219,15 @@ export default function HomePage() {
                     <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
-                  {biometrics?.sleep_source && (
+                  {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null) && (
                     <p className="text-xs text-blue-400 mt-1">
-                      ⌚ Includes your {
-                        { oura: 'Oura Ring', whoop: 'WHOOP', google_fit: 'Google Health', fitbit: 'Fitbit', apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings' }[biometrics.sleep_source] ?? biometrics.sleep_source
-                      } data
+                      ⌚ Includes your {(() => {
+                        const s = WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source;
+                        const r = biometrics.recovery_source && biometrics.recovery_source !== biometrics.sleep_source
+                          ? (WEARABLE_NAMES[biometrics.recovery_source] ?? biometrics.recovery_source)
+                          : null;
+                        return r ? `${s} + ${r}` : s;
+                      })()} data
                     </p>
                   )}
                 </div>
@@ -248,11 +252,17 @@ export default function HomePage() {
                     Begin →
                   </button>
                 </div>
-                {biometrics?.sleep_source && (
+                {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null) && (
                   <div className="mt-3 pt-3 border-t border-gray-100">
                     <p className="text-xs text-gray-500 leading-relaxed">
                       <span className="font-semibold text-blue-400">
-                        ⌚ From your {WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source}:
+                        ⌚ From your {(() => {
+                          const s = WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source;
+                          const r = biometrics.recovery_source && biometrics.recovery_source !== biometrics.sleep_source
+                            ? (WEARABLE_NAMES[biometrics.recovery_source] ?? biometrics.recovery_source)
+                            : null;
+                          return r ? `${s} + ${r}` : s;
+                        })()}:
                       </span>
                       {biometrics.sleep_score != null && ` Sleep score ${biometrics.sleep_score}`}
                       {biometrics.total_sleep_min != null && ` · ${formatSleepMin(biometrics.total_sleep_min)} sleep`}
