@@ -51,62 +51,88 @@ function getToday(req, res, next) {
       'SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    // If we have either Oura or Whoop, combine them
+    // Always fetch all sources — lower-priority sources supplement higher-priority ones
+    const googleFit = db.prepare(
+      'SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
+    const hc = db.prepare(
+      'SELECT * FROM health_connect_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, today);
+
     if (oura || whoop) {
-      // Sleep: Oura has priority, fall back to Whoop
-      const sleepSource = oura ? 'oura' : 'whoop';
-      const sleepScore     = oura ? oura.sleep_score         : whoop.sleep_performance;
-      const totalSleepMin  = oura ? oura.total_sleep_min     : whoop.total_sleep_min;
-      const remSleepMin    = oura ? oura.rem_sleep_min       : whoop.rem_sleep_min;
-      const deepSleepMin   = oura ? oura.deep_sleep_min      : whoop.deep_sleep_min;
+      // Sleep: Oura > WHOOP > Health Connect > Google Fit
+      const sleepScore    = oura?.sleep_score ?? whoop?.sleep_performance ?? hc?.sleep_score ?? null;
+      const totalSleepMin = oura?.total_sleep_min ?? whoop?.total_sleep_min ?? hc?.total_sleep_min ?? googleFit?.total_sleep_min ?? null;
+      const remSleepMin   = oura?.rem_sleep_min ?? whoop?.rem_sleep_min ?? hc?.rem_sleep_min ?? googleFit?.rem_sleep_min ?? null;
+      const deepSleepMin  = oura?.deep_sleep_min ?? whoop?.deep_sleep_min ?? hc?.deep_sleep_min ?? googleFit?.deep_sleep_min ?? null;
 
-      // Recovery: Whoop has priority, fall back to Oura
+      const sleepSource = oura ? 'oura' : (whoop ? 'whoop' : 'google_fit');
+
+      // Recovery: Whoop > Oura
       const recoverySource = whoop ? 'whoop' : 'oura';
-      const recoveryScore  = whoop ? whoop.recovery_score    : oura.readiness_score;
+      const recoveryScore  = whoop?.recovery_score ?? oura?.readiness_score ?? null;
 
-      // HRV
-      const hrvBalance = oura ? oura.hrv_balance_score : null;
-      const hrvRmssd   = whoop ? whoop.hrv_rmssd_ms    : null;
+      // HRV: Oura balance score > WHOOP RMSSD > Health Connect RMSSD
+      const hrvBalance = oura?.hrv_balance_score ?? null;
+      const hrvRmssd   = whoop?.hrv_rmssd_ms ?? hc?.hrv_rmssd ?? null;
 
-      // Resting HR: Oura priority
-      const restingHr = oura ? oura.resting_hr : whoop?.resting_hr ?? null;
+      // Resting HR: Oura > WHOOP > Health Connect
+      const restingHr = oura?.resting_hr ?? whoop?.resting_hr ?? hc?.resting_hr ?? null;
 
-      // Temp flag: Oura body temp deviation
-      const bodyTempDeviation = oura ? oura.body_temp_deviation : null;
+      // Temp flag: Oura only
+      const bodyTempDeviation = oura?.body_temp_deviation ?? null;
       const tempFlag = typeof bodyTempDeviation === 'number' && bodyTempDeviation > 0.4;
 
-      // Energy suggestion from best available readiness
-      const readinessForEnergy = whoop ? whoop.recovery_score : (oura ? oura.readiness_score : 65);
+      const readinessForEnergy = whoop?.recovery_score ?? oura?.readiness_score ?? 65;
+
+      // Steps: Oura > Health Connect > Google Fit (WHOOP doesn't track steps)
+      const steps = oura?.steps ?? hc?.steps ?? googleFit?.step_count ?? null;
+
+      // SpO2: WHOOP > Health Connect
+      const spo2 = whoop?.spo2_percentage ?? hc?.spo2 ?? null;
 
       return res.json({
-        // Per-metric sources
         sleep_source:        sleepSource,
         recovery_source:     recoverySource,
-        // Sleep data (Oura priority)
         sleep_score:         sleepScore,
         total_sleep_min:     totalSleepMin,
         rem_sleep_min:       remSleepMin,
         deep_sleep_min:      deepSleepMin,
-        // Recovery data (Whoop priority)
         recovery_score:      recoveryScore,
-        // HRV
         hrv_balance:         hrvBalance,
         hrv_rmssd_ms:        hrvRmssd,
-        // Other
         resting_hr:          restingHr,
         body_temp_deviation: bodyTempDeviation,
-        steps:               oura ? oura.steps : null,
-        respiratory_rate:    whoop ? whoop.respiratory_rate : null,
-        strain_score:        whoop ? whoop.strain_score : null,
-        spo2_percentage:     whoop ? whoop.spo2_percentage : null,
-        energy_suggestion:   energySuggestionFromReadiness(readinessForEnergy ?? 65),
+        steps,
+        respiratory_rate:    whoop?.respiratory_rate ?? null,
+        strain_score:        whoop?.strain_score ?? null,
+        spo2_percentage:     spo2,
+        energy_suggestion:   energySuggestionFromReadiness(readinessForEnergy),
         temp_flag:           tempFlag,
       });
     }
 
-    const googleFit = db.prepare(
-      'SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?'
-    ).get(req.userId, today);
+    // Health Connect (Android native) — richer than Google Fit, check first
+    if (hc) {
+      return res.json({
+        sleep_source:        'health_connect',
+        recovery_source:     null,
+        sleep_score:         hc.sleep_score,
+        recovery_score:      null,
+        hrv_balance:         null,
+        hrv_rmssd_ms:        hc.hrv_rmssd,
+        resting_hr:          hc.resting_hr,
+        total_sleep_min:     hc.total_sleep_min,
+        rem_sleep_min:       hc.rem_sleep_min,
+        deep_sleep_min:      hc.deep_sleep_min,
+        body_temp_deviation: null,
+        steps:               hc.steps ?? googleFit?.step_count ?? null,
+        spo2_percentage:     hc.spo2,
+        energy_suggestion:   energySuggestionFromFitbit(hc.resting_hr, hc.total_sleep_min),
+        temp_flag:           false,
+      });
+    }
 
     if (googleFit) {
       return res.json({

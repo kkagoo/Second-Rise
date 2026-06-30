@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import { ProfileIllustration } from '../components/ui/Illustrations';
+import { Capacitor } from '@capacitor/core';
+import HealthConnect from '../plugins/HealthConnect';
 
 async function downloadCSV(path, filename) {
   try {
@@ -196,6 +198,12 @@ export default function ProfilePage() {
   const [garminStatus, setGarminStatus] = useState(null);
   const [garminLastSync, setGarminLastSync] = useState(null);
   const [garminError, setGarminError] = useState('');
+
+  // Health Connect state (Android only)
+  const isAndroid = Capacitor.getPlatform() === 'android';
+  const [hcStatus, setHcStatus] = useState(null); // null | 'available' | 'syncing' | 'synced' | 'error' | 'unavailable'
+  const [hcLastSync, setHcLastSync] = useState(null);
+  const [hcError, setHcError] = useState('');
 
   useEffect(() => {
     if (profile) {
@@ -478,6 +486,32 @@ export default function ProfilePage() {
     } catch (err) {
       setGoogleFitStatus('error');
       setGoogleFitError(err.response?.data?.error || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleHealthConnectSync() {
+    setHcError('');
+    setHcStatus('syncing');
+    try {
+      const avail = await HealthConnect.checkAvailability();
+      if (avail.status !== 'available') {
+        setHcStatus('unavailable');
+        setHcError('Health Connect is not available on this device. Install the Health Connect app from the Play Store.');
+        return;
+      }
+      // Request permissions (shows HC dialog if not already granted)
+      await HealthConnect.requestPermissions();
+      // Read today's data
+      const data = await HealthConnect.syncToday();
+      // Send to backend
+      await client.post('/health-connect/sync', data);
+      setHcStatus('synced');
+      setHcLastSync(new Date().toISOString());
+    } catch (err) {
+      setHcStatus('error');
+      setHcError(err.message?.includes('permissions_not_granted')
+        ? 'Please grant Health Connect permissions and try again.'
+        : err.message || 'Sync failed. Please try again.');
     }
   }
 
@@ -788,6 +822,30 @@ export default function ProfilePage() {
           )}
           {googleFitError && (
             <p className="text-red-500 text-xs">{googleFitError}</p>
+          )}
+
+          {/* Health Connect — Android only, richer data than Google Fit OAuth */}
+          {isAndroid && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-xs font-semibold text-gray-500 mb-1">Health Connect (enhanced)</p>
+              <p className="text-xs text-gray-400 mb-3">
+                Reads HRV, sleep score, SpO2, and resting HR directly from your device — works with Fitbit Air, Pixel Watch, and any Health Connect-compatible wearable.
+              </p>
+              {hcLastSync && (
+                <p className="text-xs text-green-600 mb-2">
+                  Last synced {new Date(hcLastSync).toLocaleString()}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={handleHealthConnectSync}
+                disabled={hcStatus === 'syncing'}
+                className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
+              >
+                {hcStatus === 'syncing' ? 'Syncing…' : hcStatus === 'synced' ? 'Synced ✓' : 'Sync Health Connect'}
+              </button>
+              {hcError && <p className="text-red-500 text-xs mt-2">{hcError}</p>}
+            </div>
           )}
         </Section>
         </div>

@@ -219,7 +219,7 @@ export default function HomePage() {
                     <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
-                  {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null) && (
+                  {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null || biometrics.recovery_score != null || biometrics.strain_score != null || biometrics.steps != null) && (
                     <p className="text-xs text-blue-400 mt-1">
                       ⌚ Includes your {(() => {
                         const s = WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source;
@@ -252,7 +252,7 @@ export default function HomePage() {
                     Begin →
                   </button>
                 </div>
-                {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null) && (
+                {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null || biometrics.recovery_score != null || biometrics.strain_score != null || biometrics.steps != null) && (
                   <div className="mt-3 pt-3 border-t border-gray-100">
                     <p className="text-xs text-gray-500 leading-relaxed">
                       <span className="font-semibold text-blue-400">
@@ -264,7 +264,8 @@ export default function HomePage() {
                           return r ? `${s} + ${r}` : s;
                         })()}:
                       </span>
-                      {biometrics.sleep_score != null && ` Sleep score ${biometrics.sleep_score}`}
+                      {biometrics.recovery_score != null && ` Recovery ${biometrics.recovery_score}`}
+                      {biometrics.sleep_score != null && ` · Sleep score ${biometrics.sleep_score}`}
                       {biometrics.total_sleep_min != null && ` · ${formatSleepMin(biometrics.total_sleep_min)} sleep`}
                       {(biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null) && ` · HRV ${biometrics.hrv_balance ?? Math.round(biometrics.hrv_rmssd_ms)}`}
                       {biometrics.resting_hr != null && ` · HR ${biometrics.resting_hr}`}

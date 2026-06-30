@@ -8,6 +8,9 @@ import android.util.Log;
 public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Register native plugins
+        registerPlugin(HealthConnectPlugin.class);
+
         // Enable TLS 1.2 explicitly for Android 7 and below
         try {
             SSLContext.getInstance("TLSv1.2").createSSLEngine();

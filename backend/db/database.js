@@ -162,4 +162,26 @@ try {
   `);
 } catch (_) {}
 
+// Health Connect daily data (Android native reads)
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS health_connect_daily_data (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      date            TEXT NOT NULL,
+      resting_hr      INTEGER,
+      hrv_rmssd       INTEGER,
+      spo2            INTEGER,
+      steps           INTEGER,
+      total_sleep_min INTEGER,
+      deep_sleep_min  INTEGER,
+      rem_sleep_min   INTEGER,
+      light_sleep_min INTEGER,
+      sleep_score     INTEGER,
+      synced_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, date)
+    )
+  `);
+} catch (_) {}
+
 module.exports = db;
