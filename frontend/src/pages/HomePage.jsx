@@ -57,6 +57,17 @@ const SOURCE_COLORS = {
   apple_health: 'bg-red-50 text-red-500',
 };
 const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', google_fit: 'Google Fit', fitbit: 'Fitbit', apple_health: 'Apple' };
+const WEARABLE_NAMES = {
+  oura: 'Oura Ring', whoop: 'WHOOP', google_fit: 'Google Health',
+  fitbit: 'Fitbit', apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings',
+};
+
+function formatSleepMin(min) {
+  if (min == null) return null;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? (m > 0 ? `${h}h ${m}min` : `${h}h`) : `${m}min`;
+}
 
 function StatPill({ icon, label, value, source }) {
   if (value == null) return null;
@@ -208,6 +219,13 @@ export default function HomePage() {
                     <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
+                  {biometrics?.sleep_source && (
+                    <p className="text-xs text-blue-400 mt-1">
+                      ⌚ Includes your {
+                        { oura: 'Oura Ring', whoop: 'WHOOP', google_fit: 'Google Health', fitbit: 'Fitbit', apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings' }[biometrics.sleep_source] ?? biometrics.sleep_source
+                      } data
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <span className="text-xs bg-blue-50 text-blue-500 font-semibold rounded-full px-3 py-1">Done ✓</span>
@@ -217,17 +235,32 @@ export default function HomePage() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Today's check-in</p>
-                  <p className="text-sm font-medium text-gray-700 mt-1">Not done yet</p>
+              <div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Today's check-in</p>
+                    <p className="text-sm font-medium text-gray-700 mt-1">Not done yet</p>
+                  </div>
+                  <button
+                    onClick={() => navigate('/checkin')}
+                    className="bg-blue-400 hover:bg-blue-500 text-white text-xs font-bold rounded-xl px-4 py-2 transition-colors tap-target"
+                  >
+                    Begin →
+                  </button>
                 </div>
-                <button
-                  onClick={() => navigate('/checkin')}
-                  className="bg-blue-400 hover:bg-blue-500 text-white text-xs font-bold rounded-xl px-4 py-2 transition-colors tap-target"
-                >
-                  Begin →
-                </button>
+                {biometrics?.sleep_source && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      <span className="font-semibold text-blue-400">
+                        ⌚ From your {WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source}:
+                      </span>
+                      {biometrics.sleep_score != null && ` Sleep score ${biometrics.sleep_score}`}
+                      {biometrics.total_sleep_min != null && ` · ${formatSleepMin(biometrics.total_sleep_min)} sleep`}
+                      {(biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null) && ` · HRV ${biometrics.hrv_balance ?? Math.round(biometrics.hrv_rmssd_ms)}`}
+                      {biometrics.resting_hr != null && ` · HR ${biometrics.resting_hr}`}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
