@@ -4,7 +4,7 @@ import { registerPlugin } from '@capacitor/core';
 const HealthConnect = registerPlugin('HealthConnect', {
   web: () => ({
     checkAvailability: async () => ({ status: 'unavailable' }),
-    requestPermissions: async () => ({ granted: false }),
+    requestHCPermissions: async () => ({ granted: false }),
     syncToday: async () => { throw new Error('Health Connect is Android-only'); },
   }),
 });

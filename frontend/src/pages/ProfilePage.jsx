@@ -500,7 +500,7 @@ export default function ProfilePage() {
         return;
       }
       // Request permissions (shows HC dialog if not already granted)
-      await HealthConnect.requestPermissions();
+      await HealthConnect.requestHCPermissions();
       // Read today's data
       const data = await HealthConnect.syncToday();
       // Send to backend

@@ -3,6 +3,7 @@ package app.secondrise.mobile
 import android.app.Activity
 import android.content.Intent
 import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.*
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -47,14 +48,13 @@ class HealthConnectPlugin : Plugin() {
     }
 
     @PluginMethod
-    fun requestPermissions(call: PluginCall) {
+    fun requestHCPermissions(call: PluginCall) {
         val status = HealthConnectClient.getSdkStatus(context)
         if (status != HealthConnectClient.SDK_AVAILABLE) {
             call.reject("Health Connect not available on this device")
             return
         }
-        val client = HealthConnectClient.getOrCreate(context)
-        val intent = client.permissionController.createRequestPermissionResultContract()
+        val intent = PermissionController.createRequestPermissionResultContract()
             .createIntent(context, PERMISSIONS)
         startActivityForResult(call, intent, "permissionResult")
     }
