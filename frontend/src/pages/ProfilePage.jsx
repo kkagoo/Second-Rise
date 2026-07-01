@@ -359,11 +359,12 @@ export default function ProfilePage() {
     window.history.replaceState({}, '', window.location.pathname);
     // Small delay so the component is fully mounted before opening a browser
     const t = setTimeout(() => {
-      if (autoconnect === 'oura')       handleOuraConnect();
-      else if (autoconnect === 'whoop') handleWhoopConnect();
-      else if (autoconnect === 'google_fit') handleGoogleFitConnect();
-      else if (autoconnect === 'withings') handleWithingsConnect();
-      else if (autoconnect === 'garmin') handleGarminConnect();
+      if (autoconnect === 'oura')              handleOuraConnect();
+      else if (autoconnect === 'whoop')        handleWhoopConnect();
+      else if (autoconnect === 'google_fit')   handleGoogleFitConnect();
+      else if (autoconnect === 'withings')     handleWithingsConnect();
+      else if (autoconnect === 'garmin')       handleGarminConnect();
+      else if (autoconnect === 'apple_health') handleHealthKitSync();
     }, 400);
     return () => clearTimeout(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -530,7 +531,7 @@ export default function ProfilePage() {
         setHkError('Apple Health is not available on this device.');
         return;
       }
-      await HealthKit.requestPermissions();
+      await HealthKit.requestHKPermissions();
       const data = await HealthKit.syncToday();
       await client.post('/healthkit/sync', data);
       setHkStatus('synced');
