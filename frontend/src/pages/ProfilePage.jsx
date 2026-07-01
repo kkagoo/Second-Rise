@@ -900,8 +900,8 @@ export default function ProfilePage() {
         </Section>
         </div>
 
-        {/* Apple Health */}
-        <div id="apple-section">
+        {/* Apple Health — manual export, hidden on iOS (native HealthKit sync used instead) */}
+        {!isIOS && <div id="apple-section">
         <Section title="Apple Health" subtitle="Health app → avatar (top right) → Export All Health Data → upload the zip below">
 
           <input
@@ -927,7 +927,7 @@ export default function ProfilePage() {
             <p className="text-red-500 text-xs">{appleError}</p>
           )}
         </Section>
-        </div>
+        </div>}
 
         {/* Withings */}
         <div id="withings-section">
@@ -974,48 +974,6 @@ export default function ProfilePage() {
           )}
           {withingsError && (
             <p className="text-red-500 text-xs">{withingsError}</p>
-          )}
-        </Section>
-        </div>
-
-        {/* Garmin */}
-        <div id="garmin-section">
-        <Section title="Garmin" subtitle="Steps, heart rate, sleep, stress, and Body Battery from Garmin Connect — data arrives when your device syncs">
-          {garminStatus === 'connected' ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                <p className="text-sm text-green-600 font-semibold">
-                  Connected{garminLastSync ? ` — last data ${new Date(garminLastSync).toLocaleString()}` : ''}
-                </p>
-              </div>
-              <p className="text-xs text-gray-400 leading-relaxed">Garmin pushes data automatically when your watch syncs — no manual sync needed.</p>
-              <button
-                type="button"
-                onClick={handleGarminDisconnect}
-                disabled={garminStatus === 'connecting'}
-                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
-              >
-                {garminStatus === 'connecting' ? 'Disconnecting…' : 'Disconnect Garmin'}
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {garminStatus === 'denied' && (
-                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
-              )}
-              <button
-                type="button"
-                onClick={handleGarminConnect}
-                disabled={garminStatus === 'connecting'}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
-              >
-                {garminStatus === 'connecting' ? 'Redirecting…' : 'Connect with Garmin'}
-              </button>
-            </div>
-          )}
-          {garminError && (
-            <p className="text-red-500 text-xs">{garminError}</p>
           )}
         </Section>
         </div>
