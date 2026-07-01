@@ -184,4 +184,22 @@ try {
   `);
 } catch (_) {}
 
+// 14-day historical trend data from Google Health / Google Fit
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS google_health_trends (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      date            TEXT NOT NULL,
+      resting_hr      INTEGER,
+      total_sleep_min INTEGER,
+      deep_sleep_min  INTEGER,
+      rem_sleep_min   INTEGER,
+      step_count      INTEGER,
+      synced_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, date)
+    )
+  `);
+} catch (_) {}
+
 module.exports = db;

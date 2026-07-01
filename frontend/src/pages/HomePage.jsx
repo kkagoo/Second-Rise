@@ -92,6 +92,7 @@ export default function HomePage() {
   const [biometrics, setBiometrics]     = useState(null);
   const [weekStats, setWeekStats]       = useState(null);
   const [workoutReview, setWorkoutReview] = useState(null);
+  const [biometricTrend, setBiometricTrend] = useState(null);
 
   useEffect(() => {
     const localDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
@@ -105,6 +106,9 @@ export default function HomePage() {
       .catch(() => setTodayCheckin(null));
     client.get('/biometrics/today')
       .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
+      .catch(() => {});
+    client.get('/google-fit/trends')
+      .then((r) => { if (r.data?.patterns?.length > 0) setBiometricTrend(r.data); })
       .catch(() => {});
     client.get('/history/week')
       .then((r) => setWeekStats(r.data))
@@ -181,6 +185,13 @@ export default function HomePage() {
           {biometrics?.temp_flag && (
             <div className="mb-2 rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-[11px] text-amber-700 font-medium">
               🌡 Temp elevated — possible hot flash signal
+            </div>
+          )}
+
+          {/* 14-day biometric trend alert */}
+          {biometricTrend?.hasNegativePattern && (
+            <div className="mb-2 rounded-xl bg-blue-50 border border-blue-200 px-2.5 py-1.5 text-[11px] text-blue-700 font-medium">
+              📊 {biometricTrend.patterns[0].message} · today's recommendation adjusts for this
             </div>
           )}
 

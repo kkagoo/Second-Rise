@@ -18,9 +18,9 @@ function parseJSON(rawText) {
   return JSON.parse(cleaned);
 }
 
-async function generateRecommendation(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = []) {
+async function generateRecommendation(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = [], biometricTrend = null) {
   const client = getClient();
-  const userPrompt = buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics, history, baseline, weeklySchedule, checkinTrend);
+  const userPrompt = buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics, history, baseline, weeklySchedule, checkinTrend, biometricTrend);
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',

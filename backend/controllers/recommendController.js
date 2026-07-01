@@ -2,6 +2,8 @@ const db = require('../db/database');
 const { generateRecommendation } = require('../services/claudeService');
 const { getFilteredVideos, getVideoById } = require('../services/videoLibrary');
 const { getHistory, getBaseline } = require('../services/ouraService');
+const { analyzeTrends } = require('../services/trendAnalysisService');
+const { syncTrend } = require('../services/googleHealthTrendService');
 
 // Derive what body focus area a video works
 function deriveBodyFocus(video) {
@@ -218,9 +220,20 @@ async function getRecommendation(req, res, next) {
     // 7-day checkin trend (available for all users, not just Oura)
     const checkinTrend = getCheckinTrend(req.userId);
 
+    // 14-day biometric trend analysis (Google Health + all wearable sources)
+    let biometricTrend = null;
+    try {
+      // Sync latest Google Fit history if user has it connected
+      const gfProfile = db.prepare('SELECT google_fit_access_token FROM user_profiles WHERE user_id = ?').get(req.userId);
+      if (gfProfile?.google_fit_access_token) {
+        await syncTrend(req.userId, 14).catch(() => {}); // non-blocking
+      }
+      biometricTrend = analyzeTrends(req.userId, 14);
+    } catch { /* trend analysis is best-effort */ }
+
     const { primary, alternatives } = await generateRecommendation(
       profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos,
-      biometrics, history, baseline, weeklySchedule, checkinTrend
+      biometrics, history, baseline, weeklySchedule, checkinTrend, biometricTrend
     );
 
     const bodyFocus = deriveBodyFocus(primary);

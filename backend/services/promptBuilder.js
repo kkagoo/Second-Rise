@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = []) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = [], biometricTrend = null) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -193,6 +193,25 @@ Use this trend to inform today's recommendation: if energy has been consistently
 `;
   }
 
+  // 14-day biometric trend section (Google Health + all wearables)
+  let biometricTrendSection = '';
+  if (biometricTrend && biometricTrend.patterns.length > 0) {
+    const avgSleepStr = biometricTrend.avgSleepMin != null
+      ? `${Math.floor(biometricTrend.avgSleepMin / 60)}h${biometricTrend.avgSleepMin % 60}m`
+      : null;
+    const patternLines = biometricTrend.patterns.map(p => `  ⚠ ${p.message}`).join('\n');
+
+    biometricTrendSection = `
+14-DAY BIOMETRIC TREND (Google Health data — ${biometricTrend.daysOfData} days):
+${patternLines}
+${avgSleepStr ? `Average sleep this period: ${avgSleepStr}` : ''}${biometricTrend.avgRHR ? ` | Average resting HR: ${biometricTrend.avgRHR} bpm` : ''}${biometricTrend.avgRecovery ? ` | Average recovery: ${biometricTrend.avgRecovery}/100` : ''}
+
+${biometricTrend.hasNegativePattern
+  ? '⚠️ TREND ALERT: This user is showing signs of cumulative fatigue or sleep debt. Even if today\'s check-in looks moderate, honour these multi-day patterns: recommend lower-intensity work and prioritise recovery.'
+  : 'Positive trend: activity and recovery are stable or improving over the last 2 weeks.'}
+`;
+  }
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -211,7 +230,7 @@ ${bodyFlagsText}
 ${secondaryText}
 ${workoutPrefText}
 COMPUTED READINESS: ${readiness} / 85
-${biometricsSection}${checkinTrendSection}${trendsSection}${weeklyScheduleSection}
+${biometricsSection}${biometricTrendSection}${checkinTrendSection}${trendsSection}${weeklyScheduleSection}
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):
