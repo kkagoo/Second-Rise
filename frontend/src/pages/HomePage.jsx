@@ -56,11 +56,22 @@ const SOURCE_COLORS = {
   fitbit:       'bg-emerald-50 text-emerald-600',
   apple_health: 'bg-red-50 text-red-500',
 };
-const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', google_fit: 'Google Fit', fitbit: 'Fitbit', apple_health: 'Apple' };
+const SOURCE_LABELS = { oura: 'Oura', whoop: 'Whoop', google_fit: 'Google Fit', health_connect: 'Google Health', fitbit: 'Fitbit', apple_health: 'Apple', garmin: 'Garmin', withings: 'Withings' };
 const WEARABLE_NAMES = {
   oura: 'Oura Ring', whoop: 'WHOOP', google_fit: 'Google Health',
-  fitbit: 'Fitbit', apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings',
+  health_connect: 'Google Health', fitbit: 'Fitbit',
+  apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings',
 };
+
+// Format a sources array into "WHOOP + Apple Health" style label, deduplicating by display name
+function sourceLabel(sources) {
+  if (!sources?.length) return null;
+  const seen = new Set();
+  return sources
+    .map(s => WEARABLE_NAMES[s] ?? s)
+    .filter(name => { if (seen.has(name)) return false; seen.add(name); return true; })
+    .join(' + ');
+}
 
 function formatSleepMin(min) {
   if (min == null) return null;
@@ -171,8 +182,17 @@ export default function HomePage() {
               <StatPill icon={<BoltIcon />}  label="Recovery" value={biometrics.recovery_score} source={biometrics.recovery_source} />
               <StatPill icon={<PulseIcon />} label="HRV"      value={biometrics.hrv_balance ?? (biometrics.hrv_rmssd_ms != null ? Math.round(biometrics.hrv_rmssd_ms) : null)} source={null} />
               <StatPill icon={<HeartIcon />} label="HR"       value={biometrics.resting_hr}     source={null} />
+              {biometrics.spo2_percentage != null && (
+                <StatPill icon={<span className="text-[10px]">O₂</span>} label="SpO2" value={`${biometrics.spo2_percentage}%`} source={null} />
+              )}
+              {biometrics.steps != null && (
+                <StatPill icon={<span className="text-[10px]">👟</span>} label="Steps" value={biometrics.steps.toLocaleString()} source={null} />
+              )}
               {biometrics.strain_score != null && (
                 <StatPill icon={<FlameIcon />} label="Strain" value={biometrics.strain_score?.toFixed(1)} source={null} />
+              )}
+              {biometrics.body_battery != null && (
+                <StatPill icon={<BoltIcon />} label="Battery" value={biometrics.body_battery} source={null} />
               )}
               {energyLabel && (
                 <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
@@ -230,15 +250,9 @@ export default function HomePage() {
                     <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
-                  {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null || biometrics.recovery_score != null || biometrics.strain_score != null || biometrics.steps != null) && (
+                  {biometrics?.sources?.length > 0 && (
                     <p className="text-xs text-blue-400 mt-1">
-                      ⌚ Includes your {(() => {
-                        const s = WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source;
-                        const r = biometrics.recovery_source && biometrics.recovery_source !== biometrics.sleep_source
-                          ? (WEARABLE_NAMES[biometrics.recovery_source] ?? biometrics.recovery_source)
-                          : null;
-                        return r ? `${s} + ${r}` : s;
-                      })()} data
+                      Includes your {sourceLabel(biometrics.sources)} data
                     </p>
                   )}
                 </div>
@@ -263,17 +277,11 @@ export default function HomePage() {
                     Begin →
                   </button>
                 </div>
-                {biometrics?.sleep_source && (biometrics.sleep_score != null || biometrics.total_sleep_min != null || biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null || biometrics.resting_hr != null || biometrics.recovery_score != null || biometrics.strain_score != null || biometrics.steps != null) && (
+                {biometrics?.sources?.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-gray-100">
                     <p className="text-xs text-gray-500 leading-relaxed">
                       <span className="font-semibold text-blue-400">
-                        ⌚ From your {(() => {
-                          const s = WEARABLE_NAMES[biometrics.sleep_source] ?? biometrics.sleep_source;
-                          const r = biometrics.recovery_source && biometrics.recovery_source !== biometrics.sleep_source
-                            ? (WEARABLE_NAMES[biometrics.recovery_source] ?? biometrics.recovery_source)
-                            : null;
-                          return r ? `${s} + ${r}` : s;
-                        })()}:
+                        From your {sourceLabel(biometrics.sources)}:
                       </span>
                       {biometrics.recovery_score != null && ` Recovery ${biometrics.recovery_score}`}
                       {biometrics.sleep_score != null && ` · Sleep score ${biometrics.sleep_score}`}

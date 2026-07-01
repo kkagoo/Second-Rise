@@ -15,6 +15,24 @@ const LOADING_MESSAGES = [
 ];
 
 const ENERGY_LABELS = { 20: 'Low energy', 40: 'Medium-low energy', 65: 'Medium energy', 85: 'High energy' };
+const WEARABLE_NAMES = {
+  oura: 'Oura Ring', whoop: 'WHOOP', google_fit: 'Google Health',
+  health_connect: 'Google Health', fitbit: 'Fitbit',
+  apple_health: 'Apple Health', garmin: 'Garmin', withings: 'Withings',
+};
+function sourceLabel(sources) {
+  if (!sources?.length) return null;
+  const seen = new Set();
+  return sources
+    .map(s => WEARABLE_NAMES[s] ?? s)
+    .filter(n => { if (seen.has(n)) return false; seen.add(n); return true; })
+    .join(' + ');
+}
+function fmtSleep(min) {
+  if (min == null) return null;
+  const h = Math.floor(min / 60), m = min % 60;
+  return h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+}
 
 export default function CheckinPage() {
   const [layer, setLayer] = useState(1);
@@ -28,7 +46,7 @@ export default function CheckinPage() {
 
   useEffect(() => {
     client.get('/biometrics/today')
-      .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
+      .then((r) => { if (r.data?.sources?.length || r.data?.sleep_source) setBiometrics(r.data); })
       .catch(() => {});
   }, []);
 
@@ -117,28 +135,17 @@ export default function CheckinPage() {
                 {biometrics && (
                   <div className="mb-6 rounded-2xl bg-blue-50 border border-blue-200 px-4 py-3 flex flex-col gap-1">
                     <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider">
-                      {[biometrics.recovery_source, biometrics.sleep_source]
-                        .filter(Boolean)
-                        .map((s) => s === 'oura'
-                          ? 'Oura'
-                          : s === 'whoop'
-                            ? 'Whoop'
-                            : s === 'google_fit'
-                              ? 'Google Health'
-                            : s === 'fitbit'
-                              ? 'Google Health'
-                              : s === 'withings'
-                                ? 'Withings'
-                                : 'Apple Health')
-                        .filter((v, i, a) => a.indexOf(v) === i)
-                        .join(' + ')} today
+                      {sourceLabel(biometrics.sources) ?? 'Your devices'} today
                     </p>
                     <p className="text-sm font-medium text-gray-800">
-                      {biometrics.recovery_score != null ? `Recovery ${biometrics.recovery_score}` : ''}
-                      {biometrics.sleep_score != null ? `${biometrics.recovery_score != null ? ' · ' : ''}Sleep ${biometrics.sleep_score}` : ''}
-                      {biometrics.total_sleep_min != null
-                        ? ` (${Math.floor(biometrics.total_sleep_min / 60)}h ${biometrics.total_sleep_min % 60}m)`
-                        : ''}
+                      {[
+                        biometrics.recovery_score != null && `Recovery ${biometrics.recovery_score}`,
+                        biometrics.sleep_score != null && `Sleep ${biometrics.sleep_score}`,
+                        biometrics.total_sleep_min != null && `${fmtSleep(biometrics.total_sleep_min)} sleep`,
+                        biometrics.hrv_rmssd_ms != null && `HRV ${Math.round(biometrics.hrv_rmssd_ms)}`,
+                        biometrics.resting_hr != null && `HR ${biometrics.resting_hr}`,
+                        biometrics.steps != null && `${biometrics.steps.toLocaleString()} steps`,
+                      ].filter(Boolean).join(' · ')}
                     </p>
                     <p className="text-xs text-blue-400">
                       Suggesting: {ENERGY_LABELS[biometrics.energy_suggestion] ?? 'Medium energy'} · tap to apply, or choose your own

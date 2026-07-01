@@ -138,16 +138,19 @@ function getToday(req, res, next) {
     const avgStress = garmin?.avg_stress ?? null;
     const bodyBattery = garmin?.body_battery_charged ?? null;
 
-    // ── Sources list — every source that contributed at least one metric ────
+    // Helper: does a row have at least one real metric value?
+    const hasData = (row, fields) => row && fields.some(f => row[f] != null);
+
+    // ── Sources list — only include if it actually contributed a metric ───────
     const sources = [];
-    if (oura)     sources.push('oura');
-    if (whoop)    sources.push('whoop');
-    if (hc)       sources.push('health_connect');
-    if (garmin)   sources.push('garmin');
-    if (googleFit) sources.push('google_fit');
-    if (fitbit)   sources.push('fitbit');
-    if (withings) sources.push('withings');
-    if (apple)    sources.push('apple_health');
+    if (hasData(oura,     ['sleep_score','total_sleep_min','hrv_balance_score','resting_hr','readiness_score','steps'])) sources.push('oura');
+    if (hasData(whoop,    ['recovery_score','sleep_performance','hrv_rmssd_ms','resting_hr','strain_score'])) sources.push('whoop');
+    if (hasData(hc,       ['sleep_score','total_sleep_min','hrv_rmssd','resting_hr','steps','spo2'])) sources.push('health_connect');
+    if (hasData(garmin,   ['sleep_score','total_sleep_sec','resting_hr','steps','avg_stress'])) sources.push('garmin');
+    if (hasData(googleFit,['total_sleep_min','resting_hr','step_count'])) sources.push('google_fit');
+    if (hasData(fitbit,   ['total_sleep_min','resting_hr','step_count'])) sources.push('fitbit');
+    if (hasData(withings, ['total_sleep_min','resting_hr'])) sources.push('withings');
+    if (hasData(apple,    ['sleep_min','resting_hr','hrv_ms','step_count'])) sources.push('apple_health');
 
     // ── Primary source label (for "⌚ From your X" display) ──────────────────
     // Highest-fidelity source that has recovery OR sleep data
