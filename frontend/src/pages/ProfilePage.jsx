@@ -5,6 +5,7 @@ import client from '../api/client';
 import { ProfileIllustration } from '../components/ui/Illustrations';
 import { Capacitor } from '@capacitor/core';
 import HealthConnect from '../plugins/HealthConnect';
+import HealthKit from '../plugins/HealthKit';
 
 async function downloadCSV(path, filename) {
   try {
@@ -201,9 +202,13 @@ export default function ProfilePage() {
 
   // Health Connect state (Android only)
   const isAndroid = Capacitor.getPlatform() === 'android';
-  const [hcStatus, setHcStatus] = useState(null); // null | 'available' | 'syncing' | 'synced' | 'error' | 'unavailable'
+  const isIOS     = Capacitor.getPlatform() === 'ios';
+  const [hcStatus, setHcStatus] = useState(null); // Android Health Connect
   const [hcLastSync, setHcLastSync] = useState(null);
   const [hcError, setHcError] = useState('');
+  const [hkStatus, setHkStatus] = useState(null); // iOS HealthKit
+  const [hkLastSync, setHkLastSync] = useState(null);
+  const [hkError, setHkError] = useState('');
 
   useEffect(() => {
     if (profile) {
@@ -512,6 +517,27 @@ export default function ProfilePage() {
       setHcError(err.message?.includes('permissions_not_granted')
         ? 'Please grant Health Connect permissions and try again.'
         : err.message || 'Sync failed. Please try again.');
+    }
+  }
+
+  async function handleHealthKitSync() {
+    setHkError('');
+    setHkStatus('syncing');
+    try {
+      const avail = await HealthKit.checkAvailability();
+      if (!avail.available) {
+        setHkStatus('unavailable');
+        setHkError('Apple Health is not available on this device.');
+        return;
+      }
+      await HealthKit.requestPermissions();
+      const data = await HealthKit.syncToday();
+      await client.post('/healthkit/sync', data);
+      setHkStatus('synced');
+      setHkLastSync(new Date().toISOString());
+    } catch (err) {
+      setHkStatus('error');
+      setHkError(err.message || 'Sync failed. Please try again.');
     }
   }
 
@@ -824,7 +850,7 @@ export default function ProfilePage() {
             <p className="text-red-500 text-xs">{googleFitError}</p>
           )}
 
-          {/* Health Connect — Android only, richer data than Google Fit OAuth */}
+          {/* Health Connect — Android only */}
           {isAndroid && (
             <div className="mt-4 pt-4 border-t border-gray-100">
               <p className="text-xs font-semibold text-gray-500 mb-1">Health Connect (enhanced)</p>
@@ -845,6 +871,30 @@ export default function ProfilePage() {
                 {hcStatus === 'syncing' ? 'Syncing…' : hcStatus === 'synced' ? 'Synced ✓' : 'Sync Health Connect'}
               </button>
               {hcError && <p className="text-red-500 text-xs mt-2">{hcError}</p>}
+            </div>
+          )}
+
+          {/* Apple HealthKit — iOS only */}
+          {isIOS && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health (enhanced)</p>
+              <p className="text-xs text-gray-400 mb-3">
+                Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed.
+              </p>
+              {hkLastSync && (
+                <p className="text-xs text-green-600 mb-2">
+                  Last synced {new Date(hkLastSync).toLocaleString()}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={handleHealthKitSync}
+                disabled={hkStatus === 'syncing'}
+                className="w-full border-2 border-pink-300 text-pink-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-pink-50 disabled:opacity-50"
+              >
+                {hkStatus === 'syncing' ? 'Syncing…' : hkStatus === 'synced' ? 'Synced ✓' : 'Sync Apple Health'}
+              </button>
+              {hkError && <p className="text-red-500 text-xs mt-2">{hkError}</p>}
             </div>
           )}
         </Section>

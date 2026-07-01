@@ -28,6 +28,7 @@ const exportRoutes              = require('./routes/exportRoutes');
 const withingsRoutes            = require('./routes/withingsRoutes');
 const garminRoutes              = require('./routes/garminRoutes');
 const healthConnectRoutes       = require('./routes/healthConnectRoutes');
+const healthKitRoutes           = require('./routes/healthKitRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -80,6 +81,7 @@ app.use('/api/export',         exportRoutes);
 app.use('/api/withings',       withingsRoutes);
 app.use('/api/garmin',         garminRoutes);
 app.use('/api/health-connect', healthConnectRoutes);
+app.use('/api/healthkit',      healthKitRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
