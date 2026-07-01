@@ -99,7 +99,7 @@ function StatPill({ icon, label, value, source }) {
 export default function HomePage() {
   useAuth();
   const navigate = useNavigate();
-  const [todayCheckin, setTodayCheckin] = useState(undefined);
+  const [todayCheckin, setTodayCheckin] = useState(null);
   const [biometrics, setBiometrics]     = useState(null);
   const [weekStats, setWeekStats]       = useState(null);
   const [workoutReview, setWorkoutReview] = useState(null);
@@ -116,7 +116,7 @@ export default function HomePage() {
       })
       .catch(() => setTodayCheckin(null));
     client.get('/biometrics/today')
-      .then((r) => { if (r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
+      .then((r) => { if (r.data?.sources?.length || r.data?.sleep_source || r.data?.recovery_source) setBiometrics(r.data); })
       .catch(() => {});
     client.get('/google-fit/trends')
       .then((r) => { if (r.data?.patterns?.length > 0) setBiometricTrend(r.data); })
@@ -126,7 +126,6 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const loading     = todayCheckin === undefined;
   const checkinDone = !!todayCheckin;
   const sessionDone = !!todayCheckin?.session_done;
 
@@ -245,8 +244,7 @@ export default function HomePage() {
       <div className="px-5 flex flex-col gap-5 mt-5">
 
         {/* Today's check-in status card */}
-        {!loading && (
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+        <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             {checkinDone ? (
               <div className="flex items-center justify-between">
                 <div>
@@ -301,13 +299,7 @@ export default function HomePage() {
               </div>
             )}
           </div>
-        )}
-
-        {loading && (
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-center">
-            <div className="w-5 h-5 border-2 border-blue-300 border-t-blue-400 rounded-full animate-spin" />
-          </div>
-        )}
+        </div>
 
         {/* Browse by type */}
         <div>
