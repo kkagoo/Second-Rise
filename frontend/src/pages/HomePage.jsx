@@ -83,7 +83,7 @@ function formatSleepMin(min) {
 function StatPill({ icon, label, value, source }) {
   if (value == null) return null;
   return (
-    <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+    <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-sm shrink-0">
       <span className="text-gray-500">{icon}</span>
       <span className="text-xs text-gray-500">{label}</span>
       <span className="text-xs font-bold text-gray-900">{value}</span>
@@ -142,42 +142,80 @@ export default function HomePage() {
     <div className="min-h-screen bg-white pb-28">
 
       {/* ── Hero banner ── */}
-      <div className="relative bg-sky-card overflow-hidden">
-        {/* Profile avatar — top right */}
-        <button
-          onClick={() => navigate('/profile')}
-          className="absolute top-12 right-4 z-20 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center tap-target"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="7" r="4" />
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          </svg>
-        </button>
+      <div className="bg-sky-card">
+        <div className="relative overflow-hidden">
+          {/* Profile avatar — top right, respects safe area */}
+          <button
+            onClick={() => navigate('/profile')}
+            style={{ top: 'max(3rem, calc(env(safe-area-inset-top) + 0.75rem))' }}
+            className="absolute right-4 z-20 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-sm flex items-center justify-center tap-target"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="7" r="4" />
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            </svg>
+          </button>
 
-        <div className="px-6 pt-12 pb-5 relative z-10 max-w-[62%]">
+          {/* Hero text — constrained left to leave room for illustration */}
+          <div
+            className="px-6 pb-5 relative z-10 max-w-[62%]"
+            style={{ paddingTop: 'max(3rem, env(safe-area-inset-top))' }}
+          >
+            {/* Welcome + weekly streak */}
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
+                Welcome back
+              </p>
+              {weekStats != null && (
+                <div className="flex items-center gap-1 bg-white/70 rounded-full px-2 py-0.5">
+                  <span className="text-sm leading-none">🏆</span>
+                  <span className="text-xs font-bold text-gray-800">{weekStats.days_worked}</span>
+                  <span className="text-[10px] text-gray-400">this wk</span>
+                </div>
+              )}
+            </div>
 
-          {/* Welcome + weekly streak */}
-          <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
-              Welcome back
+            {/* Date */}
+            <p className="text-sm font-medium text-gray-400 mb-2">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
-            {weekStats != null && (
-              <div className="flex items-center gap-1 bg-white/70 rounded-full px-2 py-0.5">
-                <span className="text-sm leading-none">🏆</span>
-                <span className="text-xs font-bold text-gray-800">{weekStats.days_worked}</span>
-                <span className="text-[10px] text-gray-400">this wk</span>
+
+            {biometrics?.temp_flag && (
+              <div className="mb-2 rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-[11px] text-amber-700 font-medium">
+                🌡 Temp elevated — possible hot flash signal
               </div>
+            )}
+
+            {biometricTrend?.hasNegativePattern && (
+              <div className="mb-2 rounded-xl bg-blue-50 border border-blue-200 px-2.5 py-1.5 text-[11px] text-blue-700 font-medium">
+                📊 {biometricTrend.patterns[0].message} · today's recommendation adjusts for this
+              </div>
+            )}
+
+            <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+              {sessionDone ? 'Great work\ntoday 🎉' : checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
+            </h1>
+
+            {!sessionDone && (
+              <button
+                onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
+                className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
+              >
+                {checkinDone ? 'View workout →' : 'Start check-in →'}
+              </button>
             )}
           </div>
 
-          {/* Date */}
-          <p className="text-sm font-medium text-gray-400 mb-2">
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </p>
+          {/* Illustration — sits top-right */}
+          <div className="absolute right-0 top-4 bottom-0 pointer-events-none flex items-end" style={{ width: 160 }}>
+            <WomanWorkoutIllustration size={200} />
+          </div>
+        </div>
 
-          {/* Biometric stat pills */}
-          {biometrics && (
-            <div className="flex flex-wrap gap-1.5 mb-3">
+        {/* Stat pills — full width, outside overflow-hidden so scroll works on iOS */}
+        {biometrics && (
+          <div className="px-4 pb-4 pt-1">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
               <StatPill icon={<MoonIcon />}  label="Sleep"    value={biometrics.sleep_score}    source={biometrics.sleep_source} />
               <StatPill icon={<BoltIcon />}  label="Recovery" value={biometrics.recovery_score} source={biometrics.recovery_source} />
               <StatPill icon={<PulseIcon />} label="HRV"      value={biometrics.hrv_balance ?? (biometrics.hrv_rmssd_ms != null ? Math.round(biometrics.hrv_rmssd_ms) : null)} source={null} />
@@ -195,44 +233,13 @@ export default function HomePage() {
                 <StatPill icon={<BoltIcon />} label="Battery" value={biometrics.body_battery} source={null} />
               )}
               {energyLabel && (
-                <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm shrink-0">
                   <span className="text-xs font-semibold text-gray-700">{energyLabel}</span>
                 </div>
               )}
             </div>
-          )}
-
-          {biometrics?.temp_flag && (
-            <div className="mb-2 rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-[11px] text-amber-700 font-medium">
-              🌡 Temp elevated — possible hot flash signal
-            </div>
-          )}
-
-          {/* 14-day biometric trend alert */}
-          {biometricTrend?.hasNegativePattern && (
-            <div className="mb-2 rounded-xl bg-blue-50 border border-blue-200 px-2.5 py-1.5 text-[11px] text-blue-700 font-medium">
-              📊 {biometricTrend.patterns[0].message} · today's recommendation adjusts for this
-            </div>
-          )}
-
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">
-            {sessionDone ? 'Great work\ntoday 🎉' : checkinDone ? 'Your workout\nis ready' : 'Ready to\nmove today?'}
-          </h1>
-
-          {!sessionDone && (
-            <button
-              onClick={() => navigate(checkinDone ? '/recommend' : '/checkin')}
-              className="mt-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-2xl px-6 py-3 transition-colors text-sm shadow-sm"
-            >
-              {checkinDone ? 'View workout →' : 'Start check-in →'}
-            </button>
-          )}
-        </div>
-
-        {/* Illustration — sits top-right, no spacer div needed */}
-        <div className="absolute right-0 top-4 bottom-0 pointer-events-none flex items-end" style={{ width: 160 }}>
-          <WomanWorkoutIllustration size={200} />
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="px-5 flex flex-col gap-5 mt-5">
