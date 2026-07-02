@@ -1,8 +1,7 @@
 const express = require('express');
-const router  = express.Router();
+const router  = require('express').Router();
 const auth    = require('../middleware/auth');
-// Reuse the same controller — schema is identical to Health Connect
-const { syncToday } = require('../controllers/healthConnectController');
+const { syncToday } = require('../controllers/healthKitController');
 
 router.post('/sync', auth, syncToday);
 

@@ -854,7 +854,7 @@ export default function ProfilePage() {
           {/* Health Connect — Android only */}
           {isAndroid && (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 mb-1">Health Connect (enhanced)</p>
+              <p className="text-xs font-semibold text-gray-500 mb-1">Google Health Connect</p>
               <p className="text-xs text-gray-400 mb-3">
                 Reads HRV, sleep score, SpO2, and resting HR directly from your device — works with Fitbit Air, Pixel Watch, and any Health Connect-compatible wearable.
               </p>
@@ -878,7 +878,7 @@ export default function ProfilePage() {
           {/* Apple HealthKit — iOS only */}
           {isIOS && (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health (enhanced)</p>
+              <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health</p>
               <p className="text-xs text-gray-400 mb-3">
                 Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed.
               </p>
