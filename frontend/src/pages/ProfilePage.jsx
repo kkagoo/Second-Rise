@@ -804,102 +804,102 @@ export default function ProfilePage() {
         </Section>
         </div>
 
-        {/* Google Health (incl. Pixel Watch + Fitbit) */}
-        <div id="googlefit-section">
-        <Section title="Google Health" subtitle="Covers Pixel Watch, Fitbit, and other Android wearables — syncs steps, heart rate, and sleep via Google Health">
-          {googleFitStatus === 'connected' || fitbitStatus === 'connected' ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                <p className="text-sm text-green-600 font-semibold">
-                  Connected{(googleFitLastSync || fitbitLastSync) ? ` — synced ${new Date(googleFitLastSync || fitbitLastSync).toLocaleString()}` : ''}
-                </p>
+        {/* Google Health (cloud sync) — hidden on Android where Health Connect is used instead */}
+        {!isAndroid && (
+          <div id="googlefit-section">
+          <Section title="Google Health" subtitle="Syncs steps, heart rate, and sleep via Google Health — covers Pixel Watch, Fitbit, and other Android wearables">
+            {googleFitStatus === 'connected' || fitbitStatus === 'connected' ? (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                  <p className="text-sm text-green-600 font-semibold">
+                    Connected{(googleFitLastSync || fitbitLastSync) ? ` — synced ${new Date(googleFitLastSync || fitbitLastSync).toLocaleString()}` : ''}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleGoogleFitSync}
+                  disabled={googleFitStatus === 'connecting'}
+                  className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
+                >
+                  {googleFitStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGoogleFitConnect}
+                  disabled={googleFitStatus === 'connecting'}
+                  className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
+                >
+                  Reconnect Google Health
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={handleGoogleFitSync}
-                disabled={googleFitStatus === 'connecting'}
-                className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
-              >
-                {googleFitStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
-              </button>
-              <button
-                type="button"
-                onClick={handleGoogleFitConnect}
-                disabled={googleFitStatus === 'connecting'}
-                className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
-              >
-                Reconnect Google Health
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {googleFitStatus === 'denied' && (
-                <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
-              )}
-              <button
-                type="button"
-                onClick={handleGoogleFitConnect}
-                disabled={googleFitStatus === 'connecting'}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
-              >
-                {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Health'}
-              </button>
-            </div>
-          )}
-          {googleFitError && (
-            <p className="text-red-500 text-xs">{googleFitError}</p>
-          )}
+            ) : (
+              <div className="flex flex-col gap-3">
+                {googleFitStatus === 'denied' && (
+                  <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
+                )}
+                <button
+                  type="button"
+                  onClick={handleGoogleFitConnect}
+                  disabled={googleFitStatus === 'connecting'}
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+                >
+                  {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Health'}
+                </button>
+              </div>
+            )}
+            {googleFitError && (
+              <p className="text-red-500 text-xs">{googleFitError}</p>
+            )}
 
-          {/* Health Connect — Android only */}
-          {isAndroid && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 mb-1">Google Health Connect</p>
-              <p className="text-xs text-gray-400 mb-3">
-                Reads HRV, sleep score, SpO2, and resting HR directly from your device — works with Fitbit Air, Pixel Watch, and any Health Connect-compatible wearable.
-              </p>
-              {hcLastSync && (
-                <p className="text-xs text-green-600 mb-2">
-                  Last synced {new Date(hcLastSync).toLocaleString()}
+            {/* Apple HealthKit — iOS only */}
+            {isIOS && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health</p>
+                <p className="text-xs text-gray-400 mb-3">
+                  Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed.
                 </p>
-              )}
-              <button
-                type="button"
-                onClick={handleHealthConnectSync}
-                disabled={hcStatus === 'syncing'}
-                className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
-              >
-                {hcStatus === 'syncing' ? 'Syncing…' : hcStatus === 'synced' ? 'Synced ✓' : 'Sync Health Connect'}
-              </button>
-              {hcError && <p className="text-red-500 text-xs mt-2">{hcError}</p>}
-            </div>
-          )}
+                {hkLastSync && (
+                  <p className="text-xs text-green-600 mb-2">
+                    Last synced {new Date(hkLastSync).toLocaleString()}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={handleHealthKitSync}
+                  disabled={hkStatus === 'syncing'}
+                  className="w-full border-2 border-pink-300 text-pink-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-pink-50 disabled:opacity-50"
+                >
+                  {hkStatus === 'syncing' ? 'Syncing…' : hkStatus === 'synced' ? 'Synced ✓' : 'Sync Apple Health'}
+                </button>
+                {hkError && <p className="text-red-500 text-xs mt-2">{hkError}</p>}
+              </div>
+            )}
+          </Section>
+          </div>
+        )}
 
-          {/* Apple HealthKit — iOS only */}
-          {isIOS && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health</p>
-              <p className="text-xs text-gray-400 mb-3">
-                Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed.
+        {/* Health Connect — Android only, standalone section */}
+        {isAndroid && (
+          <div id="healthconnect-section">
+          <Section title="Health Connect" subtitle="Reads HRV, sleep, SpO2, and heart rate directly from your device — works with Pixel Watch, Samsung Watch, Fitbit, and any Health Connect wearable">
+            {hcLastSync && (
+              <p className="text-xs text-green-600 mb-3">
+                Last synced {new Date(hcLastSync).toLocaleString()}
               </p>
-              {hkLastSync && (
-                <p className="text-xs text-green-600 mb-2">
-                  Last synced {new Date(hkLastSync).toLocaleString()}
-                </p>
-              )}
-              <button
-                type="button"
-                onClick={handleHealthKitSync}
-                disabled={hkStatus === 'syncing'}
-                className="w-full border-2 border-pink-300 text-pink-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-pink-50 disabled:opacity-50"
-              >
-                {hkStatus === 'syncing' ? 'Syncing…' : hkStatus === 'synced' ? 'Synced ✓' : 'Sync Apple Health'}
-              </button>
-              {hkError && <p className="text-red-500 text-xs mt-2">{hkError}</p>}
-            </div>
-          )}
-        </Section>
-        </div>
+            )}
+            <button
+              type="button"
+              onClick={handleHealthConnectSync}
+              disabled={hcStatus === 'syncing'}
+              className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
+            >
+              {hcStatus === 'syncing' ? 'Syncing…' : hcStatus === 'synced' ? 'Synced ✓' : 'Sync Health Connect'}
+            </button>
+            {hcError && <p className="text-red-500 text-xs mt-2">{hcError}</p>}
+          </Section>
+          </div>
+        )}
 
         {/* Apple Health — manual export, hidden on iOS (native HealthKit sync used instead) */}
         {!isIOS && <div id="apple-section">

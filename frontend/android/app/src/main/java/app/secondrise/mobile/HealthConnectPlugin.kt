@@ -1,7 +1,6 @@
 package app.secondrise.mobile
 
-import android.app.Activity
-import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
@@ -12,12 +11,10 @@ import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
-import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -36,6 +33,33 @@ class HealthConnectPlugin : Plugin() {
         )
     }
 
+    // Registered in load() so it's ready before the activity starts — avoids crash
+    private lateinit var permissionLauncher: ActivityResultLauncher<Set<String>>
+    private var pendingPermissionCall: PluginCall? = null
+
+    override fun load() {
+        permissionLauncher = activity.registerForActivityResult(
+            PermissionController.createRequestPermissionResultContract()
+        ) { _ ->
+            // Result set is unreliable — check actual granted state instead
+            val call = pendingPermissionCall ?: return@registerForActivityResult
+            pendingPermissionCall = null
+            val client = try { HealthConnectClient.getOrCreate(context) } catch (e: Exception) {
+                val ret = JSObject(); ret.put("granted", false); call.resolve(ret); return@registerForActivityResult
+            }
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val granted = client.permissionController.getGrantedPermissions()
+                    val ret = JSObject()
+                    ret.put("granted", granted.containsAll(PERMISSIONS))
+                    call.resolve(ret)
+                } catch (e: Exception) {
+                    val ret = JSObject(); ret.put("granted", false); call.resolve(ret)
+                }
+            }
+        }
+    }
+
     @PluginMethod
     fun checkAvailability(call: PluginCall) {
         try {
@@ -48,75 +72,40 @@ class HealthConnectPlugin : Plugin() {
             })
             call.resolve(ret)
         } catch (e: Exception) {
-            val ret = JSObject()
-            ret.put("status", "unavailable")
-            call.resolve(ret)
+            val ret = JSObject(); ret.put("status", "unavailable"); call.resolve(ret)
         }
     }
 
     @PluginMethod
     fun requestHCPermissions(call: PluginCall) {
         try {
-            val status = HealthConnectClient.getSdkStatus(context)
-            if (status != HealthConnectClient.SDK_AVAILABLE) {
-                call.reject("Health Connect not available on this device")
-                return
+            if (HealthConnectClient.getSdkStatus(context) != HealthConnectClient.SDK_AVAILABLE) {
+                call.reject("Health Connect not available on this device"); return
             }
-            val intent = PermissionController.createRequestPermissionResultContract()
-                .createIntent(context, PERMISSIONS)
-            startActivityForResult(call, intent, "permissionResult")
+            pendingPermissionCall = call
+            permissionLauncher.launch(PERMISSIONS)
         } catch (e: Exception) {
+            pendingPermissionCall = null
             call.reject("Failed to open Health Connect permissions: ${e.message}")
-        }
-    }
-
-    @ActivityCallback
-    private fun permissionResult(call: PluginCall?, result: androidx.activity.result.ActivityResult) {
-        if (call == null) return
-        // Don't trust result.resultCode — Health Connect may return RESULT_CANCELED
-        // even when permissions were granted. Check actual granted state instead.
-        val client = try {
-            HealthConnectClient.getOrCreate(context)
-        } catch (e: Exception) {
-            val ret = JSObject()
-            ret.put("granted", false)
-            call.resolve(ret)
-            return
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val granted = client.permissionController.getGrantedPermissions()
-                val ret = JSObject()
-                ret.put("granted", granted.containsAll(PERMISSIONS))
-                call.resolve(ret)
-            } catch (e: Exception) {
-                val ret = JSObject()
-                ret.put("granted", false)
-                call.resolve(ret)
-            }
         }
     }
 
     @PluginMethod
     fun syncToday(call: PluginCall) {
-        val status = HealthConnectClient.getSdkStatus(context)
-        if (status != HealthConnectClient.SDK_AVAILABLE) {
-            call.reject("Health Connect not available")
-            return
+        if (HealthConnectClient.getSdkStatus(context) != HealthConnectClient.SDK_AVAILABLE) {
+            call.reject("Health Connect not available"); return
         }
         val client = try {
             HealthConnectClient.getOrCreate(context)
         } catch (e: Exception) {
-            call.reject("Health Connect unavailable: ${e.message}")
-            return
+            call.reject("Health Connect unavailable: ${e.message}"); return
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val granted = client.permissionController.getGrantedPermissions()
                 if (!granted.containsAll(PERMISSIONS)) {
-                    call.reject("permissions_not_granted")
-                    return@launch
+                    call.reject("permissions_not_granted"); return@launch
                 }
 
                 val zone = ZoneId.systemDefault()
@@ -125,33 +114,26 @@ class HealthConnectPlugin : Plugin() {
                 val startOfYesterday: Instant = today.minusDays(1).atStartOfDay(zone).toInstant()
                 val now: Instant = Instant.now()
 
-                // Each read is independently guarded so one missing data type doesn't crash all
+                // Each metric read is isolated — one failure doesn't break the rest
                 val restingHr: Int? = try {
-                    client.readRecords(
-                        ReadRecordsRequest(RestingHeartRateRecord::class, TimeRangeFilter.between(startOfDay, now))
-                    ).records.lastOrNull()?.beatsPerMinute?.toInt()
-                } catch (_: Exception) { null }
+                    client.readRecords(ReadRecordsRequest(RestingHeartRateRecord::class, TimeRangeFilter.between(startOfDay, now)))
+                        .records.lastOrNull()?.beatsPerMinute?.toInt()
+                } catch (e: Exception) { null }
 
                 val hrvRmssd: Int? = try {
-                    val records = client.readRecords(
-                        ReadRecordsRequest(HeartRateVariabilityRmssdRecord::class, TimeRangeFilter.between(startOfDay, now))
-                    ).records
-                    if (records.isNotEmpty()) records.map { it.heartRateVariabilityMillis }.average().toInt() else null
-                } catch (_: Exception) { null }
+                    val recs = client.readRecords(ReadRecordsRequest(HeartRateVariabilityRmssdRecord::class, TimeRangeFilter.between(startOfDay, now))).records
+                    if (recs.isNotEmpty()) recs.map { it.heartRateVariabilityMillis }.average().toInt() else null
+                } catch (e: Exception) { null }
 
                 val spo2: Int? = try {
-                    val records = client.readRecords(
-                        ReadRecordsRequest(OxygenSaturationRecord::class, TimeRangeFilter.between(startOfDay, now))
-                    ).records
-                    if (records.isNotEmpty()) records.map { it.percentage.value }.average().let { Math.round(it).toInt() } else null
-                } catch (_: Exception) { null }
+                    val recs = client.readRecords(ReadRecordsRequest(OxygenSaturationRecord::class, TimeRangeFilter.between(startOfDay, now))).records
+                    if (recs.isNotEmpty()) recs.map { it.percentage.value }.average().let { Math.round(it).toInt() } else null
+                } catch (e: Exception) { null }
 
                 val steps: Int? = try {
-                    val records = client.readRecords(
-                        ReadRecordsRequest(StepsRecord::class, TimeRangeFilter.between(startOfDay, now))
-                    ).records
-                    if (records.isNotEmpty()) records.sumOf { it.count }.toInt() else null
-                } catch (_: Exception) { null }
+                    val recs = client.readRecords(ReadRecordsRequest(StepsRecord::class, TimeRangeFilter.between(startOfDay, now))).records
+                    if (recs.isNotEmpty()) recs.sumOf { it.count }.toInt() else null
+                } catch (e: Exception) { null }
 
                 var totalSleepMin: Int? = null
                 var deepSleepMin: Int? = null
@@ -160,17 +142,12 @@ class HealthConnectPlugin : Plugin() {
                 var sleepScore: Int? = null
 
                 try {
-                    val sleepSessions = client.readRecords(
-                        ReadRecordsRequest(SleepSessionRecord::class, TimeRangeFilter.between(startOfYesterday, now))
-                    ).records
-                    val sleepSession = sleepSessions
-                        .filter { it.endTime >= startOfDay || it.startTime >= startOfYesterday }
-                        .maxByOrNull { it.endTime }
-
-                    if (sleepSession != null) {
-                        totalSleepMin = ((sleepSession.endTime.epochSecond - sleepSession.startTime.epochSecond) / 60).toInt()
+                    val sessions = client.readRecords(ReadRecordsRequest(SleepSessionRecord::class, TimeRangeFilter.between(startOfYesterday, now))).records
+                    val session = sessions.filter { it.endTime >= startOfDay || it.startTime >= startOfYesterday }.maxByOrNull { it.endTime }
+                    if (session != null) {
+                        totalSleepMin = ((session.endTime.epochSecond - session.startTime.epochSecond) / 60).toInt()
                         var deep = 0L; var rem = 0L; var light = 0L
-                        for (stage in sleepSession.stages) {
+                        for (stage in session.stages) {
                             val mins = (stage.endTime.epochSecond - stage.startTime.epochSecond) / 60
                             when (stage.stage) {
                                 SleepSessionRecord.STAGE_TYPE_DEEP  -> deep += mins
@@ -182,7 +159,6 @@ class HealthConnectPlugin : Plugin() {
                         deepSleepMin  = if (deep > 0) deep.toInt() else null
                         remSleepMin   = if (rem > 0) rem.toInt() else null
                         lightSleepMin = if (light > 0) light.toInt() else null
-
                         totalSleepMin?.let { t ->
                             var score = 50
                             score += when { t >= 480 -> 20; t >= 420 -> 15; t >= 360 -> 5; else -> -15 }
@@ -191,7 +167,7 @@ class HealthConnectPlugin : Plugin() {
                             sleepScore = score.coerceIn(0, 100)
                         }
                     }
-                } catch (_: Exception) {}
+                } catch (e: Exception) { /* sleep unavailable — continue */ }
 
                 val result = JSObject()
                 result.put("resting_hr", restingHr)
@@ -206,7 +182,7 @@ class HealthConnectPlugin : Plugin() {
                 call.resolve(result)
 
             } catch (e: Exception) {
-                call.reject("Health Connect sync failed: ${e.message}")
+                call.reject("Sync failed: ${e.message}")
             }
         }
     }
