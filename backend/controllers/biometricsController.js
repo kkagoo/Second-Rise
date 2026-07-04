@@ -11,15 +11,30 @@ function energySuggestionFromReadiness(score) {
 function getToday(req, res, next) {
   try {
     const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
 
     // Fetch all sources unconditionally
     const oura = db.prepare(
       'SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    const whoop = db.prepare(
+    // Whoop: today for strain; yesterday for recovery/sleep (Whoop stores last night's
+    // sleep data under the morning it ended, which may still be yesterday's date)
+    const whoopToday = db.prepare(
       'SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
+    const whoopYesterday = db.prepare(
+      'SELECT * FROM whoop_daily_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, yesterday);
+    // Merge: use today's strain, yesterday's recovery/sleep if today's are missing
+    const whoop = whoopToday ? {
+      ...whoopToday,
+      recovery_score:   whoopToday.recovery_score   ?? whoopYesterday?.recovery_score,
+      sleep_performance: whoopToday.sleep_performance ?? whoopYesterday?.sleep_performance,
+      total_sleep_min:  whoopToday.total_sleep_min  ?? whoopYesterday?.total_sleep_min,
+      hrv_rmssd_ms:     whoopToday.hrv_rmssd_ms     ?? whoopYesterday?.hrv_rmssd_ms,
+      resting_hr:       whoopToday.resting_hr        ?? whoopYesterday?.resting_hr,
+    } : whoopYesterday;
 
     const hc = db.prepare(
       'SELECT * FROM health_connect_daily_data WHERE user_id = ? AND date = ?'
