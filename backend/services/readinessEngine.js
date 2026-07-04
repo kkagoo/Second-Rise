@@ -119,18 +119,19 @@ function computeReadiness(userId, checkinData, profile, biometrics = null) {
 function estimateBiometricReadiness(biometrics) {
   if (!biometrics) return null;
 
-  const { recovery_score, sleep_score, total_sleep_min, hrv_rmssd_ms, hrv_balance, resting_hr } = biometrics;
+  const { recovery_score, sleep_score, total_sleep_min, hrv_rmssd_ms, hrv_balance, resting_hr, strain_score } = biometrics;
 
   // Whoop/Oura recovery score is already a readiness signal — use it directly
   if (recovery_score != null) return Math.max(10, Math.min(85, Math.round(recovery_score)));
 
   // Need at least one meaningful signal
-  const hasSignal = (sleep_score > 0) || total_sleep_min != null || hrv_rmssd_ms != null || hrv_balance != null || resting_hr != null;
+  const hasSignal = (sleep_score > 0) || total_sleep_min != null || hrv_rmssd_ms != null
+    || hrv_balance != null || resting_hr != null || strain_score != null;
   if (!hasSignal) return null;
 
   let score = 65; // neutral baseline
 
-  // Sleep score (Oura, Health Connect)
+  // Sleep score (Oura, Health Connect, Whoop sleep_performance)
   if (sleep_score != null && sleep_score > 0) {
     if      (sleep_score > 85) score += 10;
     else if (sleep_score > 70) score += 3;
@@ -138,10 +139,10 @@ function estimateBiometricReadiness(biometrics) {
     else if (sleep_score < 70) score -= 8;
   } else if (total_sleep_min != null) {
     // Raw duration fallback (Google Health, Fitbit, etc.)
-    if      (total_sleep_min >= 450) score += 8;   // 7.5+ hrs
-    else if (total_sleep_min >= 390) score += 3;   // 6.5+ hrs
-    else if (total_sleep_min < 300)  score -= 18;  // < 5 hrs
-    else if (total_sleep_min < 360)  score -= 10;  // < 6 hrs
+    if      (total_sleep_min >= 450) score += 8;
+    else if (total_sleep_min >= 390) score += 3;
+    else if (total_sleep_min < 300)  score -= 18;
+    else if (total_sleep_min < 360)  score -= 10;
   }
 
   // HRV — suppressed HRV signals accumulated fatigue
@@ -158,6 +159,15 @@ function estimateBiometricReadiness(biometrics) {
     if      (resting_hr < 55) score += 5;
     else if (resting_hr > 75) score -= 8;
     else if (resting_hr > 68) score -= 4;
+  }
+
+  // Whoop strain — high yesterday strain suggests need for recovery today
+  // Only used as a signal when nothing else is available (sleep not yet processed)
+  if (strain_score != null && sleep_score == null && total_sleep_min == null && hrv == null && resting_hr == null) {
+    if      (strain_score > 18) score -= 15; // very high strain
+    else if (strain_score > 14) score -= 8;  // high strain
+    else if (strain_score > 10) score -= 3;  // moderate strain
+    else if (strain_score < 6)  score += 5;  // low strain, likely recovery day
   }
 
   return Math.max(10, Math.min(85, Math.round(score)));

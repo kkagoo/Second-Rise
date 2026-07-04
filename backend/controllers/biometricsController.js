@@ -246,6 +246,7 @@ function getToday(req, res, next) {
         hrv_rmssd_ms:    hrvRmssd,
         hrv_balance:     hrvBalance,
         resting_hr:      restingHr,
+        strain_score:    strainScore,
       }),
     });
   } catch (err) {
