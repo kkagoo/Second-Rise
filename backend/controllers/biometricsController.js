@@ -225,11 +225,12 @@ function getToday(req, res, next) {
 
       // Biometric-only readiness estimate — shown before check-in for any wearable source
       biometric_readiness: estimateBiometricReadiness({
-        sleep_score:    sleepScore,
+        recovery_score:  recoveryScore,
+        sleep_score:     sleepScore,
         total_sleep_min: totalSleepMin,
-        hrv_rmssd_ms:   hrvRmssd,
-        hrv_balance:    hrvBalance,
-        resting_hr:     restingHr,
+        hrv_rmssd_ms:    hrvRmssd,
+        hrv_balance:     hrvBalance,
+        resting_hr:      restingHr,
       }),
     });
   } catch (err) {

@@ -301,10 +301,11 @@ export default function HomePage() {
                         From your {sourceLabel(biometrics.sources)}:
                       </span>
                       {biometrics.recovery_score != null && ` Recovery ${biometrics.recovery_score}`}
-                      {biometrics.sleep_score != null && ` · Sleep score ${biometrics.sleep_score}`}
+                      {biometrics.sleep_score != null && ` · Sleep ${biometrics.sleep_score}`}
                       {biometrics.total_sleep_min != null && ` · ${formatSleepMin(biometrics.total_sleep_min)} sleep`}
                       {(biometrics.hrv_balance != null || biometrics.hrv_rmssd_ms != null) && ` · HRV ${biometrics.hrv_balance ?? Math.round(biometrics.hrv_rmssd_ms)}`}
                       {biometrics.resting_hr != null && ` · HR ${biometrics.resting_hr}`}
+                      {biometrics.strain_score != null && ` · Strain ${biometrics.strain_score?.toFixed(1)}`}
                     </p>
                   </div>
                 )}

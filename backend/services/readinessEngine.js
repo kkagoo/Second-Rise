@@ -119,7 +119,10 @@ function computeReadiness(userId, checkinData, profile, biometrics = null) {
 function estimateBiometricReadiness(biometrics) {
   if (!biometrics) return null;
 
-  const { sleep_score, total_sleep_min, hrv_rmssd_ms, hrv_balance, resting_hr } = biometrics;
+  const { recovery_score, sleep_score, total_sleep_min, hrv_rmssd_ms, hrv_balance, resting_hr } = biometrics;
+
+  // Whoop/Oura recovery score is already a readiness signal — use it directly
+  if (recovery_score != null) return Math.max(10, Math.min(85, Math.round(recovery_score)));
 
   // Need at least one meaningful signal
   const hasSignal = (sleep_score > 0) || total_sleep_min != null || hrv_rmssd_ms != null || hrv_balance != null || resting_hr != null;
