@@ -16,10 +16,9 @@ async function openOAuth(url) {
 const WEARABLE_ENDPOINTS = {
   oura:         '/oura/connect',
   whoop:        '/whoop/connect',
-  google_fit:   '/googlefit/connect', // covers Fitbit via Google Health
+  google_fit:   '/googlefit/connect',
   withings:     '/withings/connect',
-  garmin:       '/garmin/connect',
-  apple_health: null, // file upload — handled in Profile
+  apple_health: null,
 };
 
 const STEPS = [
@@ -83,7 +82,6 @@ const WEARABLES = [
   { id: 'apple_health', label: 'Apple Health',   badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? 'native sync' : 'file import' },
   { id: 'google_fit',   label: 'Google Health',  badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
   { id: 'withings',     label: 'Withings',       badge: 'W', bg: '#0070CC', fg: '#fff' },
-  { id: 'garmin',       label: 'Garmin',         badge: 'G', bg: '#007CC3', fg: '#fff' },
 ];
 
 function OptionButton({ label, selected, onClick }) {

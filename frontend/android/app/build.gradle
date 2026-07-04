@@ -31,18 +31,6 @@ repositories {
     }
 }
 
-// Force consistent Kotlin stdlib across all transitive deps (prevents SpillingKt ClassNotFoundException)
-configurations.all {
-    resolutionStrategy.force(
-        "org.jetbrains.kotlin:kotlin-stdlib:1.9.22",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22",
-        "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.22",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
-    )
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
@@ -50,7 +38,7 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
     // Health Connect
     implementation "androidx.health.connect:connect-client:1.1.0-rc01"

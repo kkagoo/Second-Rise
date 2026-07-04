@@ -674,33 +674,33 @@ export default function ProfilePage() {
           <div className="flex gap-3 flex-wrap mt-2">
             <a
               href="#oura-section"
-              className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              className="flex items-center bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>🔵</span> Oura Ring
+              Oura Ring
             </a>
             <a
               href="#whoop-section"
-              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>⚫</span> Whoop
+              Whoop
             </a>
             <a
               href="#googlefit-section"
-              className="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              className="flex items-center bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>🟢</span> Google Health
+              Google Health
             </a>
             <a
               href="#apple-section"
-              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>🍎</span> Apple Health
+              Apple Health
             </a>
             <a
               href="#withings-section"
-              className="flex items-center gap-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              className="flex items-center bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
             >
-              <span>⬜</span> Withings
+              Withings
             </a>
           </div>
         </div>
