@@ -76,12 +76,14 @@ const STEPS = [
 // id matches the profile page connect button keys
 const isIOS = Capacitor.getPlatform() === 'ios';
 
+const isAndroid = Capacitor.getPlatform() === 'android';
+
 const WEARABLES = [
-  { id: 'oura',         label: 'Oura Ring',     badge: 'O', bg: '#1a1a2e', fg: '#fff' },
-  { id: 'whoop',        label: 'Whoop',          badge: 'W', bg: '#111827', fg: '#fff' },
-  { id: 'apple_health', label: 'Apple Health',   badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? 'native sync' : 'file import' },
-  { id: 'google_fit',   label: 'Google Health',  badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
-  { id: 'withings',     label: 'Withings',       badge: 'W', bg: '#0070CC', fg: '#fff' },
+  { id: 'oura',         label: 'Oura Ring',    badge: 'O', bg: '#1a1a2e', fg: '#fff' },
+  { id: 'whoop',        label: 'Whoop',         badge: 'W', bg: '#111827', fg: '#fff' },
+  ...(!isAndroid ? [{ id: 'apple_health', label: 'Apple Health', badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? null : 'file import' }] : []),
+  { id: 'google_fit',   label: 'Google Health', badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
+  { id: 'withings',     label: 'Withings',      badge: 'W', bg: '#0070CC', fg: '#fff' },
 ];
 
 function OptionButton({ label, selected, onClick }) {

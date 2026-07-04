@@ -56,9 +56,21 @@ function getToday(req, res, next) {
       'SELECT * FROM garmin_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    const apple = db.prepare(
+    // Apple Health: today first, fall back to yesterday for HR/HRV (Apple Watch
+    // computes these overnight so they may be stored under yesterday's date)
+    const appleToday = db.prepare(
       'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
+    const appleYesterday = db.prepare(
+      'SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?'
+    ).get(req.userId, yesterday);
+    const apple = appleToday ? {
+      ...appleToday,
+      resting_hr: appleToday.resting_hr ?? appleYesterday?.resting_hr,
+      hrv_ms:     appleToday.hrv_ms     ?? appleYesterday?.hrv_ms,
+      sleep_min:  appleToday.sleep_min  ?? appleYesterday?.sleep_min,
+      step_count: appleToday.step_count ?? appleYesterday?.step_count,
+    } : appleYesterday;
 
     // Nothing at all
     if (!oura && !whoop && !hc && !googleFit && !fitbit && !withings && !garmin && !apple) {

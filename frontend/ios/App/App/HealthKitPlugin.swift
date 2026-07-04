@@ -29,34 +29,42 @@ public class HealthKitPlugin: CAPPlugin {
 
     // MARK: - checkAvailability
 
-    @objc func checkAvailability(_ call: CAPPluginCall) {
+    @objc public func checkAvailability(_ call: CAPPluginCall) {
         let available = HKHealthStore.isHealthDataAvailable()
         call.resolve(["available": available])
     }
 
-    // MARK: - requestPermissions
+    // MARK: - requestHKPermissions
 
-    @objc func requestPermissions(_ call: CAPPluginCall) {
+    @objc public func requestHKPermissions(_ call: CAPPluginCall) {
         guard HKHealthStore.isHealthDataAvailable() else {
-            call.reject("HealthKit is not available on this device")
+            call.reject("HealthKit not available")
             return
         }
-        healthStore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
-            if let error = error {
-                call.reject("HealthKit authorization failed: \(error.localizedDescription)")
-            } else {
-                call.resolve(["granted": success])
+        bridge?.saveCall(call)
+        let callbackId = call.callbackId
+        healthStore.requestAuthorization(toShare: Set<HKSampleType>(), read: readTypes) { success, error in
+            DispatchQueue.main.async {
+                guard let savedCall = self.bridge?.savedCall(withID: callbackId) else { return }
+                self.bridge?.releaseCall(savedCall)
+                if let error = error {
+                    savedCall.reject("HealthKit authorization failed: \(error.localizedDescription)")
+                } else {
+                    savedCall.resolve(["granted": success])
+                }
             }
         }
     }
 
     // MARK: - syncToday
 
-    @objc func syncToday(_ call: CAPPluginCall) {
+    @objc public func syncToday(_ call: CAPPluginCall) {
         guard HKHealthStore.isHealthDataAvailable() else {
             call.reject("HealthKit not available")
             return
         }
+        bridge?.saveCall(call)
+        let syncCallbackId = call.callbackId
 
         let calendar = Calendar.current
         let now = Date()
@@ -79,9 +87,11 @@ public class HealthKitPlugin: CAPPlugin {
         var sleepScore: Int?
 
         // ── Resting Heart Rate ──────────────────────────────────────────────
+        // Look back to yesterday: Apple Watch computes resting HR overnight, so the
+        // most recent sample may be timestamped from last night rather than today.
         group.enter()
         if let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) {
-            let pred = HKQuery.predicateForSamples(withStart: startOfDay, end: now)
+            let pred = HKQuery.predicateForSamples(withStart: startOfYesterday, end: now)
             let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
             let query = HKSampleQuery(sampleType: type, predicate: pred, limit: 1, sortDescriptors: [sort]) { _, samples, _ in
                 if let sample = samples?.first as? HKQuantitySample {
@@ -93,9 +103,11 @@ public class HealthKitPlugin: CAPPlugin {
         } else { group.leave() }
 
         // ── HRV (SDNN) ─────────────────────────────────────────────────────
+        // Look back to yesterday: HRV is measured during sleep, so samples may be
+        // from overnight rather than today's window.
         group.enter()
         if let type = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) {
-            let pred = HKQuery.predicateForSamples(withStart: startOfDay, end: now)
+            let pred = HKQuery.predicateForSamples(withStart: startOfYesterday, end: now)
             let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
             let query = HKSampleQuery(sampleType: type, predicate: pred, limit: 10, sortDescriptors: [sort]) { _, samples, _ in
                 if let s = samples as? [HKQuantitySample], !s.isEmpty {
@@ -188,18 +200,20 @@ public class HealthKitPlugin: CAPPlugin {
 
         // ── Collect results ────────────────────────────────────────────────
         group.notify(queue: .main) {
+            guard let savedCall = self.bridge?.savedCall(withID: syncCallbackId) else { return }
+            self.bridge?.releaseCall(savedCall)
             var result = JSObject()
-            result["resting_hr"]      = restingHR    as Any
-            result["hrv_rmssd"]       = hrvSDNN      as Any  // SDNN used as HRV proxy
-            result["spo2"]            = spo2         as Any
-            result["steps"]           = steps        as Any
-            result["total_sleep_min"] = totalSleepMin as Any
-            result["deep_sleep_min"]  = deepSleepMin  as Any
-            result["rem_sleep_min"]   = remSleepMin   as Any
-            result["light_sleep_min"] = lightSleepMin as Any
-            result["sleep_score"]     = sleepScore    as Any
-            result["hrv_type"]        = "sdnn"        // so backend knows this is SDNN not RMSSD
-            call.resolve(result)
+            if let v = restingHR    { result["resting_hr"]      = v }
+            if let v = hrvSDNN      { result["hrv_rmssd"]       = v }
+            if let v = spo2         { result["spo2"]            = v }
+            if let v = steps        { result["steps"]           = v }
+            if let v = totalSleepMin { result["total_sleep_min"] = v }
+            if let v = deepSleepMin  { result["deep_sleep_min"]  = v }
+            if let v = remSleepMin   { result["rem_sleep_min"]   = v }
+            if let v = lightSleepMin { result["light_sleep_min"] = v }
+            if let v = sleepScore    { result["sleep_score"]     = v }
+            result["hrv_type"] = "sdnn"
+            savedCall.resolve(result)
         }
     }
 }
