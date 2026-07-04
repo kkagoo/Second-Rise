@@ -252,7 +252,9 @@ export default function HomePage() {
                     Today's check-in
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-2xl font-bold text-gray-900">{todayCheckin.computed_readiness}</span>
+                    <span className="text-2xl font-bold text-gray-900">
+                      {todayCheckin.computed_readiness > 0 ? todayCheckin.computed_readiness : '—'}
+                    </span>
                     <span className="text-xs text-gray-400 font-medium">readiness score</span>
                   </div>
                   {biometrics?.sources?.length > 0 && (
@@ -273,7 +275,17 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Today's check-in</p>
-                    <p className="text-sm font-medium text-gray-700 mt-1">Not done yet</p>
+                    {biometrics?.biometric_readiness != null ? (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-2xl font-bold text-gray-900">{biometrics.biometric_readiness}</span>
+                        <span className="text-xs text-gray-400 font-medium">estimated readiness</span>
+                      </div>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-700 mt-1">Not done yet</p>
+                    )}
+                    {biometrics?.biometric_readiness != null && (
+                      <p className="text-xs text-gray-400 mt-0.5">Check in for a personalised score</p>
+                    )}
                   </div>
                   <button
                     onClick={() => navigate('/checkin')}

@@ -86,13 +86,16 @@ function computeReadiness(userId, checkinData, profile, biometrics = null) {
       if (hrv > 65) score += 5;
     }
 
-    const sleepScore = biometrics.sleep_score ?? null;
+    // Treat sleep_score of 0 as missing data — Health Connect can produce 0
+    // for nights with no wear data, which would unfairly penalise the score
+    const sleepScore = (biometrics.sleep_score != null && biometrics.sleep_score > 0)
+      ? biometrics.sleep_score : null;
     if (sleepScore !== null) {
       if (sleepScore < 55)                         score -= 12;
       else if (sleepScore >= 55 && sleepScore <= 70) score -= 5;
       else if (sleepScore > 85)                    score += 3;
     } else {
-      // Apple Health path — use total_sleep_min
+      // Fall back to raw sleep duration (Google Health, Apple Health, etc.)
       const sleepMin = biometrics.total_sleep_min ?? null;
       if (sleepMin !== null) {
         if (sleepMin < 330) score -= 10;
@@ -108,4 +111,53 @@ function computeReadiness(userId, checkinData, profile, biometrics = null) {
   return Math.max(0, Math.min(85, score));
 }
 
-module.exports = { computeReadiness };
+/**
+ * Estimate readiness purely from wearable biometrics — no check-in required.
+ * Used on the home screen before the user has checked in today.
+ * Returns null if there isn't enough data to make a meaningful estimate.
+ */
+function estimateBiometricReadiness(biometrics) {
+  if (!biometrics) return null;
+
+  const { sleep_score, total_sleep_min, hrv_rmssd_ms, hrv_balance, resting_hr } = biometrics;
+
+  // Need at least one meaningful signal
+  const hasSignal = (sleep_score > 0) || total_sleep_min != null || hrv_rmssd_ms != null || hrv_balance != null || resting_hr != null;
+  if (!hasSignal) return null;
+
+  let score = 65; // neutral baseline
+
+  // Sleep score (Oura, Health Connect)
+  if (sleep_score != null && sleep_score > 0) {
+    if      (sleep_score > 85) score += 10;
+    else if (sleep_score > 70) score += 3;
+    else if (sleep_score < 55) score -= 15;
+    else if (sleep_score < 70) score -= 8;
+  } else if (total_sleep_min != null) {
+    // Raw duration fallback (Google Health, Fitbit, etc.)
+    if      (total_sleep_min >= 450) score += 8;   // 7.5+ hrs
+    else if (total_sleep_min >= 390) score += 3;   // 6.5+ hrs
+    else if (total_sleep_min < 300)  score -= 18;  // < 5 hrs
+    else if (total_sleep_min < 360)  score -= 10;  // < 6 hrs
+  }
+
+  // HRV — suppressed HRV signals accumulated fatigue
+  const hrv = hrv_balance ?? (hrv_rmssd_ms != null ? Math.round(hrv_rmssd_ms) : null);
+  if (hrv != null) {
+    if      (hrv > 65) score += 8;
+    else if (hrv > 45) score += 3;
+    else if (hrv < 30) score -= 10;
+    else if (hrv < 40) score -= 5;
+  }
+
+  // Resting HR — elevated HR signals stress or fatigue
+  if (resting_hr != null) {
+    if      (resting_hr < 55) score += 5;
+    else if (resting_hr > 75) score -= 8;
+    else if (resting_hr > 68) score -= 4;
+  }
+
+  return Math.max(10, Math.min(85, Math.round(score)));
+}
+
+module.exports = { computeReadiness, estimateBiometricReadiness };

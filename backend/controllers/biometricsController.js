@@ -1,4 +1,5 @@
 const db = require('../db/database');
+const { estimateBiometricReadiness } = require('../services/readinessEngine');
 
 function energySuggestionFromReadiness(score) {
   if (score <= 40) return 20;
@@ -221,6 +222,15 @@ function getToday(req, res, next) {
 
       // Energy
       energy_suggestion:   energySuggestionFromReadiness(energyScore),
+
+      // Biometric-only readiness estimate — shown before check-in for any wearable source
+      biometric_readiness: estimateBiometricReadiness({
+        sleep_score:    sleepScore,
+        total_sleep_min: totalSleepMin,
+        hrv_rmssd_ms:   hrvRmssd,
+        hrv_balance:    hrvBalance,
+        resting_hr:     restingHr,
+      }),
     });
   } catch (err) {
     next(err);
