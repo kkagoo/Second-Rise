@@ -55,7 +55,10 @@ app.use('/admin-assets', express.static(path.join(__dirname, 'public')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
 // Health check for Railway
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req, res) => {
+  console.log(`[health] ping at ${new Date().toISOString()}`);
+  res.json({ status: 'ok' });
+});
 
 app.use('/api/auth',        authRoutes);
 app.use('/api/profile',     profileRoutes);
