@@ -2,6 +2,13 @@ import React, { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import client from './api/client';
+
+// Fire-and-forget warmup: pings the backend immediately on app open so Railway
+// is warm by the time the user attempts to log in. Silently ignored if it fails.
+(function warmupBackend() {
+  try { client.get('/health', { timeout: 10000 }).catch(() => {}); } catch {}
+})();
 import { CheckinProvider } from './context/CheckinContext';
 import AppLayout from './components/ui/AppLayout';
 
