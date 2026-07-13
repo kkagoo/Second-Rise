@@ -50,9 +50,6 @@ app.options('*', cors(corsOptions)); // explicit preflight for all routes
 
 app.use(express.json());
 
-// Serve admin panel
-app.use('/admin-assets', express.static(path.join(__dirname, 'public')));
-app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
 // Health check for Railway
 app.get('/api/health', (req, res) => {
