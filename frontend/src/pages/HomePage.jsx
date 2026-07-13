@@ -104,6 +104,7 @@ export default function HomePage() {
   const [weekStats, setWeekStats]       = useState(null);
   const [workoutReview, setWorkoutReview] = useState(null);
   const [biometricTrend, setBiometricTrend] = useState(null);
+  const [streak, setStreak]                 = useState(null);
 
   useEffect(() => {
     const localDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
@@ -123,6 +124,9 @@ export default function HomePage() {
       .catch(() => {});
     client.get('/history/week')
       .then((r) => setWeekStats(r.data))
+      .catch(() => {});
+    client.get('/checkin/streak')
+      .then((r) => setStreak(r.data))
       .catch(() => {});
   }, []);
 
@@ -160,11 +164,18 @@ export default function HomePage() {
             className="px-6 pb-5 relative z-10 max-w-[62%]"
             style={{ paddingTop: 'max(3rem, env(safe-area-inset-top))' }}
           >
-            {/* Welcome + weekly streak */}
-            <div className="flex items-center gap-2 mb-0.5">
+            {/* Welcome + streak badges */}
+            <div className="flex items-center gap-2 mb-0.5 flex-wrap">
               <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
                 Welcome back
               </p>
+              {streak?.current_streak > 0 && (
+                <div className="flex items-center gap-1 bg-white/70 rounded-full px-2 py-0.5">
+                  <span className="text-sm leading-none">🔥</span>
+                  <span className="text-xs font-bold text-gray-800">{streak.current_streak}</span>
+                  <span className="text-[10px] text-gray-400">{streak.current_streak === 1 ? 'day' : 'days'}</span>
+                </div>
+              )}
               {weekStats != null && (
                 <div className="flex items-center gap-1 bg-white/70 rounded-full px-2 py-0.5">
                   <span className="text-sm leading-none">🏆</span>

@@ -52,6 +52,8 @@ import PainHistoryPage      from './pages/PainHistoryPage';
 import ResourcesPage        from './pages/ResourcesPage';
 import ActivityChoicePage   from './pages/ActivityChoicePage';
 import OnboardingPage       from './pages/OnboardingPage';
+import PrivacyPage          from './pages/PrivacyPage';
+import TermsPage            from './pages/TermsPage';
 
 const Spinner = () => (
   <div className="min-h-screen bg-white flex items-center justify-center">
@@ -109,6 +111,10 @@ export default function App() {
             <Route path="/resources"        element={<AuthGuard><ResourcesPage /></AuthGuard>} />
             <Route path="/move"             element={<AuthGuard><ActivityChoicePage /></AuthGuard>} />
             <Route path="/onboarding"       element={<BareAuthGuard><OnboardingPage /></BareAuthGuard>} />
+
+            {/* Public legal pages — no auth required */}
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms"   element={<TermsPage />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

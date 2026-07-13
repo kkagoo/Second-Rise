@@ -148,7 +148,7 @@ export default function CheckinPage() {
                       ].filter(Boolean).join(' · ')}
                     </p>
                     <p className="text-xs text-blue-400">
-                      Suggesting: {ENERGY_LABELS[biometrics.energy_suggestion] ?? 'Medium energy'} · tap to apply, or choose your own
+                      Energy pre-filled as <strong>{ENERGY_LABELS[biometrics.energy_suggestion] ?? 'Medium energy'}</strong> — change below if needed
                     </p>
                   </div>
                 )}
@@ -158,6 +158,7 @@ export default function CheckinPage() {
                   tempFlag={biometrics?.temp_flag}
                   menopauseStage={profile?.menopause_stage ?? null}
                   hasBiometrics={!!biometrics}
+                  hasCycleConsent={!!profile?.cycle_tracking_consent}
                 />
               </>
             ) : (

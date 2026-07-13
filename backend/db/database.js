@@ -202,4 +202,12 @@ try {
   `);
 } catch (_) {}
 
+// Opt-in consent flags on user_profiles
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN cycle_tracking_consent INTEGER NOT NULL DEFAULT 0"); } catch (_) {}
+
+// Streak tracking on user_profiles
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN current_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN longest_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN last_streak_date TEXT"); }                      catch (_) {}
+
 module.exports = db;

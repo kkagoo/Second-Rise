@@ -44,6 +44,16 @@ function submitCheckin(req, res, next) {
             temp_flag:       false,
           };
         } else {
+          const hc = db.prepare('SELECT * FROM health_connect_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+          if (hc) {
+            biometrics = {
+              source:          'health_connect',
+              hrv_balance:     null,
+              sleep_score:     hc.sleep_score,
+              total_sleep_min: hc.total_sleep_min,
+              temp_flag:       false,
+            };
+          } else {
           const googleFit = db.prepare('SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
           if (googleFit) {
             biometrics = {
@@ -76,6 +86,7 @@ function submitCheckin(req, res, next) {
           }
           }
           }
+          }
         }
       }
     } catch { /* no biometrics available */ }
@@ -100,9 +111,53 @@ function submitCheckin(req, res, next) {
       checkinData.menstruating,
     );
 
-    res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness });
+    // Update streak
+    const streak = computeStreak(req.userId, today);
+    db.prepare(`
+      UPDATE user_profiles
+      SET current_streak  = ?,
+          longest_streak  = MAX(longest_streak, ?),
+          last_streak_date = ?
+      WHERE user_id = ?
+    `).run(streak, streak, today, req.userId);
+
+    res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness, streak });
   } catch (err) {
     next(err);
+  }
+}
+
+// Count consecutive days (ending today or yesterday) that have a checkin
+function computeStreak(userId, today) {
+  try {
+    // Get all distinct checkin dates desc
+    const rows = db.prepare(`
+      SELECT DISTINCT COALESCE(checkin_date, date(timestamp)) AS d
+      FROM daily_checkins
+      WHERE user_id = ?
+      ORDER BY d DESC
+    `).all(userId);
+
+    if (!rows.length) return 0;
+
+    let streak = 0;
+    let expected = today;
+
+    for (const { d } of rows) {
+      if (d === expected) {
+        streak++;
+        // Move expected back one day
+        const dt = new Date(expected + 'T00:00:00Z');
+        dt.setUTCDate(dt.getUTCDate() - 1);
+        expected = dt.toISOString().slice(0, 10);
+      } else if (d < expected) {
+        break; // gap — streak ends
+      }
+      // d > expected means future dates (shouldn't happen), skip
+    }
+    return streak;
+  } catch {
+    return 0;
   }
 }
 
@@ -138,4 +193,16 @@ function getTodayCheckin(req, res, next) {
   }
 }
 
-module.exports = { submitCheckin, getTodayCheckin };
+function getStreak(req, res, next) {
+  try {
+    const profile = db.prepare('SELECT current_streak, longest_streak FROM user_profiles WHERE user_id = ?').get(req.userId);
+    const today   = new Date().toISOString().slice(0, 10);
+    // Recompute live in case the stored value is stale
+    const current = computeStreak(req.userId, today);
+    res.json({ current_streak: current, longest_streak: Math.max(current, profile?.longest_streak ?? 0) });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { submitCheckin, getTodayCheckin, getStreak };

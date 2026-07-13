@@ -28,15 +28,15 @@ const SLEEP_LABELS = {
 // Show cycle question for perimenopause and not-sure users
 const SHOW_CYCLE_FOR = ['perimenopause', 'not_sure'];
 
-export default function Layer1Form({ onComplete, suggestion = null, tempFlag = false, menopauseStage = null, hasBiometrics = false }) {
-  const [energy, setEnergy]           = useState(null);
+export default function Layer1Form({ onComplete, suggestion = null, tempFlag = false, menopauseStage = null, hasBiometrics = false, hasCycleConsent = false }) {
+  const [energy, setEnergy]           = useState(suggestion);
   const [time, setTime]               = useState(null);
   const [painFlag, setPainFlag]       = useState(null);
   const [workoutPref, setWorkoutPref] = useState('surprise');
   const [sleepQuality, setSleepQuality] = useState(null);
   const [menstruating, setMenstruating] = useState(null);
 
-  const showCycleQuestion = SHOW_CYCLE_FOR.includes(menopauseStage);
+  const showCycleQuestion = hasCycleConsent && SHOW_CYCLE_FOR.includes(menopauseStage);
   const showSleepQuestion = !hasBiometrics;
 
   const canProceed = energy !== null && time !== null && painFlag !== null;

@@ -21,24 +21,25 @@ function updateProfile(req, res, next) {
       age_range, menopause_stage, hrt_status, bone_health,
       pelvic_floor_history, chronic_joints, activity_baseline,
       equipment_available, preferred_time, dinner_cooks_interest,
-      onboarding_complete, oura_access_token,
+      onboarding_complete, oura_access_token, cycle_tracking_consent,
     } = req.body;
 
     db.prepare(`
       UPDATE user_profiles SET
-        age_range             = COALESCE(?, age_range),
-        menopause_stage       = COALESCE(?, menopause_stage),
-        hrt_status            = COALESCE(?, hrt_status),
-        bone_health           = COALESCE(?, bone_health),
-        pelvic_floor_history  = COALESCE(?, pelvic_floor_history),
-        chronic_joints        = COALESCE(?, chronic_joints),
-        activity_baseline     = COALESCE(?, activity_baseline),
-        equipment_available   = COALESCE(?, equipment_available),
-        preferred_time        = COALESCE(?, preferred_time),
-        dinner_cooks_interest = COALESCE(?, dinner_cooks_interest),
-        onboarding_complete   = COALESCE(?, onboarding_complete),
-        oura_access_token     = COALESCE(?, oura_access_token),
-        updated_at            = datetime('now')
+        age_range               = COALESCE(?, age_range),
+        menopause_stage         = COALESCE(?, menopause_stage),
+        hrt_status              = COALESCE(?, hrt_status),
+        bone_health             = COALESCE(?, bone_health),
+        pelvic_floor_history    = COALESCE(?, pelvic_floor_history),
+        chronic_joints          = COALESCE(?, chronic_joints),
+        activity_baseline       = COALESCE(?, activity_baseline),
+        equipment_available     = COALESCE(?, equipment_available),
+        preferred_time          = COALESCE(?, preferred_time),
+        dinner_cooks_interest   = COALESCE(?, dinner_cooks_interest),
+        onboarding_complete     = COALESCE(?, onboarding_complete),
+        oura_access_token       = COALESCE(?, oura_access_token),
+        cycle_tracking_consent  = COALESCE(?, cycle_tracking_consent),
+        updated_at              = datetime('now')
       WHERE user_id = ?
     `).run(
       age_range ?? null,
@@ -53,6 +54,7 @@ function updateProfile(req, res, next) {
       dinner_cooks_interest !== undefined ? (dinner_cooks_interest ? 1 : 0) : null,
       onboarding_complete !== undefined ? (onboarding_complete ? 1 : 0) : null,
       oura_access_token ?? null,
+      cycle_tracking_consent !== undefined ? (cycle_tracking_consent ? 1 : 0) : null,
       req.userId,
     );
 

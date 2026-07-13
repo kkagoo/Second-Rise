@@ -213,9 +213,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setForm({
-        age_range:            profile.age_range || null,
-        menopause_stage:      profile.menopause_stage || null,
-        hrt_status:           profile.hrt_status || null,
+        age_range:               profile.age_range || null,
+        menopause_stage:         profile.menopause_stage || null,
+        cycle_tracking_consent:  !!profile.cycle_tracking_consent,
+        hrt_status:              profile.hrt_status || null,
         bone_health:          profile.bone_health || null,
         pelvic_floor_history: profile.pelvic_floor_history === 1 ? true
                             : profile.pelvic_floor_history === 0 ? false
@@ -631,7 +632,8 @@ export default function ProfilePage() {
     try {
       await client.put('/profile', {
         ...form,
-        pelvic_floor_history: form.pelvic_floor_history,
+        pelvic_floor_history:   form.pelvic_floor_history,
+        cycle_tracking_consent: form.cycle_tracking_consent,
       });
       await refreshProfile();
       setSaved(true);
@@ -1043,6 +1045,32 @@ export default function ProfilePage() {
           </div>
         </Section>
 
+        {/* Cycle tracking consent */}
+        {['perimenopause', 'not_sure'].includes(form.menopause_stage) && (
+          <Section
+            title="Cycle phase tracking"
+            subtitle="When enabled, your daily check-in will ask whether you're menstruating. This helps us soften intensity on harder days."
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-800">Include cycle question in check-in</p>
+                <p className="text-xs text-gray-400 mt-0.5">Your cycle data is never shared or sold.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => set('cycle_tracking_consent', !form.cycle_tracking_consent)}
+                className={`relative w-12 h-7 rounded-full transition-colors duration-200 focus:outline-none ${
+                  form.cycle_tracking_consent ? 'bg-rose-400' : 'bg-gray-200'
+                }`}
+              >
+                <span className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                  form.cycle_tracking_consent ? 'translate-x-5' : 'translate-x-0'
+                }`} />
+              </button>
+            </div>
+          </Section>
+        )}
+
         {/* Chronic joints */}
         <Section title="Any ongoing joint issues?" subtitle="Select all that apply — we'll work around them">
           <Chips
@@ -1124,6 +1152,12 @@ export default function ProfilePage() {
               ⬇️ Download everything (.csv)
             </button>
           </div>
+        </div>
+
+        <div className="flex justify-center gap-4 text-xs text-gray-400">
+          <button onClick={() => navigate('/privacy')} className="underline underline-offset-2 hover:text-gray-600 tap-target">Privacy Policy</button>
+          <span>·</span>
+          <button onClick={() => navigate('/terms')} className="underline underline-offset-2 hover:text-gray-600 tap-target">Terms of Service</button>
         </div>
 
         <button
