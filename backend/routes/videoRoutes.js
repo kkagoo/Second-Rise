@@ -6,7 +6,7 @@ const auth    = require('../middleware/auth');
 const router = express.Router();
 
 // Load videos once at startup
-const VIDEOS_PATH = path.join(__dirname, '../data/videos.json');
+const VIDEOS_PATH = path.join(__dirname, '../videos.json');
 const videos = JSON.parse(fs.readFileSync(VIDEOS_PATH, 'utf8'));
 
 // All video routes require auth

@@ -1,4 +1,4 @@
-const videos = require('../data/videos.json');
+const videos = require('../videos.json');
 
 function getFilteredVideos(timeAvail, readiness, bodyFlags, secondaryFlags, profile) {
   const timeLimit = timeAvail === '35+' ? 45 : parseInt(timeAvail, 10);
