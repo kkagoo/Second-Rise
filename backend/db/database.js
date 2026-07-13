@@ -213,4 +213,16 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN last_streak_date TEXT"); }  
 // Admin flag
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"); } catch (_) {}
 
+// Seed admin from environment variable — set ADMIN_EMAIL in Railway to promote an account on boot.
+// Safe to run on every startup (no-op if user doesn't exist or is already admin).
+const adminEmail = process.env.ADMIN_EMAIL;
+if (adminEmail) {
+  try {
+    db.prepare(`
+      UPDATE user_profiles SET is_admin = 1
+      WHERE user_id = (SELECT id FROM users WHERE email = ? LIMIT 1)
+    `).run(adminEmail);
+  } catch (_) {}
+}
+
 module.exports = db;
