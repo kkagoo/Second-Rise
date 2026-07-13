@@ -690,12 +690,14 @@ export default function ProfilePage() {
             >
               Google Health
             </a>
-            <a
-              href="#apple-section"
-              className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
-            >
-              Apple Health
-            </a>
+            {!isAndroid && (
+              <a
+                href="#apple-section"
+                className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
+              >
+                Apple Health
+              </a>
+            )}
             <a
               href="#withings-section"
               className="flex items-center bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold text-sm rounded-2xl px-4 py-2.5 transition-colors"
@@ -901,8 +903,8 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Apple Health — manual export, hidden on iOS (native HealthKit sync used instead) */}
-        {!isIOS && <div id="apple-section">
+        {/* Apple Health file upload — web only (iOS uses native HealthKit, Android uses Health Connect) */}
+        {!isIOS && !isAndroid && <div id="apple-section">
         <Section title="Apple Health" subtitle="Health app → avatar (top right) → Export All Health Data → upload the zip below">
 
           <input
@@ -1070,7 +1072,7 @@ export default function ProfilePage() {
         </Section>
 
         {/* Equipment */}
-        <Section title="Equipment you have access to" subtitle="Claude will only recommend exercises you can do">
+        <Section title="Equipment you have access to" subtitle="We'll only recommend movement that fits your equipment, body, and current needs.">
           <Chips
             options={EQUIPMENT}
             value={form.equipment_available}
