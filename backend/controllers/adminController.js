@@ -21,25 +21,40 @@ function getStats(req, res, next) {
   } catch (err) { next(err); }
 }
 
-// ── User list ─────────────────────────────────────────────────────────────────
+// ── User list (cohort activity view — no raw health values) ───────────────────
 function getUsers(req, res, next) {
   try {
     const users = db.prepare(`
       SELECT
         u.id,
         u.email,
-        u.created_at,
-        up.menopause_stage,
-        up.age_range,
-        up.onboarding_complete,
-        (SELECT COUNT(*) FROM daily_checkins dc WHERE dc.user_id = u.id) AS total_checkins,
-        (SELECT COUNT(*) FROM post_session_feedback psf WHERE psf.user_id = u.id) AS total_workouts,
-        (SELECT MAX(timestamp) FROM daily_checkins dc WHERE dc.user_id = u.id) AS last_checkin
+        COALESCE(
+          MAX(dc.checkin_date),
+          MAX(date(dc.timestamp)),
+          MAX(date(psf.created_at))
+        ) AS last_active,
+        (
+          SELECT COUNT(*) FROM post_session_feedback psf2
+          WHERE psf2.user_id = u.id
+            AND psf2.created_at >= datetime('now', '-7 days')
+        ) AS sessions_this_week,
+        COALESCE(up.current_streak, 0) AS current_streak,
+        CASE WHEN (
+          up.oura_access_token IS NOT NULL OR
+          up.whoop_access_token IS NOT NULL OR
+          up.google_fit_access_token IS NOT NULL OR
+          up.fitbit_access_token IS NOT NULL OR
+          up.withings_access_token IS NOT NULL OR
+          up.garmin_oauth_token IS NOT NULL
+        ) THEN 1 ELSE 0 END AS wearable_connected
       FROM users u
       LEFT JOIN user_profiles up ON up.user_id = u.id
-      ORDER BY u.created_at DESC
+      LEFT JOIN daily_checkins dc ON dc.user_id = u.id
+      LEFT JOIN post_session_feedback psf ON psf.user_id = u.id
+      GROUP BY u.id
+      ORDER BY last_active DESC NULLS LAST
     `).all();
-    res.json({ users });
+    res.json(users);
   } catch (err) { next(err); }
 }
 

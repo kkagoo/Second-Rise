@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import { WomanWorkoutIllustration } from '../components/ui/Illustrations';
+import StreakShareModal from '../components/ui/StreakShareModal';
 
 const CATEGORIES = [
   { label: 'Strength',  type: 'strength',          color: 'bg-blue-400',   text: 'text-white' },
@@ -105,6 +106,7 @@ export default function HomePage() {
   const [workoutReview, setWorkoutReview] = useState(null);
   const [biometricTrend, setBiometricTrend] = useState(null);
   const [streak, setStreak]                 = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const localDate = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
@@ -126,7 +128,17 @@ export default function HomePage() {
       .then((r) => setWeekStats(r.data))
       .catch(() => {});
     client.get('/checkin/streak')
-      .then((r) => setStreak(r.data))
+      .then((r) => {
+        setStreak(r.data);
+        const s = r.data?.current_streak;
+        if (s > 0 && s % 7 === 0) {
+          const lastShown = parseInt(localStorage.getItem('sr_last_share_streak') || '0', 10);
+          if (lastShown !== s) {
+            setShowShareModal(true);
+            localStorage.setItem('sr_last_share_streak', String(s));
+          }
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -143,6 +155,9 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white pb-28">
+      {showShareModal && (
+        <StreakShareModal streak={streak?.current_streak} onClose={() => setShowShareModal(false)} />
+      )}
 
       {/* ── Hero banner ── */}
       <div className="bg-sky-card">

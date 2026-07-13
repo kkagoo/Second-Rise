@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const {
   getStats, getUsers, deleteUser,
@@ -7,7 +8,8 @@ const {
 
 const router = express.Router();
 
-// All admin routes require the X-Admin-Secret header
+// All admin routes require a valid JWT + is_admin flag
+router.use(auth);
 router.use(adminAuth);
 
 router.get('/stats',               getStats);
