@@ -31,7 +31,7 @@ function getUsers(req, res, next) {
         COALESCE(
           MAX(dc.checkin_date),
           MAX(date(dc.timestamp)),
-          MAX(date(psf.created_at))
+          MAX(date(psf.timestamp))
         ) AS last_active,
         (
           SELECT COUNT(*) FROM post_session_feedback psf2
