@@ -4,9 +4,19 @@ node_modules/
 
 # Environment variables (never commit these)
 backend/.env
+frontend/.env
 
-# Database file only (not videos.json or other static data)
+# Secrets / keystores
+frontend/android/*.jks
+frontend/android/**/*.jks
+
+# Vite temp files
+*.timestamp-*.mjs
+
+# Database files (including WAL/SHM journal files)
 backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
 
 # Build output
 frontend/dist/

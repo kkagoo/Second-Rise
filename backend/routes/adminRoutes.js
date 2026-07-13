@@ -2,8 +2,9 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const {
-  getStats, getUsers, deleteUser,
-  getResources, createResource, updateResource, deleteResource
+  getStats, getCohortTrends,
+  getUsers, deleteUser,
+  getResources, createResource, updateResource, deleteResource,
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router.use(auth);
 router.use(adminAuth);
 
 router.get('/stats',               getStats);
+router.get('/trends',              getCohortTrends);
 router.get('/users',               getUsers);
 router.delete('/users/:id',        deleteUser);
 router.get('/resources',           getResources);
