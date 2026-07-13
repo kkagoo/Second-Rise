@@ -36,7 +36,7 @@ function getUsers(req, res, next) {
         (
           SELECT COUNT(*) FROM post_session_feedback psf2
           WHERE psf2.user_id = u.id
-            AND psf2.created_at >= datetime('now', '-7 days')
+            AND psf2.timestamp >= datetime('now', '-7 days')
         ) AS sessions_this_week,
         COALESCE(up.current_streak, 0) AS current_streak,
         CASE WHEN (
