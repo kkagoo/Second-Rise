@@ -5,6 +5,7 @@ const {
   getStats, getCohortTrends,
   getUsers, deleteUser,
   getResources, createResource, updateResource, deleteResource,
+  getWaitlist,
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.get('/resources',           getResources);
 router.post('/resources',          createResource);
 router.put('/resources/:id',       updateResource);
 router.delete('/resources/:id',    deleteResource);
+router.get('/waitlist',            getWaitlist);
 
 module.exports = router;

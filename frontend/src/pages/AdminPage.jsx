@@ -470,6 +470,87 @@ function UsersTab({ users, loading, onDelete }) {
   );
 }
 
+// ── Waitlist Tab ──────────────────────────────────────────────────────────────
+const CHALLENGE_LABELS = {
+  routine_stopped_working: 'Routine stopped working',
+  dont_know_whats_right:   "Doesn't know what body needs",
+  no_time:                 'No time to figure it out',
+  exhausted:               'Too exhausted to start',
+};
+
+function WaitlistTab({ waitlist, loading }) {
+  const [q, setQ] = useState('');
+  const filtered = (waitlist || []).filter(w =>
+    w.email.toLowerCase().includes(q.toLowerCase()) ||
+    (w.name || '').toLowerCase().includes(q.toLowerCase())
+  );
+
+  if (loading) return <div className="text-gray-400 py-12 text-center text-sm">Loading…</div>;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm text-gray-500">{(waitlist || []).length} signups</span>
+        <input
+          type="text"
+          placeholder="Search name or email…"
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          className="border-2 border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:border-purple-700 focus:outline-none w-52"
+        />
+      </div>
+
+      {/* ICP breakdown */}
+      {(waitlist || []).length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          {Object.entries(CHALLENGE_LABELS).map(([key, label]) => {
+            const count = (waitlist || []).filter(w => w.challenge === key).length;
+            return (
+              <div key={key} className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+                <div className="text-2xl font-bold text-purple-900">{count}</div>
+                <div className="text-xs text-gray-500 mt-1 leading-tight">{label}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+              <th className="px-4 py-3 font-semibold">Name</th>
+              <th className="px-4 py-3 font-semibold">Email</th>
+              <th className="px-4 py-3 font-semibold">Challenge</th>
+              <th className="px-4 py-3 font-semibold">Signed up</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center text-gray-400">No signups yet</td>
+              </tr>
+            )}
+            {filtered.map(w => (
+              <tr key={w.id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-2.5 text-gray-700">{w.name || <span className="text-gray-300">—</span>}</td>
+                <td className="px-4 py-2.5 text-gray-800 font-medium">{w.email}</td>
+                <td className="px-4 py-2.5">
+                  {w.challenge
+                    ? <Badge label={CHALLENGE_LABELS[w.challenge] || w.challenge} color="purple" />
+                    : <span className="text-gray-300">—</span>
+                  }
+                </td>
+                <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">{fmtDate(w.created_at)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ── Resources Tab ─────────────────────────────────────────────────────────────
 function ResourcesTab({ resources, loading, onAdd, onEdit, onDelete }) {
   if (loading) return <div className="text-gray-400 py-12 text-center text-sm">Loading…</div>;
@@ -570,6 +651,9 @@ export default function AdminPage() {
   const [resources, setResources] = useState([]);
   const [resourcesLoading, setResourcesLoading] = useState(true);
 
+  const [waitlist, setWaitlist] = useState([]);
+  const [waitlistLoading, setWaitlistLoading] = useState(true);
+
   const [modal, setModal] = useState(null);
 
   const handleForbidden = useCallback((err) => {
@@ -592,6 +676,10 @@ export default function AdminPage() {
     client.get('/admin/resources')
       .then(r => { setResources(r.data.resources || []); setResourcesLoading(false); })
       .catch(err => { handleForbidden(err); setResourcesLoading(false); });
+
+    client.get('/admin/waitlist')
+      .then(r => { setWaitlist(Array.isArray(r.data) ? r.data : []); setWaitlistLoading(false); })
+      .catch(err => { handleForbidden(err); setWaitlistLoading(false); });
   }, [handleForbidden]);
 
   async function handleDeleteUser(id, email) {
@@ -625,6 +713,7 @@ export default function AdminPage() {
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'cohort',    label: 'Cohort Trends' },
     { id: 'users',     label: 'Users' },
+    { id: 'waitlist',  label: `Waitlist${waitlist.length ? ` (${waitlist.length})` : ''}` },
     { id: 'resources', label: 'Resources' },
   ];
 
@@ -676,6 +765,9 @@ export default function AdminPage() {
             loading={usersLoading}
             onDelete={handleDeleteUser}
           />
+        )}
+        {tab === 'waitlist' && (
+          <WaitlistTab waitlist={waitlist} loading={waitlistLoading} />
         )}
         {tab === 'resources' && (
           <ResourcesTab

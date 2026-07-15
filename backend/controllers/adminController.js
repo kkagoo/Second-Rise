@@ -279,8 +279,17 @@ function deleteResource(req, res, next) {
   } catch (err) { next(err); }
 }
 
+// ── Waitlist ──────────────────────────────────────────────────────────────────
+function getWaitlist(req, res, next) {
+  try {
+    const rows = db.prepare(`SELECT * FROM waitlist ORDER BY created_at DESC`).all();
+    res.json(rows);
+  } catch (err) { next(err); }
+}
+
 module.exports = {
   getStats, getCohortTrends,
   getUsers, deleteUser,
   getResources, createResource, updateResource, deleteResource,
+  getWaitlist,
 };
