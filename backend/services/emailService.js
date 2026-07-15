@@ -1,50 +1,94 @@
 /**
  * emailService.js
- * Sends transactional emails via SendGrid HTTP API (port 443 — works on Railway).
+ * Sends transactional emails via Resend (resend.com).
  *
  * Setup (one-time):
- *   1. Sign up free at https://sendgrid.com
- *   2. Go to Settings → Sender Authentication → Single Sender Verification
- *   3. Add and verify your Gmail address as a sender
- *   4. Go to Settings → API Keys → Create API Key (Full Access)
- *   5. In Railway → backend service → Variables, add:
- *        SENDGRID_API_KEY = SG.xxxxxxxxxxxx
- *        SENDGRID_FROM    = your-verified@gmail.com
+ *   1. In Resend dashboard → Domains → Add secondrise.app → add DNS records in Namecheap
+ *   2. In Resend → API Keys → create key
+ *   3. In Railway → backend service → Variables, add:
+ *        RESEND_API_KEY = re_xxxxxxxxxxxx
+ *        FROM_EMAIL     = hello@secondrise.app
  */
 
 async function sendEmail({ to, subject, html }) {
-  const apiKey  = process.env.SENDGRID_API_KEY;
-  const fromEmail = process.env.SENDGRID_FROM;
+  const apiKey    = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.FROM_EMAIL || 'hello@secondrise.app';
+  const fromName  = 'Second Rise';
 
-  if (!apiKey || !fromEmail) {
-    console.warn('[email] SENDGRID_API_KEY / SENDGRID_FROM not set — skipping email to', to);
-    return;
+  if (!apiKey) {
+    console.warn('[email] RESEND_API_KEY not set — skipping email to', to);
+    return false;
   }
 
   try {
-    const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email: to }] }],
-        from: { email: fromEmail, name: 'Second Rise' },
+        from: `${fromName} <${fromEmail}>`,
+        to: [to],
         subject,
-        content: [{ type: 'text/html', value: html }],
+        html,
       }),
     });
 
     if (!res.ok) {
       const body = await res.text();
-      console.error('[email] SendGrid error:', res.status, body);
+      console.error('[email] Resend error:', res.status, body);
+      return false;
     } else {
-      console.log('[email] Welcome email sent to', to);
+      console.log('[email] Email sent to', to);
+      return true;
     }
   } catch (err) {
     console.error('[email] Failed to send email:', err.message);
+    return false;
   }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+async function sendWaitlistConfirmationEmail(email, name) {
+  const firstName = escapeHtml((name || '').trim());
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi there,';
+
+  return sendEmail({
+    to: email,
+    subject: "You're on the Second Rise waitlist",
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #1f2937;">
+        <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 20px; color: #111827;">
+          You're on the list 🌅
+        </h1>
+        <p style="font-size: 16px; line-height: 1.6; color: #4b5563; margin-bottom: 16px;">
+          ${greeting}
+        </p>
+        <p style="font-size: 16px; line-height: 1.6; color: #4b5563; margin-bottom: 16px;">
+          Thanks for joining the Second Rise waitlist. I've received your details and will be in touch when your early access spot is ready.
+        </p>
+        <p style="font-size: 16px; line-height: 1.6; color: #4b5563; margin-bottom: 28px;">
+          You're one step closer to movement that works with your energy, recovery needs, and the time you actually have.
+        </p>
+        <p style="font-size: 16px; line-height: 1.6; color: #374151;">
+          See you soon,<br>
+          Second Rise
+        </p>
+        <p style="font-size: 13px; color: #9ca3af; margin-top: 40px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
+          You're receiving this because this email address was used to join the Second Rise waitlist. Questions? Reply to this email.
+        </p>
+      </div>
+    `,
+  });
 }
 
 async function sendWelcomeEmail(email) {
@@ -104,4 +148,4 @@ async function sendPasswordResetEmail(email, resetUrl) {
   });
 }
 
-module.exports = { sendWelcomeEmail, sendPasswordResetEmail };
+module.exports = { sendWelcomeEmail, sendPasswordResetEmail, sendWaitlistConfirmationEmail };

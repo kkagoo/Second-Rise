@@ -213,6 +213,20 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN last_streak_date TEXT"); }  
 // Admin flag
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"); } catch (_) {}
 
+// Waitlist — pre-launch lead capture
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS waitlist (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      name       TEXT,
+      email      TEXT NOT NULL UNIQUE,
+      challenge  TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+} catch (_) {}
+
 // Seed admin from environment variable — set ADMIN_EMAIL in Railway to promote an account on boot.
 // Safe to run on every startup (no-op if user doesn't exist or is already admin).
 const adminEmail = process.env.ADMIN_EMAIL;
