@@ -9,7 +9,10 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["full_body", "beginner"],
+    "focus_tags": [
+      "full_body",
+      "beginner"
+    ],
     "contra_tags": []
   },
   {
@@ -22,7 +25,10 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["morning", "full_body"],
+    "focus_tags": [
+      "morning",
+      "full_body"
+    ],
     "contra_tags": []
   },
   {
@@ -35,7 +41,10 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["stress_relief", "gentle"],
+    "focus_tags": [
+      "stress_relief",
+      "gentle"
+    ],
     "contra_tags": []
   },
   {
@@ -48,7 +57,10 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["morning", "short"],
+    "focus_tags": [
+      "morning",
+      "short"
+    ],
     "contra_tags": []
   },
   {
@@ -61,7 +73,10 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["lower_body", "recovery"],
+    "focus_tags": [
+      "lower_body",
+      "recovery"
+    ],
     "contra_tags": []
   },
   {
@@ -74,7 +89,10 @@
     "difficulty": 3,
     "equipment": "none",
     "intensity": "medium",
-    "focus_tags": ["core", "stability"],
+    "focus_tags": [
+      "core",
+      "stability"
+    ],
     "contra_tags": []
   },
   {
@@ -87,7 +105,10 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["stress_relief", "full_body"],
+    "focus_tags": [
+      "stress_relief",
+      "full_body"
+    ],
     "contra_tags": []
   },
   {
@@ -100,7 +121,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["full_body", "bone_density_support", "osteoporosis_safe", "posture_improvement", "balance_training"],
+    "focus_tags": [
+      "full_body",
+      "bone_density_support",
+      "osteoporosis_safe",
+      "posture_improvement",
+      "balance_training"
+    ],
     "contra_tags": []
   },
   {
@@ -113,7 +140,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["pelvic_floor", "core_stability", "pelvic_floor_safe", "low_impact", "menopause_friendly"],
+    "focus_tags": [
+      "pelvic_floor",
+      "core_stability",
+      "pelvic_floor_safe",
+      "low_impact",
+      "menopause_friendly"
+    ],
     "contra_tags": []
   },
   {
@@ -126,7 +159,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["lower_back", "spine_friendly", "osteoporosis_safe", "joint_mobilization", "pelvic_floor_aware"],
+    "focus_tags": [
+      "lower_back",
+      "spine_friendly",
+      "osteoporosis_safe",
+      "joint_mobilization",
+      "pelvic_floor_aware"
+    ],
     "contra_tags": []
   },
   {
@@ -139,7 +178,13 @@
     "difficulty": 2,
     "equipment": "mat, chair",
     "intensity": "low",
-    "focus_tags": ["full_body", "osteoporosis_safe", "bone_density_support", "pelvic_floor_safe", "midlife_women"],
+    "focus_tags": [
+      "full_body",
+      "osteoporosis_safe",
+      "bone_density_support",
+      "pelvic_floor_safe",
+      "midlife_women"
+    ],
     "contra_tags": []
   },
   {
@@ -152,7 +197,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["full_body", "bone_health", "balance_training", "osteoporosis_safe", "menopause_friendly"],
+    "focus_tags": [
+      "full_body",
+      "bone_health",
+      "balance_training",
+      "osteoporosis_safe",
+      "menopause_friendly"
+    ],
     "contra_tags": []
   },
   {
@@ -165,7 +216,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["pelvic_floor_safe", "hips", "low_back", "osteoporosis_safe", "prolapse_friendly"],
+    "focus_tags": [
+      "pelvic_floor_safe",
+      "hips",
+      "low_back",
+      "osteoporosis_safe",
+      "prolapse_friendly"
+    ],
     "contra_tags": []
   },
   {
@@ -178,7 +235,12 @@
     "difficulty": 3,
     "equipment": "mat, chair",
     "intensity": "low",
-    "focus_tags": ["spine_focus", "bone_density_support", "osteoporosis_safe", "strength_balance"],
+    "focus_tags": [
+      "spine_focus",
+      "bone_density_support",
+      "osteoporosis_safe",
+      "strength_balance"
+    ],
     "contra_tags": []
   },
   {
@@ -191,7 +253,12 @@
     "difficulty": 1,
     "equipment": "bodyweight",
     "intensity": "low",
-    "focus_tags": ["full_body", "bone_strength", "osteoporosis_prevention", "low_impact"],
+    "focus_tags": [
+      "full_body",
+      "bone_strength",
+      "osteoporosis_prevention",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -204,7 +271,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["full_body", "osteoporosis_safe", "modifications", "joint_friendly", "pelvic_floor_aware"],
+    "focus_tags": [
+      "full_body",
+      "osteoporosis_safe",
+      "modifications",
+      "joint_friendly",
+      "pelvic_floor_aware"
+    ],
     "contra_tags": []
   },
   {
@@ -217,7 +290,9 @@
     "difficulty": 4,
     "equipment": "dumbbells",
     "intensity": "high",
-    "focus_tags": ["full_body"],
+    "focus_tags": [
+      "full_body"
+    ],
     "contra_tags": []
   },
   {
@@ -230,7 +305,12 @@
     "difficulty": 3,
     "equipment": "dumbbells, mat",
     "intensity": "medium",
-    "focus_tags": ["full_body", "low_impact", "bone_density_support", "peri_menopause_friendly"],
+    "focus_tags": [
+      "full_body",
+      "low_impact",
+      "bone_density_support",
+      "peri_menopause_friendly"
+    ],
     "contra_tags": []
   },
   {
@@ -243,7 +323,12 @@
     "difficulty": 4,
     "equipment": "dumbbells, mat",
     "intensity": "high",
-    "focus_tags": ["upper_body", "chest", "back", "shoulders"],
+    "focus_tags": [
+      "upper_body",
+      "chest",
+      "back",
+      "shoulders"
+    ],
     "contra_tags": []
   },
   {
@@ -256,7 +341,10 @@
     "difficulty": 4,
     "equipment": "dumbbells",
     "intensity": "high",
-    "focus_tags": ["lower_body", "glutes"],
+    "focus_tags": [
+      "lower_body",
+      "glutes"
+    ],
     "contra_tags": []
   },
   {
@@ -269,7 +357,10 @@
     "difficulty": 5,
     "equipment": "dumbbells",
     "intensity": "high",
-    "focus_tags": ["full_body", "endurance"],
+    "focus_tags": [
+      "full_body",
+      "endurance"
+    ],
     "contra_tags": []
   },
   {
@@ -282,7 +373,12 @@
     "difficulty": 3,
     "equipment": "dumbbells, mat",
     "intensity": "medium",
-    "focus_tags": ["full_body", "metabolic_support", "muscle_building", "low_impact"],
+    "focus_tags": [
+      "full_body",
+      "metabolic_support",
+      "muscle_building",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -295,7 +391,9 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["warm_up"],
+    "focus_tags": [
+      "warm_up"
+    ],
     "contra_tags": []
   },
   {
@@ -308,7 +406,9 @@
     "difficulty": 5,
     "equipment": "dumbbells",
     "intensity": "high",
-    "focus_tags": ["full_body"],
+    "focus_tags": [
+      "full_body"
+    ],
     "contra_tags": []
   },
   {
@@ -321,7 +421,13 @@
     "difficulty": 4,
     "equipment": "dumbbells, mat",
     "intensity": "high",
-    "focus_tags": ["full_body", "glutes_hamstrings", "core_burn", "muscle_building", "low_impact"],
+    "focus_tags": [
+      "full_body",
+      "glutes_hamstrings",
+      "core_burn",
+      "muscle_building",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -334,7 +440,12 @@
     "difficulty": 2,
     "equipment": "bodyweight, mat",
     "intensity": "low",
-    "focus_tags": ["lower_body", "knee_friendly", "beginner_strength", "balance_training"],
+    "focus_tags": [
+      "lower_body",
+      "knee_friendly",
+      "beginner_strength",
+      "balance_training"
+    ],
     "contra_tags": []
   },
   {
@@ -347,7 +458,11 @@
     "difficulty": 3,
     "equipment": "dumbbells, mat",
     "intensity": "medium",
-    "focus_tags": ["upper_body", "shoulders", "posture_support"],
+    "focus_tags": [
+      "upper_body",
+      "shoulders",
+      "posture_support"
+    ],
     "contra_tags": []
   },
   {
@@ -360,7 +475,13 @@
     "difficulty": 3,
     "equipment": "dumbbells, mat",
     "intensity": "medium",
-    "focus_tags": ["upper_body", "back", "shoulders", "slow_controlled", "posture_support"],
+    "focus_tags": [
+      "upper_body",
+      "back",
+      "shoulders",
+      "slow_controlled",
+      "posture_support"
+    ],
     "contra_tags": []
   },
   {
@@ -373,8 +494,15 @@
     "difficulty": 3,
     "equipment": "bodyweight, mat",
     "intensity": "medium",
-    "focus_tags": ["core", "lower_abs", "obliques", "pelvic_floor_safe"],
-    "contra_tags": ["wrist_light"]
+    "focus_tags": [
+      "core",
+      "lower_abs",
+      "obliques",
+      "pelvic_floor_safe"
+    ],
+    "contra_tags": [
+      "wrist_light"
+    ]
   },
   {
     "id": "cg_014",
@@ -386,7 +514,11 @@
     "difficulty": 3,
     "equipment": "dumbbells",
     "intensity": "medium",
-    "focus_tags": ["full_body", "compound_movements", "metabolic_support"],
+    "focus_tags": [
+      "full_body",
+      "compound_movements",
+      "metabolic_support"
+    ],
     "contra_tags": []
   },
   {
@@ -399,7 +531,13 @@
     "difficulty": 4,
     "equipment": "dumbbells, resistance band, chair, mat",
     "intensity": "high",
-    "focus_tags": ["lower_body", "glutes", "hip_thrusts", "pelvic_stability", "low_impact"],
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "hip_thrusts",
+      "pelvic_stability",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -412,8 +550,14 @@
     "difficulty": 3,
     "equipment": "bodyweight, mat",
     "intensity": "medium",
-    "focus_tags": ["core", "low_impact", "active_rest_day"],
-    "contra_tags": ["wrist_light"]
+    "focus_tags": [
+      "core",
+      "low_impact",
+      "active_rest_day"
+    ],
+    "contra_tags": [
+      "wrist_light"
+    ]
   },
   {
     "id": "cg_017",
@@ -425,7 +569,10 @@
     "difficulty": 3,
     "equipment": "dumbbells, bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "varied_movements"],
+    "focus_tags": [
+      "full_body",
+      "varied_movements"
+    ],
     "contra_tags": []
   },
   {
@@ -438,7 +585,12 @@
     "difficulty": 1,
     "equipment": "bodyweight, mat",
     "intensity": "low",
-    "focus_tags": ["warm_up", "low_impact", "osteoporosis_safe", "joint_mobilization"],
+    "focus_tags": [
+      "warm_up",
+      "low_impact",
+      "osteoporosis_safe",
+      "joint_mobilization"
+    ],
     "contra_tags": []
   },
   {
@@ -451,7 +603,9 @@
     "difficulty": 3,
     "equipment": "none",
     "intensity": "medium",
-    "focus_tags": ["cardio"],
+    "focus_tags": [
+      "cardio"
+    ],
     "contra_tags": []
   },
   {
@@ -464,7 +618,9 @@
     "difficulty": 3,
     "equipment": "none",
     "intensity": "medium",
-    "focus_tags": ["steady_state"],
+    "focus_tags": [
+      "steady_state"
+    ],
     "contra_tags": []
   },
   {
@@ -477,7 +633,9 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["recovery"],
+    "focus_tags": [
+      "recovery"
+    ],
     "contra_tags": []
   },
   {
@@ -490,7 +648,12 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "osteoporosis_safe", "bone_building", "weight_bearing"],
+    "focus_tags": [
+      "full_body",
+      "osteoporosis_safe",
+      "bone_building",
+      "weight_bearing"
+    ],
     "contra_tags": []
   },
   {
@@ -503,7 +666,12 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "interval_walking", "knee_friendly", "osteoporosis_safe"],
+    "focus_tags": [
+      "full_body",
+      "interval_walking",
+      "knee_friendly",
+      "osteoporosis_safe"
+    ],
     "contra_tags": []
   },
   {
@@ -516,7 +684,12 @@
     "difficulty": 1,
     "equipment": "bodyweight",
     "intensity": "low",
-    "focus_tags": ["full_body", "menopause_fat_loss", "indoor_walking", "low_impact"],
+    "focus_tags": [
+      "full_body",
+      "menopause_fat_loss",
+      "indoor_walking",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -529,7 +702,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "low",
-    "focus_tags": ["full_body", "pelvic_floor_safe", "prolapse_friendly", "indoor", "low_impact"],
+    "focus_tags": [
+      "full_body",
+      "pelvic_floor_safe",
+      "prolapse_friendly",
+      "indoor",
+      "low_impact"
+    ],
     "contra_tags": []
   },
   {
@@ -542,7 +721,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "steps_challenge", "women_over_50", "indoor", "energy_boost"],
+    "focus_tags": [
+      "full_body",
+      "steps_challenge",
+      "women_over_50",
+      "indoor",
+      "energy_boost"
+    ],
     "contra_tags": []
   },
   {
@@ -555,7 +740,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "fat_burning", "brain_training", "menopause_support", "indoor"],
+    "focus_tags": [
+      "full_body",
+      "fat_burning",
+      "brain_training",
+      "menopause_support",
+      "indoor"
+    ],
     "contra_tags": []
   },
   {
@@ -568,7 +759,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "weight_bearing", "osteoporosis_safe", "no_jumping", "stamina"],
+    "focus_tags": [
+      "full_body",
+      "weight_bearing",
+      "osteoporosis_safe",
+      "no_jumping",
+      "stamina"
+    ],
     "contra_tags": []
   },
   {
@@ -581,7 +778,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "medium",
-    "focus_tags": ["full_body", "bone_supporting", "low_impact", "beginner_friendly", "midlife_women"],
+    "focus_tags": [
+      "full_body",
+      "bone_supporting",
+      "low_impact",
+      "beginner_friendly",
+      "midlife_women"
+    ],
     "contra_tags": []
   },
   {
@@ -594,7 +797,9 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["full_body"],
+    "focus_tags": [
+      "full_body"
+    ],
     "contra_tags": []
   },
   {
@@ -607,7 +812,9 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["morning"],
+    "focus_tags": [
+      "morning"
+    ],
     "contra_tags": []
   },
   {
@@ -620,7 +827,10 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["hips", "spine"],
+    "focus_tags": [
+      "hips",
+      "spine"
+    ],
     "contra_tags": []
   },
   {
@@ -633,8 +843,13 @@
     "difficulty": 2,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["shoulders", "upper_back"],
-    "contra_tags": ["wrist_light"]
+    "focus_tags": [
+      "shoulders",
+      "upper_back"
+    ],
+    "contra_tags": [
+      "wrist_light"
+    ]
   },
   {
     "id": "jr_005",
@@ -646,7 +861,9 @@
     "difficulty": 1,
     "equipment": "none",
     "intensity": "low",
-    "focus_tags": ["gentle"],
+    "focus_tags": [
+      "gentle"
+    ],
     "contra_tags": []
   },
   {
@@ -659,7 +876,12 @@
     "difficulty": 3,
     "equipment": "mat",
     "intensity": "medium",
-    "focus_tags": ["full_body", "women_50plus", "strength_flexibility", "osteoporosis_safe"],
+    "focus_tags": [
+      "full_body",
+      "women_50plus",
+      "strength_flexibility",
+      "osteoporosis_safe"
+    ],
     "contra_tags": []
   },
   {
@@ -672,8 +894,15 @@
     "difficulty": 3,
     "equipment": "mat",
     "intensity": "medium",
-    "focus_tags": ["full_body", "core_focus", "pelvic_floor_aware", "osteoporosis_safe"],
-    "contra_tags": ["wrist_light"]
+    "focus_tags": [
+      "full_body",
+      "core_focus",
+      "pelvic_floor_aware",
+      "osteoporosis_safe"
+    ],
+    "contra_tags": [
+      "wrist_light"
+    ]
   },
   {
     "id": "lm_001",
@@ -685,7 +914,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["core", "hips", "pelvic_floor_safe", "osteoporosis_safe", "daily_practice"],
+    "focus_tags": [
+      "core",
+      "hips",
+      "pelvic_floor_safe",
+      "osteoporosis_safe",
+      "daily_practice"
+    ],
     "contra_tags": []
   },
   {
@@ -698,7 +933,12 @@
     "difficulty": 2,
     "equipment": "mat, resistance band",
     "intensity": "low",
-    "focus_tags": ["full_body", "pelvic_floor_safe", "mobility", "gentle_strength"],
+    "focus_tags": [
+      "full_body",
+      "pelvic_floor_safe",
+      "mobility",
+      "gentle_strength"
+    ],
     "contra_tags": []
   },
   {
@@ -711,7 +951,13 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["full_body", "osteoporosis_safe", "strength_balance", "posture", "joint_mobility"],
+    "focus_tags": [
+      "full_body",
+      "osteoporosis_safe",
+      "strength_balance",
+      "posture",
+      "joint_mobility"
+    ],
     "contra_tags": []
   },
   {
@@ -724,7 +970,13 @@
     "difficulty": 2,
     "equipment": "bodyweight",
     "intensity": "low",
-    "focus_tags": ["full_body", "lower_body", "osteoporosis_safe", "balance_posture", "no_floor_work"],
+    "focus_tags": [
+      "full_body",
+      "lower_body",
+      "osteoporosis_safe",
+      "balance_posture",
+      "no_floor_work"
+    ],
     "contra_tags": []
   },
   {
@@ -737,7 +989,194 @@
     "difficulty": 2,
     "equipment": "mat",
     "intensity": "low",
-    "focus_tags": ["core", "osteoporosis_safe", "no_forward_bend", "pelvic_floor_aware", "modifications"],
+    "focus_tags": [
+      "core",
+      "osteoporosis_safe",
+      "no_forward_bend",
+      "pelvic_floor_aware",
+      "modifications"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_019",
+    "title": "IRON Series 30 Min Leg Workout — Dumbbell Leg Day",
+    "creator": "Caroline Girvan",
+    "youtube_id": "SCxNnWW2zB8",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "hike_prep",
+      "quads",
+      "hamstrings"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_020",
+    "title": "20 Min Dumbbell Leg Workout — Squats & RDLs",
+    "creator": "Caroline Girvan",
+    "youtube_id": "ZZI__bqlBkQ",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "hike_prep",
+      "quads",
+      "hamstrings",
+      "glutes"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_021",
+    "title": "IRON Series Day 26 — Leg Circuits & Step Ups",
+    "creator": "Caroline Girvan",
+    "youtube_id": "mCDv7pji3hU",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "hike_prep",
+      "step_ups",
+      "quads",
+      "glutes"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_022",
+    "title": "20 Min Total Quads Workout with Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "VKXozqD0KWA",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "hike_prep",
+      "quads"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_006",
+    "title": "15 Min Stair Climber Workout — Cardio & Strength",
+    "creator": "Heather Robertson",
+    "youtube_id": "sCywX5btJjc",
+    "session_type": "low_impact_cardio",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "hike_prep",
+      "stair_climb",
+      "cardio_endurance",
+      "lower_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_011",
+    "title": "Yoga for Hikers",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "qsx-8UZO4_w",
+    "session_type": "yoga",
+    "duration_min": 28,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hike_prep",
+      "hip_flexors",
+      "recovery",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_012",
+    "title": "Yoga For Climbers — Flexibility & Balance",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "7yOtsZNU4Us",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hike_prep",
+      "balance",
+      "flexibility",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_013",
+    "title": "Runner's Yoga — Release & Rehab",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "0hTllAb4XGg",
+    "session_type": "yoga",
+    "duration_min": 18,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hike_prep",
+      "hip_flexors",
+      "lower_body",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ec_001",
+    "title": "Foot Exercises for Hikers",
+    "creator": "Deeply Moving",
+    "youtube_id": "iNKhOgFfz7A",
+    "session_type": "mobility",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "hike_prep",
+      "feet",
+      "ankles",
+      "injury_prevention"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hk_001",
+    "title": "3 Ankle Exercises for Hikers — Prevent Injuries & Hike Stronger",
+    "creator": "Dr. Dave Candy",
+    "youtube_id": "4rGvo1YJ3dc",
+    "session_type": "mobility",
+    "duration_min": 8,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "hike_prep",
+      "ankles",
+      "injury_prevention",
+      "lower_body"
+    ],
     "contra_tags": []
   }
 ]
