@@ -65,8 +65,8 @@
   },
   {
     "id": "ya_005",
-    "title": "Yoga For Tired Legs",
-    "creator": "Yoga With Adriene",
+    "title": "10 Min Morning Yoga Full Body Stretch",
+    "creator": "Yoga with Kassandra",
     "youtube_id": "4pKly2JojMw",
     "session_type": "yoga",
     "duration_min": 18,
@@ -81,8 +81,8 @@
   },
   {
     "id": "ya_006",
-    "title": "Yoga For Core Strength",
-    "creator": "Yoga With Adriene",
+    "title": "10 Minute Morning Yoga for Beginners",
+    "creator": "SarahBethYoga",
     "youtube_id": "VaoV1PrYft4",
     "session_type": "yoga",
     "duration_min": 18,
@@ -227,8 +227,8 @@
   },
   {
     "id": "df_001",
-    "title": "12 Yoga Poses for Bone Health & Osteoporosis",
-    "creator": "Dr. Loren Fishman",
+    "title": "Dr. Fishman's 12 Yoga Poses for Bone Health & Osteoporosis",
+    "creator": "Kendra Fitzgerald",
     "youtube_id": "FE_W6jMsnPY",
     "session_type": "yoga",
     "duration_min": 12,
@@ -245,8 +245,8 @@
   },
   {
     "id": "ys_001",
-    "title": "10 Min Bone Strength Workout | Low Impact",
-    "creator": "Yoga Specialist",
+    "title": "10 Min Bone Strength Workout | Low Impact | Menopause",
+    "creator": "Strength and Bloom",
     "youtube_id": "FGrSEVc3Idw",
     "session_type": "yoga",
     "duration_min": 10,
@@ -264,7 +264,7 @@
   {
     "id": "ys_002",
     "title": "Ultimate Guide to Osteoporosis-Safe Yoga",
-    "creator": "Yoga Specialist",
+    "creator": "Dr. Lisa Moore, DPT \u2014 Brick House Bones",
     "youtube_id": "1DuBs7x45WQ",
     "session_type": "yoga",
     "duration_min": 15,
@@ -297,7 +297,7 @@
   },
   {
     "id": "cg_002",
-    "title": "20 Min Dumbbell Full Body — No Repeat",
+    "title": "20 Min Dumbbell Full Body \u2014 No Repeat",
     "creator": "Caroline Girvan",
     "youtube_id": "l9_SoClAO5g",
     "session_type": "strength",
@@ -333,8 +333,8 @@
   },
   {
     "id": "cg_004",
-    "title": "Lower Body Dumbbell Workout",
-    "creator": "Caroline Girvan",
+    "title": "15 Min Beginner Dumbbell Lower Body \u2014 HASfit",
+    "creator": "HASfit",
     "youtube_id": "U0bhE67HuDY",
     "session_type": "strength",
     "duration_min": 20,
@@ -413,7 +413,7 @@
   },
   {
     "id": "cg_009",
-    "title": "30 Min MIGHTY Full Body Workout — Dumbbells",
+    "title": "30 Min MIGHTY Full Body Workout \u2014 Dumbbells",
     "creator": "Caroline Girvan",
     "youtube_id": "ScInpT_5dIQ",
     "session_type": "strength",
@@ -432,7 +432,7 @@
   },
   {
     "id": "cg_010",
-    "title": "Beginner EPIC Day 1 — No Equipment Lower Body",
+    "title": "Beginner EPIC Day 1 \u2014 No Equipment Lower Body",
     "creator": "Caroline Girvan",
     "youtube_id": "WUzdhcwT8uM",
     "session_type": "strength",
@@ -486,7 +486,7 @@
   },
   {
     "id": "cg_013",
-    "title": "12 Min 4x4 Abs Workout — No Equipment",
+    "title": "12 Min 4x4 Abs Workout \u2014 No Equipment",
     "creator": "Caroline Girvan",
     "youtube_id": "Ar6J7ySm2cE",
     "session_type": "strength",
@@ -506,7 +506,7 @@
   },
   {
     "id": "cg_014",
-    "title": "20 Min Dumbbell Full Body — Compound Movements",
+    "title": "20 Min Dumbbell Full Body \u2014 Compound Movements",
     "creator": "Caroline Girvan",
     "youtube_id": "icoe6C2E-aY",
     "session_type": "strength",
@@ -542,7 +542,7 @@
   },
   {
     "id": "cg_016",
-    "title": "20 Min Abs Workout — No Repeat",
+    "title": "20 Min Abs Workout \u2014 No Repeat",
     "creator": "Caroline Girvan",
     "youtube_id": "3oeimlA6s68",
     "session_type": "strength",
@@ -561,7 +561,7 @@
   },
   {
     "id": "cg_017",
-    "title": "Diverse 30 Min Full Body — Dumbbells & Bodyweight",
+    "title": "Diverse 30 Min Full Body \u2014 Dumbbells & Bodyweight",
     "creator": "Caroline Girvan",
     "youtube_id": "kaNktg56JaI",
     "session_type": "strength",
@@ -595,8 +595,8 @@
   },
   {
     "id": "hr_002",
-    "title": "20 Min Low Impact Cardio",
-    "creator": "Heather Robertson",
+    "title": "30 Min Fat Burning Home Workout for Beginners \u2014 Low Impact",
+    "creator": "Body Project",
     "youtube_id": "gC_L9qAHVJ8",
     "session_type": "low_impact_cardio",
     "duration_min": 20,
@@ -640,7 +640,7 @@
   },
   {
     "id": "ss_001",
-    "title": "Walking Workout for Stronger Bones — Low or High Impact Options",
+    "title": "Walking Workout for Stronger Bones \u2014 Low or High Impact Options",
     "creator": "SeniorShape Fitness",
     "youtube_id": "zOztMVfW1WM",
     "session_type": "low_impact_cardio",
@@ -658,7 +658,7 @@
   },
   {
     "id": "ss_002",
-    "title": "Energizing Interval Walking Workout — Knee & Osteoporosis Friendly",
+    "title": "Energizing Interval Walking Workout \u2014 Knee & Osteoporosis Friendly",
     "creator": "SeniorShape Fitness",
     "youtube_id": "VRuIk9YKws8",
     "session_type": "low_impact_cardio",
@@ -676,8 +676,8 @@
   },
   {
     "id": "fw_001",
-    "title": "Fat Burning Walking Workout Over 50 — 8 Minutes",
-    "creator": "Fit Wise Women",
+    "title": "Does Walking Burn Fat Over 50? This 8-Min Workout Proves It",
+    "creator": "Fabulous50s",
     "youtube_id": "mweSYZHxRgE",
     "session_type": "low_impact_cardio",
     "duration_min": 8,
@@ -694,7 +694,7 @@
   },
   {
     "id": "db_002",
-    "title": "Indoor Walking Workout — Low Impact, Prolapse Safe",
+    "title": "Indoor Walking Workout \u2014 Low Impact, Prolapse Safe",
     "creator": "Dr. Bri Vibrant Pelvic Health",
     "youtube_id": "MZdHVkyPF7I",
     "session_type": "low_impact_cardio",
@@ -714,7 +714,7 @@
   {
     "id": "f50_001",
     "title": "30 Minute 5000 Steps Indoor Walking Workout",
-    "creator": "fabulous50s",
+    "creator": "Fabulous50s",
     "youtube_id": "DhwJaDkgFkk",
     "session_type": "low_impact_cardio",
     "duration_min": 30,
@@ -733,7 +733,7 @@
   {
     "id": "f50_002",
     "title": "30 Min Fat Burning Walking + Brain Training",
-    "creator": "fabulous50s",
+    "creator": "Fabulous50s",
     "youtube_id": "7t6ZMca6WM8",
     "session_type": "low_impact_cardio",
     "duration_min": 30,
@@ -770,7 +770,7 @@
   },
   {
     "id": "cj_002",
-    "title": "Low Impact Cardio for Osteoporosis — At-Home",
+    "title": "Low Impact Cardio for Osteoporosis \u2014 At-Home",
     "creator": "Caroline Jordan",
     "youtube_id": "sfIcp-F9nOQ",
     "session_type": "low_impact_cardio",
@@ -868,8 +868,8 @@
   },
   {
     "id": "mn_001",
-    "title": "Full Body Workout for Women Over 50 | 40 Min Pilates",
-    "creator": "Move With Nicole",
+    "title": "Pilates Strong | Full Body Workout for Women Over 50 | 40 Min",
+    "creator": "The Girl With The Pilates Mat",
     "youtube_id": "D301PPpFU4c",
     "session_type": "pilates",
     "duration_min": 40,
@@ -886,7 +886,7 @@
   },
   {
     "id": "mn_002",
-    "title": "35 Min Intermediate Mat Pilates — No Equipment",
+    "title": "35 Min Intermediate Mat Pilates \u2014 No Equipment",
     "creator": "Move With Nicole",
     "youtube_id": "AMLSBnAxLbU",
     "session_type": "pilates",
@@ -925,7 +925,7 @@
   },
   {
     "id": "lm_002",
-    "title": "Full Body Pilates with Band — Strength & Mobility",
+    "title": "Full Body Pilates with Band \u2014 Strength & Mobility",
     "creator": "Lottie Murphy",
     "youtube_id": "9nk1sAcczaA",
     "session_type": "pilates",
@@ -1000,7 +1000,7 @@
   },
   {
     "id": "cg_019",
-    "title": "IRON Series 30 Min Leg Workout — Dumbbell Leg Day",
+    "title": "IRON Series 30 Min Leg Workout \u2014 Dumbbell Leg Day",
     "creator": "Caroline Girvan",
     "youtube_id": "SCxNnWW2zB8",
     "session_type": "strength",
@@ -1018,7 +1018,7 @@
   },
   {
     "id": "cg_020",
-    "title": "20 Min Dumbbell Leg Workout — Squats & RDLs",
+    "title": "20 Min Dumbbell Leg Workout \u2014 Squats & RDLs",
     "creator": "Caroline Girvan",
     "youtube_id": "ZZI__bqlBkQ",
     "session_type": "strength",
@@ -1037,9 +1037,9 @@
   },
   {
     "id": "cg_021",
-    "title": "IRON Series Day 26 — Leg Circuits & Step Ups",
+    "title": "IRON Series 30 Min Leg Workout \u2014 Circuits & Step Ups",
     "creator": "Caroline Girvan",
-    "youtube_id": "mCDv7pji3hU",
+    "youtube_id": "xefU5YoKMoI",
     "session_type": "strength",
     "duration_min": 30,
     "difficulty": 3,
@@ -1073,8 +1073,8 @@
   },
   {
     "id": "hr_006",
-    "title": "15 Min Stair Climber Workout — Cardio & Strength",
-    "creator": "Heather Robertson",
+    "title": "15 Min Stair Climber Workout \u2014 Cardio & Strength",
+    "creator": "Sunny Health & Fitness",
     "youtube_id": "sCywX5btJjc",
     "session_type": "low_impact_cardio",
     "duration_min": 15,
@@ -1092,7 +1092,7 @@
   {
     "id": "ya_011",
     "title": "Yoga for Hikers",
-    "creator": "Yoga With Adriene",
+    "creator": "YOGAmazing",
     "youtube_id": "qsx-8UZO4_w",
     "session_type": "yoga",
     "duration_min": 28,
@@ -1109,7 +1109,7 @@
   },
   {
     "id": "ya_012",
-    "title": "Yoga For Climbers — Flexibility & Balance",
+    "title": "Yoga For Climbers \u2014 Flexibility & Balance",
     "creator": "Yoga With Adriene",
     "youtube_id": "7yOtsZNU4Us",
     "session_type": "yoga",
@@ -1127,7 +1127,7 @@
   },
   {
     "id": "ya_013",
-    "title": "Runner's Yoga — Release & Rehab",
+    "title": "Runner's Yoga \u2014 Release & Rehab",
     "creator": "Yoga With Adriene",
     "youtube_id": "0hTllAb4XGg",
     "session_type": "yoga",
@@ -1146,7 +1146,7 @@
   {
     "id": "ec_001",
     "title": "Foot Exercises for Hikers",
-    "creator": "Deeply Moving",
+    "creator": "REI / Deeply Moving",
     "youtube_id": "iNKhOgFfz7A",
     "session_type": "mobility",
     "duration_min": 15,
@@ -1163,7 +1163,7 @@
   },
   {
     "id": "hk_001",
-    "title": "3 Ankle Exercises for Hikers — Prevent Injuries & Hike Stronger",
+    "title": "3 Ankle Exercises for Hikers \u2014 Prevent Injuries & Hike Stronger",
     "creator": "Dr. Dave Candy",
     "youtube_id": "4rGvo1YJ3dc",
     "session_type": "mobility",
@@ -1175,6 +1175,3117 @@
       "hike_prep",
       "ankles",
       "injury_prevention",
+      "lower_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_007",
+    "title": "Relaxing Full Body Stretch \u2014 Flexibility & Mobility",
+    "creator": "Heather Robertson",
+    "youtube_id": "6WbQniE2R9c",
+    "session_type": "mobility",
+    "duration_min": 37,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "recovery",
+      "flexibility",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_008",
+    "title": "Full Body Stretch \u2014 Great for Tight Hips",
+    "creator": "Heather Robertson",
+    "youtube_id": "75KawzWpZMY",
+    "session_type": "mobility",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "hip_flexors",
+      "full_body",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_009",
+    "title": "Full Body Stretch \u2014 Recovery Day",
+    "creator": "Heather Robertson",
+    "youtube_id": "xCKrZH_n14w",
+    "session_type": "mobility",
+    "duration_min": 35,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "recovery",
+      "full_body",
+      "flexibility",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_010",
+    "title": "Active Recovery \u2014 Full Body Stretch + Mobility",
+    "creator": "Heather Robertson",
+    "youtube_id": "H7eFjFoGkHY",
+    "session_type": "mobility",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "active_recovery",
+      "full_body",
+      "flexibility",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_001",
+    "title": "30 Min Full Body Stretching",
+    "creator": "Pamela Reif",
+    "youtube_id": "lJUIDBBqJOE",
+    "session_type": "mobility",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "flexibility",
+      "recovery",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pfb_001",
+    "title": "20 Min Full Body Stretch & Mobility Routine",
+    "creator": "Tom Peto Training",
+    "youtube_id": "DppDOK2SvP0",
+    "session_type": "mobility",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "mobility",
+      "flexibility",
+      "joint_health"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pfb_002",
+    "title": "30 Min Flexibility + Stretching + Mobility",
+    "creator": "Eleni Fit",
+    "youtube_id": "REL4y5a_xF8",
+    "session_type": "mobility",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "flexibility",
+      "beginner",
+      "yoga_inspired"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_003",
+    "title": "10 Min Pilates \u2014 Keeping Strong During Menopause",
+    "creator": "Studio 44 Pilates",
+    "youtube_id": "snwQ5cZt5Xk",
+    "session_type": "pilates",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "menopause",
+      "core",
+      "pelvic_floor_aware",
+      "osteoporosis_safe",
+      "short"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "mn_003",
+    "title": "30 Min Menopause Relief \u2014 Calming Pilates & Stretches",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "3T_2-bZTQCs",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "menopause",
+      "full_body",
+      "gentle",
+      "pelvic_floor_aware",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "mn_004",
+    "title": "Full Body Pilates for Women Over 50 \u2014 30 Min",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "zDLOrDMs4to",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "core",
+      "bone_density_support",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_003",
+    "title": "30 Min Full Body At-Home Pilates | No Equipment",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "phYqBIVRUaY",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "no_equipment",
+      "midlife",
+      "core"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_004",
+    "title": "Beginner Pilates for Older Women \u2014 30 Min Full Body",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "ldVywXol5yg",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "beginner",
+      "full_body",
+      "gentle",
+      "no_equipment",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_014",
+    "title": "Gift of Relaxation \u2014 33-Min Feel Good Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "wwPzwZo6vdk",
+    "session_type": "yoga",
+    "duration_min": 33,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "relaxation",
+      "stress_relief",
+      "full_body",
+      "restorative"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_015",
+    "title": "7 Min Bedtime Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "LI9upn4t9n8",
+    "session_type": "yoga",
+    "duration_min": 7,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "sleep",
+      "bedtime",
+      "relaxation",
+      "short",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "yn_001",
+    "title": "Yoga Nidra for Deep Rest & Sleep \u2014 40 Min",
+    "creator": "Kristyn Rose Yoga",
+    "youtube_id": "Y3UeuXf-PSc",
+    "session_type": "yoga",
+    "duration_min": 40,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "yoga_nidra",
+      "sleep",
+      "deep_rest",
+      "nervous_system",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_001",
+    "title": "20 Min Happy Low Impact Cardio for Women Over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "m--I8ujW_5Q",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "midlife",
+      "no_equipment",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_002",
+    "title": "Walk with Weights \u2014 Low Impact Cardio for Women Over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "vDmBJVNf3S0",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "walking",
+      "bone_density_support",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_003",
+    "title": "25 Min Low Impact Cardio Walk \u2014 Women Over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "UHp5ChP0_BE",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "walking",
+      "midlife",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_004",
+    "title": "25 Min Full Body Low Impact Workout for Women Over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "txKTzK6WIwU",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "full_body",
+      "midlife",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_005",
+    "title": "10 Min Full Body Strength for Women Over 50: How to Start",
+    "creator": "Fabulous50s",
+    "youtube_id": "XmXsN5eVqlk",
+    "session_type": "strength",
+    "duration_min": 11,
+    "difficulty": 1,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "beginner_strength",
+      "bone_density_support",
+      "balance_training",
+      "midlife",
+      "osteoporosis_safe"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_006",
+    "title": "Stronger Legs in 10 Minutes? This Dumbbell Workout Proves It",
+    "creator": "Fabulous50s",
+    "youtube_id": "qeRPCFPJoGQ",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "dumbbells, step",
+    "intensity": "low",
+    "focus_tags": [
+      "lower_body",
+      "step_ups",
+      "balance_training",
+      "hike_prep",
+      "bone_density_support",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_007",
+    "title": "How to Improve Balance After 50: 8 Min Balance & Stability",
+    "creator": "Fabulous50s",
+    "youtube_id": "gjQfECgnG5Q",
+    "session_type": "mobility",
+    "duration_min": 8,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "balance_training",
+      "stability",
+      "ankles",
+      "core",
+      "fall_prevention",
+      "midlife",
+      "hike_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_008",
+    "title": "10 Minute Balance Workout Over 50 | Challenging But Doable",
+    "creator": "Fabulous50s",
+    "youtube_id": "9P2TWdyC8eE",
+    "session_type": "mobility",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "balance_training",
+      "stability",
+      "core",
+      "fall_prevention",
+      "midlife",
+      "hike_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_009",
+    "title": "Full Body Strength Workout for Women 50+ | Build Muscle & Brain Power",
+    "creator": "Fabulous50s",
+    "youtube_id": "8bsQjdCkaEw",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "muscle_building",
+      "bone_density_support",
+      "balance_training",
+      "midlife",
+      "brain_training"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_010",
+    "title": "Rebuild Leg Strength After 50 | These 7 Exercises Work Fast",
+    "creator": "Fabulous50s",
+    "youtube_id": "GRQJk8OneTE",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "quads",
+      "balance_training",
+      "hike_prep",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_011",
+    "title": "8 Min Full Body Stretch to Release Joints & Lower Cortisol",
+    "creator": "Fabulous50s",
+    "youtube_id": "VqMoOoadHQw",
+    "session_type": "mobility",
+    "duration_min": 8,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "recovery",
+      "stress_relief",
+      "joint_mobility",
+      "rest_day",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_012",
+    "title": "10 Min Walking Workout to Get Fit & Burn Fat Fast",
+    "creator": "Fabulous50s",
+    "youtube_id": "mwQYM9q6kvY",
+    "session_type": "low_impact_cardio",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "cardio",
+      "steps_challenge",
+      "energy_boost",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_016",
+    "title": "Yoga Stretch For Recovery Days",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "KrUnq66qn_k",
+    "session_type": "yoga",
+    "duration_min": 12,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "recovery",
+      "rest_day",
+      "full_body",
+      "stress_relief",
+      "mobility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_017",
+    "title": "Yoga For Your Calves and Ankles",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "2XhJ63OQ7Ww",
+    "session_type": "yoga",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "calves",
+      "ankles",
+      "lower_body",
+      "hike_prep",
+      "recovery",
+      "mobility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_018",
+    "title": "Yoga For Runners \u2014 Physical & Mental Stamina",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "plL13JF5BHA",
+    "session_type": "yoga",
+    "duration_min": 28,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "endurance",
+      "stamina",
+      "hips",
+      "hamstrings",
+      "lower_body",
+      "hike_prep",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_011",
+    "title": "20 Min Low Impact Cardio At Home \u2014 No Jumping",
+    "creator": "Heather Robertson",
+    "youtube_id": "cA11MYXhBfI",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "full_body",
+      "no_jumping",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_005",
+    "title": "30 Minute Indoor Walking Workout",
+    "creator": "PBF Workouts",
+    "youtube_id": "OsXMGVLsAzE",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "steady_state",
+      "cardio_endurance",
+      "steps_challenge",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_013",
+    "title": "10 Minute Standing Abs Indoor Workout For Women Over 50",
+    "creator": "Fabulous50s",
+    "youtube_id": "bQG_sSk0tYc",
+    "session_type": "low_impact_cardio",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "standing_abs",
+      "low_impact",
+      "no_floor_work",
+      "midlife",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_019",
+    "title": "Intro to Yin \u2014 Yin Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "RQyX48NtDrQ",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "restorative",
+      "full_body",
+      "stress_relief",
+      "sleep",
+      "nervous_system"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_001",
+    "title": "30 Min Reclined Yin Yoga \u2014 Deep Relaxation & Stretches",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "sdaYb7Pzl5E",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "restorative",
+      "deep_relaxation",
+      "full_body",
+      "sleep",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_002",
+    "title": "20 Min Morning Yin Yoga Stretch \u2014 Full Body Flexibility",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "0pfbqeo19Mo",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "morning",
+      "full_body",
+      "flexibility",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_003",
+    "title": "45 Min Upper Body Yin Yoga \u2014 Back & Shoulders",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "gYufXtLRyt4",
+    "session_type": "yoga",
+    "duration_min": 45,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "upper_body",
+      "back",
+      "shoulders",
+      "neck",
+      "restorative",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_001",
+    "title": "Fun Dance Party Workout \u2014 Low Impact, Beginner Friendly",
+    "creator": "growwithjo",
+    "youtube_id": "tEFuwiJuanA",
+    "session_type": "low_impact_cardio",
+    "duration_min": 13,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "dance",
+      "rhythm",
+      "low_impact",
+      "energy_boost",
+      "fun",
+      "beginner"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_002",
+    "title": "Reggaeton Dance Party Workout \u2014 Low Impact, No Equipment",
+    "creator": "growwithjo",
+    "youtube_id": "SUZSmgYJN8U",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "dance",
+      "rhythm",
+      "reggaeton",
+      "low_impact",
+      "energy_boost",
+      "fun"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_003",
+    "title": "Gospel Dance Party Workout \u2014 Full Body, No Equipment",
+    "creator": "growwithjo",
+    "youtube_id": "nLJhTkLhK5U",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "dance",
+      "rhythm",
+      "gospel",
+      "low_impact",
+      "full_body",
+      "fun",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_023",
+    "title": "Back & Biceps \u2014 Resistance Band Workout at Home",
+    "creator": "Caroline Girvan",
+    "youtube_id": "IrH21nd5LEM",
+    "session_type": "strength",
+    "duration_min": 25,
+    "difficulty": 3,
+    "equipment": "resistance bands",
+    "intensity": "medium",
+    "focus_tags": [
+      "upper_body",
+      "back",
+      "biceps",
+      "resistance_bands",
+      "pulling_movements"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_024",
+    "title": "20 Min Upper Body Workout with Resistance Band",
+    "creator": "Caroline Girvan",
+    "youtube_id": "sVOAnsn2S90",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "resistance bands",
+    "intensity": "medium",
+    "focus_tags": [
+      "upper_body",
+      "resistance_bands",
+      "shoulders",
+      "chest",
+      "arms",
+      "no_dumbbells"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_025",
+    "title": "GIANT KILLER Upper Body Workout \u2014 Arms, Chest, Back, Shoulders",
+    "creator": "Caroline Girvan",
+    "youtube_id": "S3_3-cCqavc",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "upper_body",
+      "arms",
+      "chest",
+      "back",
+      "shoulders",
+      "push_pull"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_026",
+    "title": "1 Hour Full Body Dumbbell Workout at Home",
+    "creator": "Caroline Girvan",
+    "youtube_id": "b7uDhHZ5qps",
+    "session_type": "strength",
+    "duration_min": 60,
+    "difficulty": 4,
+    "equipment": "dumbbells",
+    "intensity": "high",
+    "focus_tags": [
+      "full_body",
+      "long_session",
+      "muscle_building",
+      "compound_movements"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_027",
+    "title": "UNSTOPPABLE Upper Body Workout \u2014 Arms, Shoulders & Back",
+    "creator": "Caroline Girvan",
+    "youtube_id": "opvXwdtMFUs",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "upper_body",
+      "arms",
+      "shoulders",
+      "back",
+      "push_pull"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_028",
+    "title": "UNBREAKABLE Upper Body Workout \u2014 Shoulders, Chest & Triceps",
+    "creator": "Caroline Girvan",
+    "youtube_id": "6DQLwfyp6yY",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "upper_body",
+      "shoulders",
+      "chest",
+      "triceps",
+      "push"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_029",
+    "title": "BOLD Upper Body Workout with Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "OV3ScwKtveo",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "upper_body",
+      "push_pull",
+      "muscle_building",
+      "full_body_upper"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_030",
+    "title": "15 Minute TARGETED Glute Workout \u2014 Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "8W7U_XT_Pa0",
+    "session_type": "strength",
+    "duration_min": 15,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "glutes",
+      "lower_body",
+      "short",
+      "targeted",
+      "hip_hinge"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_031",
+    "title": "GALVANISED Glute Workout \u2014 Band Optional",
+    "creator": "Caroline Girvan",
+    "youtube_id": "QwzXJz0XeS0",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 4,
+    "equipment": "mat, resistance band optional",
+    "intensity": "high",
+    "focus_tags": [
+      "glutes",
+      "lower_body",
+      "hip_hinge",
+      "resistance_bands",
+      "low_impact"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_032",
+    "title": "ONLY THE GLUTES Workout with Dumbbells",
+    "creator": "Caroline Girvan",
+    "youtube_id": "s2K__b6aCiQ",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "glutes",
+      "lower_body",
+      "hip_hinge",
+      "targeted",
+      "low_impact"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cg_033",
+    "title": "Day 31 of EPIC \u2014 45 Min Dumbbell Abs & Glute Workout",
+    "creator": "Caroline Girvan",
+    "youtube_id": "cxJAGfY5U3k",
+    "session_type": "strength",
+    "duration_min": 45,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "core",
+      "glutes",
+      "abs",
+      "lower_body",
+      "long_session"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_002",
+    "title": "Beginner Pilates for Women Over 50 | 25 Mins",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "kGGsMF-aQjg",
+    "session_type": "pilates",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "beginner",
+      "full_body",
+      "women_50plus",
+      "osteoporosis_safe",
+      "midlife",
+      "gentle"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_003",
+    "title": "Intermediate Pilates for Women Over 50 | 40 Mins",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "2bHgp0BFkvE",
+    "session_type": "pilates",
+    "duration_min": 40,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "women_50plus",
+      "core",
+      "strength_flexibility",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_004",
+    "title": "Pilates for Beginners | 30 Minute At Home Pilates",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "ZnkssCJ3OH4",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "beginner",
+      "full_body",
+      "core",
+      "osteoporosis_safe",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_005",
+    "title": "40 Minute Full Body Pilates Workout with Resistance Band",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "OC5vUAMQELQ",
+    "session_type": "pilates",
+    "duration_min": 40,
+    "difficulty": 2,
+    "equipment": "mat, resistance band",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "resistance_bands",
+      "strength_flexibility",
+      "midlife",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gp_006",
+    "title": "30 Minute Morning Pilates",
+    "creator": "The Girl With The Pilates Mat",
+    "youtube_id": "G3O9FRAEPG4",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "morning",
+      "full_body",
+      "gentle_strength",
+      "daily_practice",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_020",
+    "title": "Yoga For Hips & Lower Back Release",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "Ho9em79_0qg",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "lower_back",
+      "hip_flexors",
+      "recovery",
+      "tension_release"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_021",
+    "title": "Lower Back Love \u2014 Yoga For Back Pain",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "J-05m7bboK0",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "lower_back",
+      "back_pain_relief",
+      "spine_friendly",
+      "gentle",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_022",
+    "title": "6-Minute Yoga For Hips",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "eBdfCX5XnX4",
+    "session_type": "yoga",
+    "duration_min": 6,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "hip_flexors",
+      "short",
+      "quick_fix",
+      "daily_practice"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_023",
+    "title": "Heart And Hips Practice \u2014 Hands Free Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "LNOucekw2co",
+    "session_type": "yoga",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "heart_opening",
+      "no_wrist_load",
+      "wrist_safe",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_024",
+    "title": "Wind Down Yoga \u2014 12-Minute Bedtime Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "BiWDsfZ3zbo",
+    "session_type": "yoga",
+    "duration_min": 12,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "sleep",
+      "bedtime",
+      "relaxation",
+      "stress_relief",
+      "wind_down",
+      "short"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_025",
+    "title": "Bedtime Yoga \u2014 20 Minute Practice",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "v7SN-d4qXx0",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "sleep",
+      "bedtime",
+      "relaxation",
+      "full_body",
+      "nervous_system"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_026",
+    "title": "6-Minute Yoga Chill \u2014 Relaxing Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "xLS9uQQQyB0",
+    "session_type": "yoga",
+    "duration_min": 6,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "relaxation",
+      "stress_relief",
+      "short",
+      "quick_fix",
+      "nervous_system"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_027",
+    "title": "10-Minute Bedtime Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "CLDHeV9OI5U",
+    "session_type": "yoga",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "sleep",
+      "bedtime",
+      "relaxation",
+      "short",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_004",
+    "title": "45 Min Yin Yoga for Tight Hips & Legs",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "_h24enAaET4",
+    "session_type": "yoga",
+    "duration_min": 45,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "hips",
+      "legs",
+      "flexibility",
+      "deep_stretch",
+      "hike_prep",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_005",
+    "title": "Yin Yoga for Tight Hips \u2014 No Props Needed",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "hg-4VfWuLQg",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "hips",
+      "no_props",
+      "flexibility",
+      "recovery",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_006",
+    "title": "Yin Yoga for Flexibility \u2014 Hips & Hamstrings",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "gYc7ak-H6_g",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "hips",
+      "hamstrings",
+      "flexibility",
+      "deep_stretch",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_007",
+    "title": "20 Min Morning Yin Yoga \u2014 Hips & Hamstrings",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "KyHnpaQkFCI",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "morning",
+      "hips",
+      "hamstrings",
+      "flexibility",
+      "gentle_start"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_008",
+    "title": "15 Min Morning Yin Yoga for Hips",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "5IQUsQWsrvQ",
+    "session_type": "yoga",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "morning",
+      "hips",
+      "short",
+      "daily_practice",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_004",
+    "title": "FAST 3 Mile Dance Party Workout",
+    "creator": "growwithjo",
+    "youtube_id": "hk7i_0S8MhM",
+    "session_type": "low_impact_cardio",
+    "duration_min": 45,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "dance",
+      "low_impact",
+      "cardio",
+      "fun",
+      "energy_boost",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_005",
+    "title": "20 Min Feel Good Cardio Dance Workout \u2014 Fresh Start",
+    "creator": "growwithjo",
+    "youtube_id": "uyWYzKgUgLI",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "dance",
+      "low_impact",
+      "cardio",
+      "fun",
+      "energy_boost",
+      "mood_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_006",
+    "title": "20 Min Low Impact Full Body Dance Workout",
+    "creator": "growwithjo",
+    "youtube_id": "ZMMvR57l_zc",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "dance",
+      "low_impact",
+      "morning",
+      "full_body",
+      "cardio",
+      "beginner",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_007",
+    "title": "Indoor Full Body Fat Burn \u2014 90s Boy Bands Dance Party",
+    "creator": "growwithjo",
+    "youtube_id": "9nlNq9nnB1k",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "dance",
+      "low_impact",
+      "cardio",
+      "fun",
+      "full_body",
+      "energy_boost",
+      "fat_burn"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_012",
+    "title": "Full Body Stretch & Flexibility \u2014 Fusion Flow Day 4",
+    "creator": "Heather Robertson",
+    "youtube_id": "xdLxMzb7g5c",
+    "session_type": "mobility",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "flexibility",
+      "recovery",
+      "stretching",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_013",
+    "title": "Full Body Stretch + Recovery \u2014 Day 7 Challenge",
+    "creator": "Heather Robertson",
+    "youtube_id": "ak3D7n7xDFg",
+    "session_type": "mobility",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "recovery",
+      "stretching",
+      "rest_day",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_006",
+    "title": "30 Min Walking with Weights \u2014 Women over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "MZWI6-luOEI",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "bone_density_support",
+      "midlife",
+      "cardio_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_007",
+    "title": "Heart-Healthy Power Walk \u2014 Women over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "4m3cw6XSBlA",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "heart_health",
+      "midlife",
+      "cardio_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_008",
+    "title": "30 Min Low Impact Power Walk for Weight Loss \u2014 Women over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "13RvRrMfpsI",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "fat_burn",
+      "midlife",
+      "cardio_endurance",
+      "weight_loss"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_009",
+    "title": "20 Min Walk with Weights \u2014 Women over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "aJxV2kqjk_U",
+    "session_type": "low_impact_cardio",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "bone_density_support",
+      "midlife",
+      "short"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pb_010",
+    "title": "Strength Workout with Dumbbells \u2014 Women over 50",
+    "creator": "PBF Workouts",
+    "youtube_id": "16WMq8e5fnw",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "beginner_strength",
+      "bone_density_support",
+      "midlife",
+      "dumbbells"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_004",
+    "title": "15 Minute Full Body Pilates (Ankle Weights Option)",
+    "creator": "Lottie Murphy",
+    "youtube_id": "jDjTzbPk7wg",
+    "session_type": "pilates",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "mat, ankle weights optional",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "short",
+      "ankle_weights",
+      "toning",
+      "daily_practice"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_005",
+    "title": "Pilates for When You Need to Reset \u2014 15 Minute Full Body",
+    "creator": "Lottie Murphy",
+    "youtube_id": "e-LaZqt0MjQ",
+    "session_type": "pilates",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "reset",
+      "gentle",
+      "short",
+      "stress_relief",
+      "recovery"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_006",
+    "title": "Ultimate Pilates Toning \u2014 30 Min Abs, Glutes, Back",
+    "creator": "Lottie Murphy",
+    "youtube_id": "FQRoS0KsQBo",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "glutes",
+      "back",
+      "toning",
+      "full_body",
+      "abs"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_007",
+    "title": "Strong Dynamic Pilates Routine \u2014 20 Minutes",
+    "creator": "Lottie Murphy",
+    "youtube_id": "qilX7uoP5dM",
+    "session_type": "pilates",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "dynamic",
+      "strength",
+      "core",
+      "muscle_building"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_008",
+    "title": "Total Body Pilates Flow \u2014 Feel Good",
+    "creator": "Lottie Murphy",
+    "youtube_id": "vQzdEqRXd9M",
+    "session_type": "pilates",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "gentle_flow",
+      "feel_good",
+      "core",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_009",
+    "title": "Pilates for Core and Flexibility",
+    "creator": "Lottie Murphy",
+    "youtube_id": "9JsUGdWU2DE",
+    "session_type": "pilates",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "core",
+      "flexibility",
+      "full_body",
+      "pelvic_floor_safe",
+      "gentle_strength"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "jr_006",
+    "title": "15 Min. Daily Mobility Routine \u2014 Full Body, No Equipment",
+    "creator": "Mobility by Julia Reppel",
+    "youtube_id": "iXl9tzfj58w",
+    "session_type": "mobility",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "daily_practice",
+      "spine",
+      "shoulders",
+      "hips",
+      "morning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "jr_007",
+    "title": "30 Min. Full Body Mobility \u2014 Lower Impact, Follow Along",
+    "creator": "Mobility by Julia Reppel",
+    "youtube_id": "_SJ1B26GIaE",
+    "session_type": "mobility",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "low_impact",
+      "hips",
+      "spine",
+      "shoulders",
+      "joint_health"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "jr_008",
+    "title": "30 Min. Mobility Workout for Spine & Hips",
+    "creator": "Mobility by Julia Reppel",
+    "youtube_id": "Rkn60VeCITY",
+    "session_type": "mobility",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "spine",
+      "hips",
+      "intermediate",
+      "flexibility",
+      "joint_mobility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_014",
+    "title": "30 Min STRENGTH Full Body Workout with Dumbbells",
+    "creator": "Heather Robertson",
+    "youtube_id": "pbkrx340TBM",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "compound_movements",
+      "muscle_building",
+      "strength_training"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_015",
+    "title": "30 Min Full Body Strength Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "mhpo6ARhh_Q",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "strength_training",
+      "toning",
+      "no_repeat"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_016",
+    "title": "45 Min Full Body Strength \u2014 At Home Dumbbell Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "Yuf052OBeeM",
+    "session_type": "strength",
+    "duration_min": 45,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "strength_training",
+      "long_session",
+      "muscle_building"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_017",
+    "title": "30 Min No Repeats Full Body Workout with Dumbbells",
+    "creator": "Heather Robertson",
+    "youtube_id": "ef2dgRoTKzI",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "no_repeat",
+      "strength_training",
+      "varied"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_018",
+    "title": "Killer Leg Day \u2014 Lower Body Strength Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "eemRXHKsGIc",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 4,
+    "equipment": "dumbbells, mat",
+    "intensity": "high",
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "quads",
+      "hamstrings",
+      "hike_prep",
+      "strength_training"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_019",
+    "title": "Lower Body Strength \u2014 Leg & Glute Workout At Home",
+    "creator": "Heather Robertson",
+    "youtube_id": "R2QHkmtvRWA",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "legs",
+      "hike_prep",
+      "strength_training"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_020",
+    "title": "At Home Lower Body Workout \u2014 Legs & Booty",
+    "creator": "Heather Robertson",
+    "youtube_id": "sXJwVU-QOiY",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "dumbbells, mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "legs",
+      "hike_prep",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_001",
+    "title": "20 Min Deep Stretch Yoga for Athletes \u2014 Flexibility & Hips",
+    "creator": "SarahBethYoga",
+    "youtube_id": "b4aj6Lkr9P8",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "flexibility",
+      "deep_stretch",
+      "athletes",
+      "recovery",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_002",
+    "title": "20 Min Full Body Morning Yoga Stretch for Flexibility",
+    "creator": "SarahBethYoga",
+    "youtube_id": "ogYVUbXO3Hw",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "morning",
+      "full_body",
+      "flexibility",
+      "stretch",
+      "gentle_start"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_003",
+    "title": "20 Min Full Body Yoga \u2014 Stretch & Strengthen",
+    "creator": "SarahBethYoga",
+    "youtube_id": "7Ryl2SqQldc",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "stretch",
+      "strengthen",
+      "balance",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_014",
+    "title": "Best Dumbbell Exercises for Women 50+ \u2014 Strength, Tone & Anti-Aging",
+    "creator": "Fabulous50s",
+    "youtube_id": "pMtoW4tlBJk",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "low",
+    "focus_tags": [
+      "full_body",
+      "midlife",
+      "bone_density_support",
+      "muscle_building",
+      "anti_aging"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cj_003",
+    "title": "Low Impact Cardio and Strength Workout \u2014 40 Min (Knee Friendly)",
+    "creator": "Caroline Jordan",
+    "youtube_id": "ADH89SypKYU",
+    "session_type": "low_impact_cardio",
+    "duration_min": 40,
+    "difficulty": 2,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "strength",
+      "knee_friendly",
+      "full_body",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cj_004",
+    "title": "Low Impact Strength Workout for Beginners \u2014 20 Min (Osteoporosis Safe)",
+    "creator": "Caroline Jordan",
+    "youtube_id": "tyj04r8unL8",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "osteoporosis_safe",
+      "beginner",
+      "low_impact",
+      "bone_health",
+      "seniors",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_002",
+    "title": "30 Min Upper Body & Abs \u2014 No Equipment",
+    "creator": "Pamela Reif",
+    "youtube_id": "c01hlF_EdRk",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "upper_body",
+      "abs",
+      "core",
+      "arms",
+      "shoulders",
+      "bodyweight"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_003",
+    "title": "20 Min Legs + Booty \u2014 No Equipment",
+    "creator": "Pamela Reif",
+    "youtube_id": "iCG4zlvuUok",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "glutes",
+      "legs",
+      "bodyweight",
+      "no_equipment",
+      "hike_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_004",
+    "title": "10 Min Upper Body Workout \u2014 Arms, Chest & Back",
+    "creator": "Pamela Reif",
+    "youtube_id": "eBnSe3CIPn4",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "upper_body",
+      "arms",
+      "chest",
+      "back",
+      "bodyweight",
+      "short",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_005",
+    "title": "10 Min Beginner Ab Workout \u2014 No Equipment",
+    "creator": "Pamela Reif",
+    "youtube_id": "1f8yoFFdkcY",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "core",
+      "abs",
+      "beginner",
+      "bodyweight",
+      "short",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_001",
+    "title": "Low Impact Cardio Workout for All Fitness Levels \u2014 No Equipment",
+    "creator": "Body Project",
+    "youtube_id": "3SpPraOLJl4",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "all_levels",
+      "no_equipment",
+      "full_body",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_002",
+    "title": "Low Impact All Standing Cardio Workout \u2014 Beginner Friendly",
+    "creator": "Body Project",
+    "youtube_id": "ft9lgLOVhr4",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "standing",
+      "cardio",
+      "beginner",
+      "no_floor_work",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_003",
+    "title": "Low Impact Cardio, Resistance & Core \u2014 Total Body Workout",
+    "creator": "Body Project",
+    "youtube_id": "4oPwbPLx0vg",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "resistance",
+      "core",
+      "full_body",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_004",
+    "title": "30 Minute Walk at Home \u2014 With Low Impact Cardio Intervals",
+    "creator": "Body Project",
+    "youtube_id": "zc56U8K6mhc",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "cardio",
+      "steady_state",
+      "beginner",
+      "indoor"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_028",
+    "title": "Yoga for Neck and Shoulder Relief",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "SedzswEwpPw",
+    "session_type": "yoga",
+    "duration_min": 22,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "neck",
+      "shoulders",
+      "upper_body",
+      "tension_release",
+      "posture",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_029",
+    "title": "Yoga For Text Neck",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "JUP_YdYyfQw",
+    "session_type": "yoga",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "neck",
+      "shoulders",
+      "posture",
+      "desk_worker",
+      "tension_release",
+      "upper_back"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_008",
+    "title": "4.5 MILE Fat Burning Indoor Walk (Beginner Friendly)",
+    "creator": "growwithjo",
+    "youtube_id": "yG6t8r84xyc",
+    "session_type": "low_impact_cardio",
+    "duration_min": 45,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "fat_burn",
+      "cardio_endurance",
+      "steps_challenge",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_009",
+    "title": "FAST Walking in 15 Minutes | Lunch Break Workout",
+    "creator": "growwithjo",
+    "youtube_id": "NlVndT8-B5U",
+    "session_type": "low_impact_cardio",
+    "duration_min": 15,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "quick_workout",
+      "energy_boost",
+      "cardio_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_030",
+    "title": "Power Yoga with Adriene",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "WwzihD_WmFE",
+    "session_type": "yoga",
+    "duration_min": 35,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "strength",
+      "power_yoga",
+      "energy_boost",
+      "cardio_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_010",
+    "title": "Do This Low Impact Workout Everyday To Seriously Lose Weight",
+    "creator": "growwithjo",
+    "youtube_id": "xKWsW3k0YH8",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "fat_burn",
+      "energy_boost",
+      "cardio_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "gwj_011",
+    "title": "Indoor Fat Burning Walking Workout (Low Impact)",
+    "creator": "growwithjo",
+    "youtube_id": "nmNCH-Ueq8E",
+    "session_type": "low_impact_cardio",
+    "duration_min": 25,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "walking",
+      "low_impact",
+      "fat_burn",
+      "cardio_endurance",
+      "steps_challenge"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_031",
+    "title": "Power Yoga Break | Yoga For Weight Loss",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "6rh6pVGTqRU",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "core",
+      "glutes",
+      "strength",
+      "power_yoga",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_032",
+    "title": "20 Minute Intermediate Power Yoga",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "ZbtVVYBLCug",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "strength",
+      "power_yoga",
+      "core",
+      "intermediate",
+      "energy_boost"
+    ],
+    "contra_tags": [
+      "beginners"
+    ]
+  },
+  {
+    "id": "ya_033",
+    "title": "Core Power Wake Up",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "k2Aw9vZm_0E",
+    "session_type": "yoga",
+    "duration_min": 23,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "strength",
+      "wake_up",
+      "energy_boost",
+      "abdominals"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_015",
+    "title": "Osteoporosis Exercise: 7-Minute Easy Jump to Strengthen Your Bones",
+    "creator": "Fabulous50s",
+    "youtube_id": "-VdsZfiJPg4",
+    "session_type": "strength",
+    "duration_min": 7,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "bone_density_support",
+      "osteoporosis_safe",
+      "impact_training",
+      "quick_workout",
+      "midlife"
+    ],
+    "contra_tags": [
+      "severe_osteoporosis",
+      "joint_pain"
+    ]
+  },
+  {
+    "id": "cj_005",
+    "title": "At Home Workout For Osteoporosis (20 Min Full Body)",
+    "creator": "Caroline Jordan",
+    "youtube_id": "HahqtAvxs5o",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "bone_density_support",
+      "osteoporosis_safe",
+      "full_body",
+      "balance_training",
+      "midlife",
+      "low_impact"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "cj_007",
+    "title": "Osteoporosis Exercises To Strengthen Bones (Total Body)",
+    "creator": "Caroline Jordan",
+    "youtube_id": "poA6hLdXe3c",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "bone_density_support",
+      "osteoporosis_safe",
+      "full_body",
+      "balance_training",
+      "midlife"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_004",
+    "title": "30 Minute Yin Yoga for Bedtime to Fall Asleep Fast",
+    "creator": "SarahBethYoga",
+    "youtube_id": "sgxJWxmPOrg",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "sleep",
+      "bedtime",
+      "yin",
+      "stress_relief",
+      "recovery",
+      "relaxation"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_005",
+    "title": "30 Minute Yin Yoga to Relax and Unwind for Stress Relief",
+    "creator": "SarahBethYoga",
+    "youtube_id": "UxWWfyE3fLc",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "stress_relief",
+      "yin",
+      "relaxation",
+      "recovery",
+      "rest_day",
+      "anxiety_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_005",
+    "title": "Low Impact Beginner Fat Burning Home Cardio Workout (All Standing)",
+    "creator": "Body Project",
+    "youtube_id": "PvEnWsPrL4w",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "fat_burn",
+      "beginner_friendly",
+      "no_jumping",
+      "standing",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_006",
+    "title": "Low Impact 30 Minute Cardio Workout - Beginner/Intermediate",
+    "creator": "Body Project",
+    "youtube_id": "50kH47ZztHs",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "low_impact",
+      "cardio",
+      "energy_boost",
+      "cardio_endurance",
+      "no_jumping"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_009",
+    "title": "20 Min Morning Yin Yoga Without Props - Slow and Sweet",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "3s8pMLuvS-E",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "yin",
+      "morning",
+      "flexibility",
+      "stress_relief",
+      "no_props",
+      "recovery",
+      "full_body"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "lm_010",
+    "title": "Classical Pilates Workout in 20 Minutes",
+    "creator": "Lottie Murphy",
+    "youtube_id": "DhO6u5pB0xo",
+    "session_type": "pilates",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "pilates",
+      "full_body",
+      "core",
+      "classical_pilates",
+      "flexibility",
+      "posture"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_006",
+    "title": "20 Min Booty Workout \u2014 No Equipment",
+    "creator": "Pamela Reif",
+    "youtube_id": "HeolReSa5ic",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 3,
+    "equipment": "mat",
+    "intensity": "medium",
+    "focus_tags": [
+      "glutes",
+      "lower_body",
+      "booty",
+      "no_equipment",
+      "strength"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "pr_007",
+    "title": "10 MIN HARD BUT(T) WORTH IT - Booty Activation",
+    "creator": "Pamela Reif",
+    "youtube_id": "VkBPozjTZVo",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "glutes",
+      "booty_activation",
+      "lower_body",
+      "no_equipment",
+      "energy_boost"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_021",
+    "title": "Full Body STRENGTH Workout // Dumbbells Only",
+    "creator": "Heather Robertson",
+    "youtube_id": "Fgf_5K4lmLU",
+    "session_type": "strength",
+    "duration_min": 40,
+    "difficulty": 3,
+    "equipment": "dumbbells",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "strength",
+      "muscle_building",
+      "no_jumping",
+      "dumbbells"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_006",
+    "title": "20 Minute Morning Yoga Stretch",
+    "creator": "SarahBethYoga",
+    "youtube_id": "TL_3LpGT4DI",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "morning_yoga",
+      "full_body",
+      "stretch",
+      "recovery",
+      "rest_day",
+      "stress_relief"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_034",
+    "title": "Yoga For Tired Legs",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "2137wAXvufE",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "post_hike",
+      "recovery",
+      "tired_legs",
+      "hike_prep",
+      "lower_body",
+      "rest_day"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "sby_007",
+    "title": "20 Minute Yoga Stretch for Stiff Hips & Tired Legs",
+    "creator": "SarahBethYoga",
+    "youtube_id": "-dDgEIA9uNI",
+    "session_type": "yoga",
+    "duration_min": 20,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "hips",
+      "tired_legs",
+      "recovery",
+      "post_hike",
+      "mobility",
+      "rest_day",
+      "flexibility"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywa_001",
+    "title": "12 Minute Post-Hike Yoga Flow",
+    "creator": "Yoga with Amanda",
+    "youtube_id": "ai1L3D5VTjE",
+    "session_type": "yoga",
+    "duration_min": 12,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "post_hike",
+      "recovery",
+      "hiking",
+      "hips",
+      "legs",
+      "rest_day",
+      "hike_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ya_035",
+    "title": "Yoga For Sensitive Knees",
+    "creator": "Yoga With Adriene",
+    "youtube_id": "VfSlEgg4ApE",
+    "session_type": "yoga",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "mat",
+    "intensity": "low",
+    "focus_tags": [
+      "knee_friendly",
+      "sensitive_knees",
+      "lower_body",
+      "stability",
+      "hike_prep",
+      "downhill"
+    ],
+    "contra_tags": [
+      "knee_injury"
+    ]
+  },
+  {
+    "id": "oat_001",
+    "title": "Knee Strength for Hikers Workout",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "kMLJnS8Aw4k",
+    "session_type": "strength",
+    "duration_min": 33,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "knee_strength",
+      "hiking",
+      "hike_prep",
+      "glutes",
+      "hamstrings",
+      "downhill",
+      "knee_control",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_006",
+    "title": "Lower Body Stability Workout for Hikers | Day 1: Trail Ready",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "mjE8d6nZNHc",
+    "session_type": "strength",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "lower_body",
+      "stability",
+      "hiking",
+      "hike_prep",
+      "trail_prep",
+      "knees",
+      "balance_training",
+      "downhill"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_007",
+    "title": "Spring Stability Workout for Hikers & Skiers",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "K99PLQXPqEE",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "stability",
+      "hiking",
+      "hike_prep",
+      "balance_training",
+      "lower_body",
+      "core",
+      "knee_control"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "f50_016",
+    "title": "Make Stair Climbing Easy with ONE Exercise (for 50+)",
+    "creator": "Fabulous50s",
+    "youtube_id": "lfc75qEuKsc",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "step",
+    "intensity": "low",
+    "focus_tags": [
+      "stair_climbing",
+      "step_up",
+      "lower_body",
+      "knees",
+      "balance_training",
+      "hike_prep",
+      "midlife",
+      "hike_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "smst_001",
+    "title": "How to Train for Hiking with Stairs | Elevation Gain Without Mountains",
+    "creator": "Summit Strength",
+    "youtube_id": "wrAzopMgriU",
+    "session_type": "low_impact_cardio",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "step",
+    "intensity": "medium",
+    "focus_tags": [
+      "stair_climbing",
+      "elevation_training",
+      "hiking",
+      "hike_prep",
+      "cardio_endurance",
+      "leg_strength",
+      "step_up",
+      "hike_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "smst_002",
+    "title": "35-Min Full Body Workout for Mountaineers",
+    "creator": "Summit Strength",
+    "youtube_id": "C8agddNych4",
+    "session_type": "strength",
+    "duration_min": 35,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "full_body",
+      "mountaineering",
+      "hiking",
+      "hike_prep",
+      "strength",
+      "endurance",
+      "no_equipment",
+      "trail_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_003",
+    "title": "Total Body Workout for Trekkers and Hikers",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "FarqGy8kTiI",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "hiking",
+      "trekking",
+      "hike_prep",
+      "full_body",
+      "strength",
+      "no_equipment",
+      "trail_prep",
+      "hike_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_005",
+    "title": "Core Strength Workout for Hikers | Day 7: Trail Ready Challenge",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "4vsL9K_dpOs",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "hiking",
+      "trail_prep",
+      "hike_prep",
+      "stability",
+      "endurance",
+      "hike_endurance"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bmp_001",
+    "title": "4 Strength Exercises for Hiking (Done with a Backpack)",
+    "creator": "Be Mobile Physiotherapy",
+    "youtube_id": "4GWx0oXo580",
+    "session_type": "strength",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "hiking",
+      "backpack_strength",
+      "legs",
+      "posture",
+      "hike_prep",
+      "55_plus",
+      "functional_strength"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_002",
+    "title": "10-Min Core Workout for Hikers",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "oiOVXEOc1Ec",
+    "session_type": "strength",
+    "duration_min": 10,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "hiking",
+      "hike_prep",
+      "stability",
+      "backpackers",
+      "short_session",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_004",
+    "title": "Core Workout for Hikers & Backpackers | Day 2: Trail Ready",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "FbMzRLQR0pY",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "core",
+      "hiking",
+      "backpackers",
+      "trail_prep",
+      "hike_prep",
+      "stability",
+      "backpack_strength"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "oat_008",
+    "title": "Upper Body & Core Strength | 30-Min Workout for Outdoor Athletes",
+    "creator": "Outdoor Adventure Training",
+    "youtube_id": "XhDrpymlOJg",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 3,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "upper_body",
+      "core",
+      "outdoor_athletes",
+      "hiking",
+      "hike_prep",
+      "backpack_strength",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "ywk_010",
+    "title": "TRAVEL YOGA \u2013 10 min Standing HANDS FREE Yoga Flow (Hotel, No Mat, Small Space)",
+    "creator": "Yoga with Kassandra",
+    "youtube_id": "szXcZx2iVns",
+    "session_type": "yoga",
+    "duration_min": 10,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "low",
+    "focus_tags": [
+      "travel",
+      "standing_only",
+      "no_floor_work",
+      "no_equipment",
+      "hotel_room",
+      "short_session",
+      "no_mat"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_007",
+    "title": "Fat Burning Beginner LOW IMPACT Home Cardio Workout \u2014 All Standing!",
+    "creator": "Body Project",
+    "youtube_id": "iNW4lCU693Q",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 1,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "standing_only",
+      "no_floor_work",
+      "low_impact",
+      "cardio",
+      "fat_burning",
+      "beginner",
+      "no_equipment",
+      "hotel_room"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_008",
+    "title": "Low Impact, All Standing Workout from Home",
+    "creator": "Body Project",
+    "youtube_id": "fJcVBRJE5vo",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "standing_only",
+      "no_floor_work",
+      "low_impact",
+      "cardio",
+      "no_equipment",
+      "hotel_room"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "bp_009",
+    "title": "Low Impact Cardio and Resistance Standing Home Workout",
+    "creator": "Body Project",
+    "youtube_id": "eyvHfxgCAJQ",
+    "session_type": "low_impact_cardio",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "none",
+    "intensity": "medium",
+    "focus_tags": [
+      "standing_only",
+      "no_floor_work",
+      "low_impact",
+      "cardio",
+      "resistance",
+      "full_body",
+      "no_equipment"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_022",
+    "title": "Tone & Sculpt // Mini Band Leg & Booty Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "lg-AlBDCZ0Q",
+    "session_type": "strength",
+    "duration_min": 25,
+    "difficulty": 2,
+    "equipment": "resistance_band",
+    "intensity": "medium",
+    "focus_tags": [
+      "resistance_band",
+      "glutes",
+      "lower_body",
+      "legs",
+      "mini_band",
+      "toning",
+      "travel_friendly"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_023",
+    "title": "FULL BODY Mini Band Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "2kNKUScBp_0",
+    "session_type": "strength",
+    "duration_min": 30,
+    "difficulty": 2,
+    "equipment": "resistance_band",
+    "intensity": "medium",
+    "focus_tags": [
+      "resistance_band",
+      "full_body",
+      "glutes",
+      "mini_band",
+      "travel_friendly",
+      "no_equipment_option"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_024",
+    "title": "15 Min BOOTY BAND Workout for STRONG Glutes",
+    "creator": "Heather Robertson",
+    "youtube_id": "-nkd3xT2Mr0",
+    "session_type": "strength",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "resistance_band",
+    "intensity": "medium",
+    "focus_tags": [
+      "resistance_band",
+      "glutes",
+      "lower_body",
+      "booty_band",
+      "short_session",
+      "hike_prep"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_025",
+    "title": "Toned LEGS, THIGHS + BOOTY // Mini Band Workout",
+    "creator": "Heather Robertson",
+    "youtube_id": "5dLqWnGiC0o",
+    "session_type": "strength",
+    "duration_min": 20,
+    "difficulty": 2,
+    "equipment": "resistance_band",
+    "intensity": "medium",
+    "focus_tags": [
+      "resistance_band",
+      "lower_body",
+      "legs",
+      "glutes",
+      "thighs",
+      "mini_band",
+      "toning"
+    ],
+    "contra_tags": []
+  },
+  {
+    "id": "hr_026",
+    "title": "Standing SIDE BOOTY (Hip Dip) Workout // Mini Band",
+    "creator": "Heather Robertson",
+    "youtube_id": "MppmRWrj1YM",
+    "session_type": "strength",
+    "duration_min": 15,
+    "difficulty": 2,
+    "equipment": "resistance_band",
+    "intensity": "medium",
+    "focus_tags": [
+      "resistance_band",
+      "glutes",
+      "hip_abductor",
+      "standing_only",
+      "mini_band",
+      "side_booty",
       "lower_body"
     ],
     "contra_tags": []

@@ -227,6 +227,12 @@ try {
   `);
 } catch (_) {}
 
+// Goal tracking on user_profiles
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal TEXT"); }              catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_details TEXT"); }      catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_set_at TEXT"); }       catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_target_date TEXT"); }  catch (_) {}
+
 // Seed admin from environment variable — set ADMIN_EMAIL in Railway to promote an account on boot.
 // Safe to run on every startup (no-op if user doesn't exist or is already admin).
 const adminEmail = process.env.ADMIN_EMAIL;

@@ -6,6 +6,7 @@ import { ProfileIllustration } from '../components/ui/Illustrations';
 import { Capacitor } from '@capacitor/core';
 import HealthConnect from '../plugins/HealthConnect';
 import HealthKit from '../plugins/HealthKit';
+import GoalSelector, { GOAL_MAP } from '../components/GoalSelector';
 
 async function downloadCSV(path, filename) {
   try {
@@ -49,6 +50,72 @@ function WorkProfileWarning() {
         </a>{' '}
         instead.
       </p>
+    </div>
+  );
+}
+
+/* ── GoalSection ──────────────────────────────────────────── */
+function GoalSection({ profile, onOpen }) {
+  const goal = profile?.goal;
+  const meta = goal ? GOAL_MAP[goal] : null;
+  const daysIn = profile?.goal_set_at
+    ? Math.max(0, Math.floor((Date.now() - new Date(profile.goal_set_at)) / 86400000))
+    : null;
+
+  const trainWhat = (() => {
+    if (goal !== 'train_for') return null;
+    try {
+      const d = typeof profile.goal_details === 'string'
+        ? JSON.parse(profile.goal_details)
+        : profile.goal_details;
+      return d?.what || null;
+    } catch { return null; }
+  })();
+
+  return (
+    <div style={{
+      background: '#fff', borderRadius: 24, border: '1px solid #e5e7eb',
+      padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+            Your Movement Goal
+          </p>
+          {meta ? (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{ fontSize: 22 }}>{meta.icon}</span>
+                <span style={{ fontWeight: 700, fontSize: 16, color: '#111827' }}>
+                  {goal === 'train_for' && trainWhat ? `Training for: ${trainWhat}` : meta.label}
+                </span>
+              </div>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: daysIn !== null ? 8 : 0 }}>
+                {meta.tagline}
+              </p>
+              {daysIn !== null && (
+                <p style={{ fontSize: 12, color: '#4BA3E3', fontWeight: 600 }}>
+                  Day {daysIn + 1} of your goal
+                  {daysIn < 14 && ' · keep going 💪'}
+                </p>
+              )}
+            </>
+          ) : (
+            <p style={{ fontSize: 14, color: '#9ca3af' }}>No goal set yet</p>
+          )}
+        </div>
+        <button
+          onClick={onOpen}
+          style={{
+            fontSize: 13, fontWeight: 600, color: '#4BA3E3',
+            background: '#EFF8FF', border: 'none',
+            borderRadius: 10, padding: '7px 14px', cursor: 'pointer',
+            flexShrink: 0, marginLeft: 12,
+          }}
+        >
+          {meta ? 'Change' : 'Set goal'}
+        </button>
+      </div>
     </div>
   );
 }
@@ -163,6 +230,11 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved]   = useState(false);
   const [error, setError]   = useState('');
+
+  // Goal state
+  const [goalModalOpen, setGoalModalOpen] = useState(false);
+  const [pendingGoal, setPendingGoal]     = useState(null);   // { goal, goal_details, goal_target_date }
+  const [goalSaving, setGoalSaving]       = useState(false);
 
   // Oura state
   const [ouraStatus, setOuraStatus]     = useState(null); // null | 'connected' | 'connecting' | 'error' | 'denied'
@@ -982,6 +1054,100 @@ export default function ProfilePage() {
           )}
         </Section>
         </div>
+
+        {/* ── Goal section ──────────────────────────────────────── */}
+        <GoalSection
+          profile={profile}
+          onOpen={() => {
+            setPendingGoal({
+              goal:             profile?.goal || null,
+              goal_details:     profile?.goal_details || {},
+              goal_target_date: profile?.goal_target_date || '',
+            });
+            setGoalModalOpen(true);
+          }}
+        />
+
+        {/* Goal change modal */}
+        {goalModalOpen && (
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 999,
+            background: 'rgba(0,0,0,0.4)',
+            display: 'flex', alignItems: 'flex-end',
+          }}>
+            <div style={{
+              width: '100%', background: '#fff',
+              borderRadius: '24px 24px 0 0',
+              padding: '24px 20px 40px',
+              maxHeight: '88vh', overflowY: 'auto',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <h2 style={{ fontWeight: 700, fontSize: 18, color: '#111827' }}>Change your goal</h2>
+                <button
+                  onClick={() => setGoalModalOpen(false)}
+                  style={{ fontSize: 22, color: '#9ca3af', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* 2-week nudge */}
+              {profile?.goal && profile?.goal_set_at && (() => {
+                const days = Math.floor((Date.now() - new Date(profile.goal_set_at)) / 86400000);
+                if (days < 14) return (
+                  <div style={{
+                    background: '#fffbeb', border: '1px solid #fde68a',
+                    borderRadius: 12, padding: '10px 14px',
+                    fontSize: 13, color: '#92400e', marginBottom: 16, lineHeight: 1.5,
+                  }}>
+                    💛 You've been on this goal for {days === 0 ? 'less than a day' : `${days} day${days !== 1 ? 's' : ''}`}. Results come with consistency — we recommend staying with a goal for at least 2 weeks, ideally 8.
+                  </div>
+                );
+                return null;
+              })()}
+
+              <GoalSelector
+                value={pendingGoal?.goal}
+                goalDetails={pendingGoal?.goal_details}
+                goalTargetDate={pendingGoal?.goal_target_date}
+                onChange={(goalId, goalDetails, goalTargetDate) => {
+                  setPendingGoal({ goal: goalId, goal_details: goalDetails, goal_target_date: goalTargetDate });
+                }}
+              />
+
+              <button
+                disabled={!pendingGoal?.goal || goalSaving || (pendingGoal?.goal === 'train_for' && !pendingGoal?.goal_details?.what?.trim())}
+                onClick={async () => {
+                  if (!pendingGoal?.goal) return;
+                  setGoalSaving(true);
+                  try {
+                    await client.put('/profile', {
+                      goal:             pendingGoal.goal,
+                      goal_details:     pendingGoal.goal_details,
+                      goal_target_date: pendingGoal.goal_target_date,
+                    });
+                    await refreshProfile();
+                    setGoalModalOpen(false);
+                  } catch {
+                    // keep modal open
+                  } finally {
+                    setGoalSaving(false);
+                  }
+                }}
+                style={{
+                  width: '100%', marginTop: 20,
+                  background: (!pendingGoal?.goal || goalSaving) ? '#93c5fd' : '#4BA3E3',
+                  color: '#fff', fontWeight: 700, fontSize: 16,
+                  borderRadius: 16, padding: '16px', border: 'none',
+                  opacity: (!pendingGoal?.goal || goalSaving) ? 0.6 : 1,
+                  cursor: 'pointer',
+                }}
+              >
+                {goalSaving ? 'Saving…' : 'Save goal'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Age range */}
         <Section

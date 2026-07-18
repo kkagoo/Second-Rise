@@ -8,6 +8,9 @@ function getProfile(req, res, next) {
     const parsed = { ...profile };
     if (parsed.chronic_joints) parsed.chronic_joints = JSON.parse(parsed.chronic_joints);
     if (parsed.equipment_available) parsed.equipment_available = JSON.parse(parsed.equipment_available);
+    if (parsed.goal_details) {
+      try { parsed.goal_details = JSON.parse(parsed.goal_details); } catch (_) {}
+    }
 
     res.json(parsed);
   } catch (err) {
@@ -22,6 +25,7 @@ function updateProfile(req, res, next) {
       pelvic_floor_history, chronic_joints, activity_baseline,
       equipment_available, preferred_time, dinner_cooks_interest,
       onboarding_complete, oura_access_token, cycle_tracking_consent,
+      goal, goal_details, goal_target_date,
     } = req.body;
 
     db.prepare(`
@@ -39,6 +43,10 @@ function updateProfile(req, res, next) {
         onboarding_complete     = COALESCE(?, onboarding_complete),
         oura_access_token       = COALESCE(?, oura_access_token),
         cycle_tracking_consent  = COALESCE(?, cycle_tracking_consent),
+        goal                    = CASE WHEN ? IS NOT NULL THEN ? ELSE goal END,
+        goal_details            = COALESCE(?, goal_details),
+        goal_set_at             = CASE WHEN ? IS NOT NULL THEN datetime('now') ELSE goal_set_at END,
+        goal_target_date        = COALESCE(?, goal_target_date),
         updated_at              = datetime('now')
       WHERE user_id = ?
     `).run(
@@ -55,6 +63,13 @@ function updateProfile(req, res, next) {
       onboarding_complete !== undefined ? (onboarding_complete ? 1 : 0) : null,
       oura_access_token ?? null,
       cycle_tracking_consent !== undefined ? (cycle_tracking_consent ? 1 : 0) : null,
+      // goal: pass twice for CASE WHEN ? IS NOT NULL THEN ? ELSE goal END
+      goal !== undefined ? (goal ?? null) : null,
+      goal !== undefined ? (goal ?? null) : null,
+      goal_details !== undefined ? JSON.stringify(goal_details) : null,
+      // goal_set_at: reset to now whenever goal is explicitly set
+      goal !== undefined ? (goal ?? null) : null,
+      goal_target_date !== undefined ? (goal_target_date ?? null) : null,
       req.userId,
     );
 

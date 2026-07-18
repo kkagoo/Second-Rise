@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../ui/Button';
 import client from '../../api/client';
 import { Capacitor } from '@capacitor/core';
+import GoalSelector from '../GoalSelector';
 
 async function openOAuth(url) {
   try {
@@ -68,6 +69,11 @@ const STEPS = [
     ],
   },
   {
+    title: "What's your movement goal?",
+    subtitle: 'Shapes your daily recommendations. You can change this any time from your Profile.',
+    custom: 'goal',
+  },
+  {
     title: 'Connect your device',
     custom: 'wearable',
   },
@@ -127,7 +133,15 @@ export default function OnboardingWizard({ onComplete }) {
   }
 
   function isStepComplete() {
-    if (currentStep.custom === 'wearable') return true; // optional step
+    if (currentStep.custom === 'wearable') return true; // optional
+    if (currentStep.custom === 'goal') {
+      if (!answers.goal) return false;
+      if (answers.goal === 'train_for') {
+        // Require at least a "what" answer for Train For Something
+        return !!(answers.goal_details?.what?.trim());
+      }
+      return true;
+    }
     return currentStep.fields.every((f) => {
       const val = answers[f.key];
       if (f.multi) return true; // multi is optional
@@ -208,9 +222,26 @@ export default function OnboardingWizard({ onComplete }) {
               Step {step + 1} of {STEPS.length}
             </p>
             <h1 className="text-2xl font-bold text-earth-900">{currentStep.title}</h1>
+            {currentStep.subtitle && (
+              <p className="text-sm text-gray-400 mt-1">{currentStep.subtitle}</p>
+            )}
           </div>
 
-          {currentStep.custom === 'wearable' ? (
+          {currentStep.custom === 'goal' ? (
+            <GoalSelector
+              value={answers.goal}
+              goalDetails={answers.goal_details}
+              goalTargetDate={answers.goal_target_date}
+              onChange={(goalId, goalDetails, goalTargetDate) => {
+                setAnswers((prev) => ({
+                  ...prev,
+                  goal: goalId,
+                  goal_details: goalDetails,
+                  goal_target_date: goalTargetDate,
+                }));
+              }}
+            />
+          ) : currentStep.custom === 'wearable' ? (
             <div className="flex flex-col gap-4">
               <p className="text-sm text-gray-600">
                 Do you have a wearable? Tap it below and we'll take you straight to connect it. You can also do this anytime from your Profile.

@@ -47,9 +47,11 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
             : biometrics.sleep_source === 'whoop'
               ? 'Whoop'
               : biometrics.sleep_source === 'google_fit'
-                ? 'Google Health'
+                ? 'Google Fit'
               : biometrics.sleep_source === 'fitbit'
                 ? 'Fitbit / Pixel Watch'
+              : biometrics.sleep_source === 'withings'
+                ? 'Withings'
                 : 'Apple Health'
         }`
         : null,
@@ -212,6 +214,82 @@ ${biometricTrend.hasNegativePattern
 `;
   }
 
+  // ── Goal section ────────────────────────────────────────────────────────────
+  let goalSection = '';
+  if (profile.goal) {
+    const daysIn = profile.goal_set_at
+      ? Math.max(0, Math.floor((Date.now() - new Date(profile.goal_set_at).getTime()) / 86400000))
+      : 0;
+    const dayLabel = `Day ${daysIn + 1}`;
+
+    const GOAL_BIAS = {
+      build_strength: `MOVEMENT GOAL — Build Strength (${dayLabel}):
+Aim for 2–3 strength sessions per week with progressive load.
+• Alternate upper / lower / full body — never repeat the same focus on consecutive days.
+• On low-readiness or recovery days: yoga, mobility, or pilates instead.
+• Do not recommend high-intensity strength when readiness < 35.`,
+
+      boost_energy: `MOVEMENT GOAL — Boost Energy & Fitness (${dayLabel}):
+Alternate cardio (1–2×/week) and strength (1–2×/week) at moderate intensity.
+• Short sessions (15–20 min) count as a full win.
+• When energy ≤ 2, choose low-impact cardio or mobility over rest.
+• Avoid consecutive high-intensity days.`,
+
+      sleep_stress: `MOVEMENT GOAL — Sleep Better & Reduce Stress (${dayLabel}):
+Prioritise yoga, breath-led movement, mobility, and pilates.
+• High-intensity sessions only when energy ≥ 4 AND readiness > 55.
+• Default to nervous-system-friendly choices — yin, restorative, gentle flow.
+• Avoid high-energy sessions late in the day if preferred_time is evening.`,
+
+      mobility: `MOVEMENT GOAL — Improve Mobility & Flexibility (${dayLabel}):
+Lead with yoga and mobility sessions (4–5×/week); include 1 strength session for structural support.
+• Every session should include joint-friendly, range-of-motion work.
+• Pilates counts as a mobility-friendly option.
+• Avoid high-impact or heavy-load sessions unless explicitly requested.`,
+
+      consistency: `MOVEMENT GOAL — Move More Consistently (${dayLabel}):
+Prioritise showing up over intensity — any session, any length counts.
+• Vary session types to prevent boredom.
+• 10–15 min short sessions are a valid win and should not be dismissed.
+• When energy is low, choose something gentle rather than recommending rest.
+• Never push for intensity when the goal is building the habit.`,
+
+      midlife: `MOVEMENT GOAL — Support My Body Through Midlife (${dayLabel}):
+Prioritise weight-bearing strength (bone density), pelvic-floor-aware options, and recovery.
+• Include 2 strength sessions per week with weight-bearing focus.
+• Avoid high-impact if bone_health is flagged as concern.
+• Add yoga or mobility for sleep, stress, and joint health 2–3×/week.
+• Recovery is part of the plan — do not push through fatigue.`,
+    };
+
+    if (profile.goal === 'train_for') {
+      let details = {};
+      try {
+        details = typeof profile.goal_details === 'string'
+          ? JSON.parse(profile.goal_details)
+          : (profile.goal_details || {});
+      } catch (_) {}
+
+      let eventDateLine = '';
+      if (profile.goal_target_date) {
+        const daysUntil = Math.ceil((new Date(profile.goal_target_date) - Date.now()) / 86400000);
+        eventDateLine = `Event date: ${profile.goal_target_date}. ${daysUntil > 0 ? `${daysUntil} days remaining.` : 'Event has passed — focus on recovery and reflection.'}`;
+      }
+
+      goalSection = `
+MOVEMENT GOAL — Training For: ${details.what || 'a specific event'} (${dayLabel}):
+${eventDateLine}
+${details.success ? `Success looks like: ${details.success}` : ''}
+${details.hardest ? `What feels hardest: ${details.hardest}` : ''}
+${details.workaround ? `Work around: ${details.workaround}` : ''}
+${details.needs?.length ? `Training priorities: ${details.needs.join(', ')}` : ''}
+Bias session selection toward the specific demands of this goal. Build progressively week over week. Factor in any workarounds when choosing intensity or video type.
+`;
+    } else {
+      goalSection = `\n${GOAL_BIAS[profile.goal] || ''}\n`;
+    }
+  }
+
   return `USER PROFILE:
 - Age range: ${profile.age_range || 'not specified'}
 - Menopause stage: ${profile.menopause_stage || 'not specified'}
@@ -220,6 +298,7 @@ ${biometricTrend.hasNegativePattern
 - Chronic joints: ${chronicJoints.length > 0 ? chronicJoints.join(', ') : 'none'}
 - Activity baseline: ${profile.activity_baseline || 'not specified'}
 - Equipment available: ${equipment.length > 0 ? equipment.join(', ') : 'none / bodyweight only'}
+${goalSection}
 
 TODAY'S CHECK-IN:
 - Energy: ${energyInfo.emoji} ${energyInfo.label} (score: ${checkin.layer1_energy})
@@ -234,7 +313,7 @@ ${biometricsSection}${biometricTrendSection}${checkinTrendSection}${trendsSectio
 PRIOR SESSION: ${priorText}
 
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):
-${videoListText || '  No videos matched filters — pick the gentlest option from the full library.'}
+${videoListText || '  No videos available. Do not pick a video. Return primary.video_id as null and explain why in reasoning.'}
 
 TASK:
 1. Pick the single best video ID for today from the list above. Factor in the weekly balance guidelines: avoid repeating the same body focus area two days in a row, aim for the right mix of strength/cardio/yoga across the week.
