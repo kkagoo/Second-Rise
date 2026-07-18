@@ -113,6 +113,7 @@ export default function OnboardingWizard({ onComplete }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selectedWearable, setSelectedWearable] = useState(null);
+  const [connectingWearable, setConnectingWearable] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -150,22 +151,33 @@ export default function OnboardingWizard({ onComplete }) {
     });
   }
 
+  // Tapping a wearable card immediately opens OAuth — no second button needed.
+  async function handleWearableTap(wearableId) {
+    const alreadySelected = selectedWearable === wearableId;
+    if (alreadySelected) {
+      setSelectedWearable(null);
+      return;
+    }
+    setSelectedWearable(wearableId);
+    const endpoint = WEARABLE_ENDPOINTS[wearableId];
+    if (!endpoint) return; // Apple Health — no OAuth, just record preference
+    setConnectingWearable(wearableId);
+    try {
+      const res = await client.get(endpoint, { params: { returnTo: '/profile' } });
+      await openOAuth(res.data.url); // opens in-app browser; returns when user closes it
+    } catch {
+      // silently ignore — they can connect from Profile
+    } finally {
+      setConnectingWearable(null);
+    }
+  }
+
   async function handleFinish() {
     setSaving(true);
     setError('');
     try {
       await client.put('/profile', { ...answers, onboarding_complete: true });
-
-      // Navigate home immediately — don't block on OAuth
       onComplete(selectedWearable);
-
-      // Then fire OAuth in the background (Browser.open keeps the webview intact)
-      const endpoint = selectedWearable && WEARABLE_ENDPOINTS[selectedWearable];
-      if (endpoint) {
-        client.get(endpoint, { params: { returnTo: '/profile' } })
-          .then((res) => openOAuth(res.data.url))
-          .catch(() => {}); // silently ignore — they can connect from Profile
-      }
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');
     } finally {
@@ -254,21 +266,24 @@ export default function OnboardingWizard({ onComplete }) {
           ) : currentStep.custom === 'wearable' ? (
             <div className="flex flex-col gap-4">
               <p className="text-sm text-gray-600">
-                Select your device below. You'll connect it from your Profile once setup is complete — it only takes a minute.
+                Tap your device to connect it now. You can also do this from your Profile later.
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {WEARABLES.map((w) => {
                   const isSelected = selectedWearable === w.id;
+                  const isConnecting = connectingWearable === w.id;
                   return (
                     <button
                       key={w.id}
-                      onClick={() => setSelectedWearable(isSelected ? null : w.id)}
+                      onClick={() => handleWearableTap(w.id)}
+                      disabled={connectingWearable !== null}
                       style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
                         padding: '12px', borderRadius: '14px', border: 'none',
                         background: isSelected ? w.bg : '#f9fafb',
-                        cursor: 'pointer', textAlign: 'left',
+                        cursor: connectingWearable ? 'wait' : 'pointer', textAlign: 'left',
                         outline: isSelected ? `2px solid ${w.bg}` : '2px solid transparent',
+                        opacity: connectingWearable && !isConnecting ? 0.5 : 1,
                         transition: 'all 0.15s',
                       }}
                     >
@@ -279,13 +294,13 @@ export default function OnboardingWizard({ onComplete }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontWeight: 700, fontSize: 15, flexShrink: 0,
                       }}>
-                        {w.badge}
+                        {isConnecting ? '…' : w.badge}
                       </div>
                       <span style={{ lineHeight: 1.3 }}>
                         <span style={{ fontSize: 13, fontWeight: 600, color: isSelected ? '#fff' : '#374151', display: 'block' }}>
-                          {w.label}
+                          {isConnecting ? 'Opening…' : w.label}
                         </span>
-                        {w.note && (
+                        {!isConnecting && w.note && (
                           <span style={{ fontSize: 11, color: isSelected ? '#ffffffaa' : '#9ca3af' }}>
                             {w.note}
                           </span>
@@ -348,9 +363,7 @@ export default function OnboardingWizard({ onComplete }) {
           disabled={!isStepComplete() || saving}
           style={{ flex: 1, background: (!isStepComplete() || saving) ? '#93c5fd' : '#4BA3E3', color: '#fff', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none', opacity: (!isStepComplete() || saving) ? 0.6 : 1 }}
         >
-          {saving ? 'Saving…' : isLast
-            ? (selectedWearable && WEARABLE_ENDPOINTS[selectedWearable] ? 'Connect my wearable →' : 'Start my journey →')
-            : 'Next →'}
+          {saving ? 'Saving…' : isLast ? 'Start my journey →' : 'Next →'}
         </button>
       </div>
     </div>
