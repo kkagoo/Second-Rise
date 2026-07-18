@@ -19,7 +19,6 @@ const WEARABLE_ENDPOINTS = {
   whoop:        '/whoop/connect',
   google_fit:   '/googlefit/connect',
   withings:     '/withings/connect',
-  garmin:       '/garmin/connect',
   apple_health: null, // native HealthKit — connect from Profile
 };
 
@@ -92,7 +91,6 @@ const WEARABLES = [
   ...(!isAndroid ? [{ id: 'apple_health', label: 'Apple Health', badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? null : 'file import' }] : []),
   { id: 'google_fit',   label: 'Google Health', badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
   { id: 'withings',     label: 'Withings',      badge: 'W', bg: '#0070CC', fg: '#fff' },
-  { id: 'garmin',       label: 'Garmin',         badge: 'G', bg: '#007CC3', fg: '#fff' },
 ];
 
 function OptionButton({ label, selected, onClick }) {
@@ -158,19 +156,16 @@ export default function OnboardingWizard({ onComplete }) {
     try {
       await client.put('/profile', { ...answers, onboarding_complete: true });
 
-      // If user selected a wearable with an OAuth endpoint, open it in the in-app browser.
-      // Browser.open() keeps the main webview intact — user returns here when done.
+      // Navigate home immediately — don't block on OAuth
+      onComplete(selectedWearable);
+
+      // Then fire OAuth in the background (Browser.open keeps the webview intact)
       const endpoint = selectedWearable && WEARABLE_ENDPOINTS[selectedWearable];
       if (endpoint) {
-        try {
-          const res = await client.get(endpoint, { params: { returnTo: '/profile' } });
-          await openOAuth(res.data.url);
-        } catch {
-          // OAuth launch failed silently — they can connect from Profile
-        }
+        client.get(endpoint, { params: { returnTo: '/profile' } })
+          .then((res) => openOAuth(res.data.url))
+          .catch(() => {}); // silently ignore — they can connect from Profile
       }
-
-      onComplete(selectedWearable);
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');
     } finally {
