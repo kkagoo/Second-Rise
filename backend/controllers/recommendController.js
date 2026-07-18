@@ -1,6 +1,6 @@
 const db = require('../db/database');
 const { generateRecommendation } = require('../services/claudeService');
-const { getFilteredVideos, getVideoById } = require('../services/videoLibrary');
+const { getFilteredVideosSafe, getVideoById } = require('../services/videoLibrary');
 const { getHistory, getBaseline } = require('../services/ouraService');
 const { analyzeTrends } = require('../services/trendAnalysisService');
 const { syncTrend } = require('../services/googleHealthTrendService');
@@ -174,6 +174,27 @@ async function getRecommendation(req, res, next) {
             body_temp_deviation: null,
             temp_flag:       false,
           };
+        } else {
+        // Withings hooked up 2026-07-15. Was integrated elsewhere in the app
+        // (biometricsController.js) but not read here, so users with only a
+        // Withings connection got no biometrics context in their recommendation.
+        const withings = db.prepare('SELECT * FROM withings_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
+        if (withings) {
+          biometrics = {
+            sleep_source:    'withings',
+            recovery_source: null,
+            sleep_score:     null,
+            recovery_score:  null,
+            energy_label:    null,
+            hrv_balance:     null,
+            resting_hr:      withings.resting_hr,
+            total_sleep_min: withings.total_sleep_min,
+            rem_sleep_min:   withings.rem_sleep_min,
+            deep_sleep_min:  withings.deep_sleep_min,
+            body_temp_deviation: null,
+            temp_flag:       false,
+          };
+        }
         }
         }
       }
@@ -195,13 +216,19 @@ async function getRecommendation(req, res, next) {
       secondary_flags: checkin.secondary_flags ? JSON.parse(checkin.secondary_flags) : {},
     };
 
-    const availableVideos = getFilteredVideos(
+    // FIXED 2026-07-15: was getFilteredVideos() directly, with an empty result
+    // handled by telling the LLM to pick from the full, unfiltered catalog. See
+    // getFilteredVideosSafe() for why that bypassed safety rules and how it's fixed.
+    const { videos: availableVideos, timeRelaxed, usedSafeDefaults } = getFilteredVideosSafe(
       checkin.layer1_time_avail,
       checkin.computed_readiness,
       parsedCheckin.body_map_flags,
       parsedCheckin.secondary_flags,
       profile
     );
+    if (timeRelaxed) {
+      console.warn(`[recommend] time budget relaxed for user ${req.userId} (usedSafeDefaults=${usedSafeDefaults})`);
+    }
 
     // Pull 7-day history and 30-day personal baseline for trend-aware recommendations
     let history = [];

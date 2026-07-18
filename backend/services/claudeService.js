@@ -39,6 +39,9 @@ async function generateRecommendation(profile, checkin, readiness, priorFeedback
   }
 
   // Enrich with full video data from library
+  if (parsed.primary.video_id === null) {
+    throw new Error(`No eligible videos for this check-in: ${parsed.primary.reasoning || 'no reasoning given'}`);
+  }
   const primaryVideo = getVideoById(parsed.primary.video_id);
   if (!primaryVideo) throw new Error(`Claude picked unknown video ID: ${parsed.primary.video_id}`);
 

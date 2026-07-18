@@ -164,7 +164,7 @@ export default function OnboardingWizard({ onComplete }) {
     if (wearableId === 'apple_health' && isIOS) {
       setConnectingWearable(wearableId);
       try {
-        const { HealthKit } = await import('../plugins/HealthKit');
+        const { HealthKit } = await import('../../plugins/HealthKit');
         await HealthKit.requestHKPermissions();
         await HealthKit.syncToday().then((data) => client.post('/healthkit/sync', data)).catch(() => {});
       } catch {

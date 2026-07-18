@@ -24,6 +24,9 @@ function getFilteredVideos(timeAvail, readiness, bodyFlags, secondaryFlags, prof
     if (readiness <= 40 && v.difficulty >= 5) return false;
     if (hasHotFlashes && v.intensity === 'high') return false;
     if (boneIssue && v.intensity === 'high') return false;
+    // Sharp/severe pain anywhere on the body map, not just the four regions with
+    // dedicated rules below, should still push toward gentler sessions.
+    if (hasSharpPain && (v.intensity === 'high' || v.difficulty >= 4)) return false;
 
     if (hasKneePain) {
       if (v.focus_tags.includes('lower_body') && v.difficulty >= 4) return false;
@@ -42,4 +45,34 @@ function getVideoById(id) {
   return videos.find((v) => v.id === id) || null;
 }
 
-module.exports = { videos, getFilteredVideos, getVideoById };
+// FIXED 2026-07-15: getFilteredVideos() alone could return an empty candidate list
+// (verified: only reachable via a time_avail value too small for any video to fit,
+// e.g. '2' minutes; stacking every safety-relevant flag at once still leaves 46/57
+// videos eligible, so pain/hot-flash/bone-health/readiness rules alone can't empty it).
+// The caller previously handled that empty case by telling the LLM to "pick the
+// gentlest option from the full library," bypassing every deterministic safety rule
+// at exactly the moment the system was most constrained. This function removes that
+// bypass: it relaxes only the time budget (a UX constraint, not a safety one) first,
+// and if that's still somehow empty, falls back to a hardcoded low-intensity,
+// low-difficulty tier instead of the unfiltered catalog. Safety rules are never
+// skipped, only the time window is.
+function getFilteredVideosSafe(timeAvail, readiness, bodyFlags, secondaryFlags, profile) {
+  const strict = getFilteredVideos(timeAvail, readiness, bodyFlags, secondaryFlags, profile);
+  if (strict.length > 0) {
+    return { videos: strict, timeRelaxed: false, usedSafeDefaults: false };
+  }
+
+  // Time was the only thing that could realistically zero out the pool. Relax it
+  // and rerun with every safety rule still intact.
+  const timeRelaxed = getFilteredVideos('35+', readiness, bodyFlags, secondaryFlags, profile);
+  if (timeRelaxed.length > 0) {
+    return { videos: timeRelaxed, timeRelaxed: true, usedSafeDefaults: false };
+  }
+
+  // Defensive floor, not currently reachable with this catalog: a hardcoded
+  // low-intensity, low-difficulty tier, still filtered, never the raw catalog.
+  const safeDefaults = videos.filter((v) => v.intensity === 'low' && v.difficulty <= 2);
+  return { videos: safeDefaults, timeRelaxed: true, usedSafeDefaults: true };
+}
+
+module.exports = { videos, getFilteredVideos, getFilteredVideosSafe, getVideoById };
