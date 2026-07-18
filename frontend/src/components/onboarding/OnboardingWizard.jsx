@@ -24,6 +24,11 @@ const WEARABLE_ENDPOINTS = {
 
 const STEPS = [
   {
+    title: "What's your movement goal?",
+    subtitle: 'Shapes your daily recommendations. You can change this any time from your Profile.',
+    custom: 'goal',
+  },
+  {
     title: 'About you',
     fields: [
       {
@@ -69,12 +74,8 @@ const STEPS = [
     ],
   },
   {
-    title: "What's your movement goal?",
-    subtitle: 'Shapes your daily recommendations. You can change this any time from your Profile.',
-    custom: 'goal',
-  },
-  {
-    title: 'Connect your device',
+    title: 'Do you have a wearable?',
+    subtitle: 'Optional — you can connect it from your Profile after setup.',
     custom: 'wearable',
   },
 ];
@@ -244,7 +245,7 @@ export default function OnboardingWizard({ onComplete }) {
           ) : currentStep.custom === 'wearable' ? (
             <div className="flex flex-col gap-4">
               <p className="text-sm text-gray-600">
-                Do you have a wearable? Tap it below and we'll take you straight to connect it. You can also do this anytime from your Profile.
+                Select your device below. You'll connect it from your Profile once setup is complete — it only takes a minute.
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {WEARABLES.map((w) => {
@@ -338,7 +339,7 @@ export default function OnboardingWizard({ onComplete }) {
           disabled={!isStepComplete() || saving}
           style={{ flex: 1, background: (!isStepComplete() || saving) ? '#93c5fd' : '#4BA3E3', color: '#fff', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none', opacity: (!isStepComplete() || saving) ? 0.6 : 1 }}
         >
-          {saving ? 'Saving…' : isLast ? (selectedWearable ? 'Connect my device →' : 'Start my journey →') : 'Next →'}
+          {saving ? 'Saving…' : isLast ? 'Start my journey →' : 'Next →'}
         </button>
       </div>
     </div>
