@@ -19,7 +19,8 @@ const WEARABLE_ENDPOINTS = {
   whoop:        '/whoop/connect',
   google_fit:   '/googlefit/connect',
   withings:     '/withings/connect',
-  apple_health: null,
+  garmin:       '/garmin/connect',
+  apple_health: null, // native HealthKit — connect from Profile
 };
 
 const STEPS = [
@@ -91,13 +92,14 @@ const WEARABLES = [
   ...(!isAndroid ? [{ id: 'apple_health', label: 'Apple Health', badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? null : 'file import' }] : []),
   { id: 'google_fit',   label: 'Google Health', badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
   { id: 'withings',     label: 'Withings',      badge: 'W', bg: '#0070CC', fg: '#fff' },
+  { id: 'garmin',       label: 'Garmin',         badge: 'G', bg: '#007CC3', fg: '#fff' },
 ];
 
 function OptionButton({ label, selected, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left rounded-2xl px-4 py-3 text-sm font-medium border-2 tap-target transition-all duration-150 ${
+      className={`text-left rounded-2xl px-4 py-3 text-sm font-medium border-2 tap-target transition-all duration-150 ${
         selected
           ? 'border-sunrise-500 bg-sunrise-50 text-sunrise-700'
           : 'border-earth-100 bg-white text-earth-700 hover:border-sunrise-200'
@@ -155,7 +157,19 @@ export default function OnboardingWizard({ onComplete }) {
     setError('');
     try {
       await client.put('/profile', { ...answers, onboarding_complete: true });
-      // Hand off to OnboardingPage — Profile handles all OAuth so the callback lands there
+
+      // If user selected a wearable with an OAuth endpoint, open it in the in-app browser.
+      // Browser.open() keeps the main webview intact — user returns here when done.
+      const endpoint = selectedWearable && WEARABLE_ENDPOINTS[selectedWearable];
+      if (endpoint) {
+        try {
+          const res = await client.get(endpoint, { params: { returnTo: '/profile' } });
+          await openOAuth(res.data.url);
+        } catch {
+          // OAuth launch failed silently — they can connect from Profile
+        }
+      }
+
       onComplete(selectedWearable);
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');
@@ -166,8 +180,8 @@ export default function OnboardingWizard({ onComplete }) {
 
   if (!welcomed) {
     return (
-      <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '64px 20px 20px' }}>
+      <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: 'scroll', WebkitOverflowScrolling: 'touch', padding: '48px 20px 20px' }}>
           <div className="text-4xl mb-6">🌅</div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
             Welcome — we're so glad you're here.
@@ -194,11 +208,11 @@ export default function OnboardingWizard({ onComplete }) {
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
-      {/* Scrollable content area */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '48px 20px 16px' }}>
+    <div style={{ position: 'fixed', inset: 0, background: '#fff', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Scrollable content area — minHeight:0 is required for flex+overflow to work on iOS */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'scroll', overflowX: 'hidden', WebkitOverflowScrolling: 'touch', padding: '20px' }}>
         {/* Progress bar */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mb-4">
           {STEPS.map((_, i) => (
             <div
               key={i}
@@ -216,7 +230,7 @@ export default function OnboardingWizard({ onComplete }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-4"
         >
           <div>
             <p className="text-xs font-semibold text-earth-400 uppercase tracking-widest mb-1">
@@ -339,7 +353,9 @@ export default function OnboardingWizard({ onComplete }) {
           disabled={!isStepComplete() || saving}
           style={{ flex: 1, background: (!isStepComplete() || saving) ? '#93c5fd' : '#4BA3E3', color: '#fff', fontWeight: 600, borderRadius: '1rem', padding: '16px', fontSize: '16px', border: 'none', opacity: (!isStepComplete() || saving) ? 0.6 : 1 }}
         >
-          {saving ? 'Saving…' : isLast ? 'Start my journey →' : 'Next →'}
+          {saving ? 'Saving…' : isLast
+            ? (selectedWearable && WEARABLE_ENDPOINTS[selectedWearable] ? 'Connect my wearable →' : 'Start my journey →')
+            : 'Next →'}
         </button>
       </div>
     </div>

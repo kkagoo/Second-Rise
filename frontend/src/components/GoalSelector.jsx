@@ -95,7 +95,7 @@ export default function GoalSelector({ value, goalDetails = {}, goalTargetDate =
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       {GOALS.map((g) => {
         const selected = value === g.id;
         return (
@@ -107,9 +107,9 @@ export default function GoalSelector({ value, goalDetails = {}, goalTargetDate =
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '14px',
-                padding: '14px 16px',
-                borderRadius: '16px',
+                gap: '10px',
+                padding: '10px 12px',
+                borderRadius: '12px',
                 border: `2px solid ${selected ? '#4BA3E3' : '#e5e7eb'}`,
                 background: selected ? '#EFF8FF' : '#fff',
                 cursor: 'pointer',
@@ -117,18 +117,18 @@ export default function GoalSelector({ value, goalDetails = {}, goalTargetDate =
                 transition: 'all 0.15s',
               }}
             >
-              <span style={{ fontSize: 24, flexShrink: 0 }}>{g.icon}</span>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{g.icon}</span>
               <span style={{ flex: 1 }}>
                 <span style={{
                   display: 'block',
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 600,
                   color: selected ? '#1d6fa4' : '#1f2937',
-                  marginBottom: 2,
+                  marginBottom: 1,
                 }}>
                   {g.label}
                 </span>
-                <span style={{ display: 'block', fontSize: 12, color: selected ? '#4BA3E3' : '#9ca3af' }}>
+                <span style={{ display: 'block', fontSize: 11, color: selected ? '#4BA3E3' : '#9ca3af' }}>
                   {g.tagline}
                 </span>
               </span>
