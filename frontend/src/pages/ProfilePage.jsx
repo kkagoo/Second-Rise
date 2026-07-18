@@ -74,12 +74,15 @@ function GoalSection({ profile, onOpen }) {
 
   return (
     <div style={{
-      background: '#fff', borderRadius: 24, border: '1px solid #e5e7eb',
-      padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      background: 'linear-gradient(135deg, #EFF8FF 0%, #e0f0ff 100%)',
+      borderRadius: 24,
+      border: '2px solid #4BA3E3',
+      padding: '20px',
+      boxShadow: '0 2px 8px rgba(75,163,227,0.15)',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#4BA3E3', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
             Your Movement Goal
           </p>
           {meta ? (
@@ -928,29 +931,26 @@ export default function ProfilePage() {
               <p className="text-red-500 text-xs">{googleFitError}</p>
             )}
 
-            {/* Apple HealthKit — iOS only */}
-            {isIOS && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 mb-1">Apple Health</p>
-                <p className="text-xs text-gray-400 mb-3">
-                  Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed.
-                </p>
-                {hkLastSync && (
-                  <p className="text-xs text-green-600 mb-2">
-                    Last synced {new Date(hkLastSync).toLocaleString()}
-                  </p>
-                )}
-                <button
-                  type="button"
-                  onClick={handleHealthKitSync}
-                  disabled={hkStatus === 'syncing'}
-                  className="w-full border-2 border-pink-300 text-pink-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-pink-50 disabled:opacity-50"
-                >
-                  {hkStatus === 'syncing' ? 'Syncing…' : hkStatus === 'synced' ? 'Synced ✓' : 'Sync Apple Health'}
-                </button>
-                {hkError && <p className="text-red-500 text-xs mt-2">{hkError}</p>}
-              </div>
+          </Section>
+          </div>
+        )}
+
+        {/* Apple Health — iOS native HealthKit */}
+        {isIOS && (
+          <div id="apple-section">
+          <Section title="Apple Health" subtitle="Reads sleep stages, HRV, resting HR, SpO2, and steps directly from Apple Health — no manual export needed">
+            {hkLastSync && (
+              <p className="text-xs text-green-600">Last synced {new Date(hkLastSync).toLocaleString()}</p>
             )}
+            <button
+              type="button"
+              onClick={handleHealthKitSync}
+              disabled={hkStatus === 'syncing'}
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
+            >
+              {hkStatus === 'syncing' ? 'Syncing…' : hkStatus === 'synced' ? 'Synced ✓' : 'Sync Apple Health'}
+            </button>
+            {hkError && <p className="text-red-500 text-xs">{hkError}</p>}
           </Section>
           </div>
         )}

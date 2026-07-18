@@ -151,7 +151,7 @@ export default function OnboardingWizard({ onComplete }) {
     });
   }
 
-  // Tapping a wearable card immediately opens OAuth — no second button needed.
+  // Tapping a wearable card immediately opens OAuth (or HealthKit on iOS) — no second button needed.
   async function handleWearableTap(wearableId) {
     const alreadySelected = selectedWearable === wearableId;
     if (alreadySelected) {
@@ -159,8 +159,24 @@ export default function OnboardingWizard({ onComplete }) {
       return;
     }
     setSelectedWearable(wearableId);
+
+    // Apple Health on iOS → request HealthKit permissions natively
+    if (wearableId === 'apple_health' && isIOS) {
+      setConnectingWearable(wearableId);
+      try {
+        const { HealthKit } = await import('../plugins/HealthKit');
+        await HealthKit.requestHKPermissions();
+        await HealthKit.syncToday().then((data) => client.post('/healthkit/sync', data)).catch(() => {});
+      } catch {
+        // silently ignore — they can sync from Profile
+      } finally {
+        setConnectingWearable(null);
+      }
+      return;
+    }
+
     const endpoint = WEARABLE_ENDPOINTS[wearableId];
-    if (!endpoint) return; // Apple Health — no OAuth, just record preference
+    if (!endpoint) return; // no OAuth endpoint — just save preference
     setConnectingWearable(wearableId);
     try {
       const res = await client.get(endpoint, { params: { returnTo: '/profile' } });
