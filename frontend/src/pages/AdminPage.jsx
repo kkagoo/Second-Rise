@@ -227,6 +227,7 @@ function DashboardTab({ stats, loading }) {
           <StatCard label="Check-ins today" value={stats.checkins_today} />
           <StatCard label="Total check-ins" value={stats.total_checkins} />
           <StatCard label="Total workouts"  value={stats.total_workouts} />
+          <StatCard label="💜 GWC pledge"  value={`$${stats.total_donation_pledged ?? 0}`} sub="Girls Who Code ($1 per 7-day streak)" />
         </div>
       </div>
 

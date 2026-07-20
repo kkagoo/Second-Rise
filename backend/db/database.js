@@ -209,6 +209,7 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN cycle_tracking_consent INTEG
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN current_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN longest_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN last_streak_date TEXT"); }                      catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN streak_milestones INTEGER NOT NULL DEFAULT 0"); } catch (_) {} // count of 7-day milestones hit (each = $1 pledge to Girls Who Code)
 
 // Admin flag
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"); } catch (_) {}

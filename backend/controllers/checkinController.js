@@ -113,13 +113,17 @@ function submitCheckin(req, res, next) {
 
     // Update streak
     const streak = computeStreak(req.userId, today);
+    // Increment milestone counter when user hits a new 7-day milestone (each = $1 pledge to Girls Who Code)
+    const prevStreak = db.prepare('SELECT current_streak FROM user_profiles WHERE user_id = ?').get(req.userId)?.current_streak ?? 0;
+    const hitNewMilestone = streak > 0 && streak % 7 === 0 && prevStreak < streak;
     db.prepare(`
       UPDATE user_profiles
-      SET current_streak  = ?,
-          longest_streak  = MAX(longest_streak, ?),
-          last_streak_date = ?
+      SET current_streak    = ?,
+          longest_streak    = MAX(longest_streak, ?),
+          last_streak_date  = ?,
+          streak_milestones = streak_milestones + ?
       WHERE user_id = ?
-    `).run(streak, streak, today, req.userId);
+    `).run(streak, streak, today, hitNewMilestone ? 1 : 0, req.userId);
 
     res.status(201).json({ checkin_id: result.lastInsertRowid, computed_readiness: readiness, streak });
   } catch (err) {

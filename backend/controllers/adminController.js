@@ -34,6 +34,13 @@ function getStats(req, res, next) {
     const effortDistribution = {};
     effortRows.forEach(r => { effortDistribution[r.effort_rating] = r.n; });
 
+    // Girls Who Code donation pledge total ($1 per 7-day streak milestone)
+    const donationPledge = db.prepare(`
+      SELECT COALESCE(SUM(streak_milestones), 0) AS total_milestones
+      FROM user_profiles
+    `).get();
+    const totalDonationPledged = donationPledge.total_milestones; // in dollars
+
     // Users with any wearable data this week
     const wearableActiveUsers = db.prepare(`
       SELECT COUNT(DISTINCT user_id) AS n FROM (
@@ -58,7 +65,8 @@ function getStats(req, res, next) {
       cohort_avg_energy:     cohortEnergy?.avg_energy ?? null,
       cohort_avg_readiness:  cohortReadiness?.avg_readiness ?? null,
       effort_distribution:   effortDistribution,
-      wearable_active_users: wearableActiveUsers,
+      wearable_active_users:    wearableActiveUsers,
+      total_donation_pledged:   totalDonationPledged, // $ owed to Girls Who Code
     });
   } catch (err) { next(err); }
 }

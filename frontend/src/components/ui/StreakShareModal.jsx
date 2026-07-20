@@ -2,7 +2,7 @@ import React from 'react';
 import { Capacitor } from '@capacitor/core';
 
 async function triggerShare(streak) {
-  const text = `I've moved ${streak} days in a row with Second Rise 🔥 Every 7-day streak = $1 donated to Girls Who Code. Join me → secondriseapp.com`;
+  const text = `I've moved ${streak} days in a row with Second Rise 🔥 Every 7-day streak = $1 pledged to Girls Who Code. Join me → secondriseapp.com`;
 
   if (Capacitor.isNativePlatform()) {
     try {
@@ -53,7 +53,7 @@ export default function StreakShareModal({ streak, onClose }) {
         {/* Give back line */}
         <div className="w-full bg-blue-50 rounded-2xl px-4 py-3 mb-6">
           <p className="text-xs font-semibold text-blue-600 leading-snug">
-            Second Rise donates $1 to Girls Who Code for every 7-day streak.
+            Second Rise pledges $1 to Girls Who Code for every 7-day streak.
           </p>
         </div>
 
