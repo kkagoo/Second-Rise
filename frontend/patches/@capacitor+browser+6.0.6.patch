@@ -1,0 +1,364 @@
+diff --git a/node_modules/@capacitor/browser/android/build.gradle b/node_modules/@capacitor/browser/android/build.gradle
+index b68e83a..27f5f1c 100644
+--- a/node_modules/@capacitor/browser/android/build.gradle
++++ b/node_modules/@capacitor/browser/android/build.gradle
+@@ -43,7 +43,7 @@ android {
+     buildTypes {
+         release {
+             minifyEnabled false
+-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
++            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+         }
+     }
+     lintOptions {
+diff --git a/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/results.bin b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_dex/classes.dex b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..3210a20
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_global-synthetics/global.globals b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_global-synthetics/global.globals
+new file mode 100644
+index 0000000..018011a
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/.transforms/213727bb95f0d75cab96fdd74a6999f9/transformed/classes/classes_global-synthetics/global.globals differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..c862dc4
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.capacitorjs.plugins.browser" >
++
++    <uses-sdk android:minSdkVersion="23" />
++
++    <queries>
++        <intent>
++            <action android:name="android.support.customtabs.action.CustomTabsService" />
++        </intent>
++    </queries>
++
++    <application>
++        <activity
++            android:name="com.capacitorjs.plugins.browser.BrowserControllerActivity"
++            android:exported="false"
++            android:launchMode="singleTask"
++            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
++    </application>
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..93270a7
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "com.capacitorjs.plugins.browser",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar b/node_modules/@capacitor/browser/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar
+new file mode 100644
+index 0000000..84c5580
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/@capacitor/browser/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..ba000c0
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=36
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/android_res_source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt b/node_modules/@capacitor/browser/android/build/intermediates/android_res_source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt
+new file mode 100644
+index 0000000..8aac1c7
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/android_res_source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt
+@@ -0,0 +1,9 @@
++com.capacitorjs.plugins.browser.capacitor-browser-pngs-0 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/generated/res/pngs/debug
++com.capacitorjs.plugins.browser.capacitor-browser-resValues-1 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/generated/res/resValues/debug
++com.capacitorjs.plugins.browser.capacitor-browser-updated_navigation_xml-2 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/generated/updated_navigation_xml/debug
++com.capacitorjs.plugins.browser.capacitor-browser-mergeDebugResources-3 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
++com.capacitorjs.plugins.browser.capacitor-browser-mergeDebugResources-4 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
++com.capacitorjs.plugins.browser.capacitor-browser-debug-5 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/intermediates/merged_res/debug/mergeDebugResources
++com.capacitorjs.plugins.browser.capacitor-browser-debug-6 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/intermediates/packaged_res/debug/packageDebugResources
++com.capacitorjs.plugins.browser.capacitor-browser-debug-7 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/debug/res
++com.capacitorjs.plugins.browser.capacitor-browser-main-8 /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/res
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/@capacitor/browser/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt b/node_modules/@capacitor/browser/android/build/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/@capacitor/browser/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..a4287eb
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/@capacitor/browser/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..d48b507
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/@capacitor/browser/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state
+new file mode 100644
+index 0000000..1c983fc
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..22aadb3
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Mon Jul 13 14:13:21 PDT 2026
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..39ff232
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugAssets/merger.xml b/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+new file mode 100644
+index 0000000..1e82c5f
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/debug/assets"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..18760cd
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$1.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$1.class
+new file mode 100644
+index 0000000..3e6fabc
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$1.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$2.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$2.class
+new file mode 100644
+index 0000000..f5f0f43
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$2.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$BrowserEventListener.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$BrowserEventListener.class
+new file mode 100644
+index 0000000..6b21bf9
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser$BrowserEventListener.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser.class
+new file mode 100644
+index 0000000..2043c07
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/Browser.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerActivity.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerActivity.class
+new file mode 100644
+index 0000000..d97ec44
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerActivity.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerListener.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerListener.class
+new file mode 100644
+index 0000000..254ce21
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserControllerListener.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserPlugin.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserPlugin.class
+new file mode 100644
+index 0000000..1343b1a
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/BrowserPlugin.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup$EventGroupCompletion.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup$EventGroupCompletion.class
+new file mode 100644
+index 0000000..5032e60
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup$EventGroupCompletion.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup.class b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup.class
+new file mode 100644
+index 0000000..c3d6933
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/capacitorjs/plugins/browser/EventGroup.class differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/@capacitor/browser/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/@capacitor/browser/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..67363ac
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,33 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="com.capacitorjs.plugins.browser" >
++4
++5    <uses-sdk android:minSdkVersion="23" />
++5-->INJECTED
++5-->INJECTED
++6
++7    <queries>
++7-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:9:5-13:15
++8        <intent>
++8-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:10:7-12:16
++9            <action android:name="android.support.customtabs.action.CustomTabsService" />
++9-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:11:9-86
++9-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:11:17-83
++10        </intent>
++11    </queries>
++12
++13    <application>
++13-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:3:5-8:19
++14        <activity
++14-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:4:7-7:44
++15            android:name="com.capacitorjs.plugins.browser.BrowserControllerActivity"
++15-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:4:17-58
++16            android:exported="false"
++16-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:5:9-33
++17            android:launchMode="singleTask"
++17-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:7:11-42
++18            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
++18-->/Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:6:11-70
++19    </application>
++20
++21</manifest>
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-capacitor-browser.jar b/node_modules/@capacitor/browser/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-capacitor-browser.jar
+new file mode 100644
+index 0000000..15cb0ec
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-capacitor-browser.jar differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/@capacitor/browser/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..c862dc4
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.capacitorjs.plugins.browser" >
++
++    <uses-sdk android:minSdkVersion="23" />
++
++    <queries>
++        <intent>
++            <action android:name="android.support.customtabs.action.CustomTabsService" />
++        </intent>
++    </queries>
++
++    <application>
++        <activity
++            android:name="com.capacitorjs.plugins.browser.BrowserControllerActivity"
++            android:exported="false"
++            android:launchMode="singleTask"
++            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
++    </application>
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/@capacitor/browser/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/@capacitor/browser/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/@capacitor/browser/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..63d2683
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/@capacitor/browser/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/@capacitor/browser/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..8191a5e
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++com.capacitorjs.plugins.browser
+diff --git a/node_modules/@capacitor/browser/android/build/outputs/aar/capacitor-browser-debug.aar b/node_modules/@capacitor/browser/android/build/outputs/aar/capacitor-browser-debug.aar
+new file mode 100644
+index 0000000..1804fb1
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/outputs/aar/capacitor-browser-debug.aar differ
+diff --git a/node_modules/@capacitor/browser/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/@capacitor/browser/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..290c0e8
+--- /dev/null
++++ b/node_modules/@capacitor/browser/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,36 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:2:3-14:14
++INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:2:3-14:14
++	package
++		INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:2:13-71
++application
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:3:5-8:19
++activity#com.capacitorjs.plugins.browser.BrowserControllerActivity
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:4:7-7:44
++	android:launchMode
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:7:11-42
++	android:exported
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:5:9-33
++	android:theme
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:6:11-70
++	android:name
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:4:17-58
++queries
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:9:5-13:15
++intent#action:name:android.support.customtabs.action.CustomTabsService
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:10:7-12:16
++action#android.support.customtabs.action.CustomTabsService
++ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:11:9-86
++	android:name
++		ADDED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml:11:17-83
++uses-sdk
++INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml
++INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /Users/karenkagoo/Desktop/ClaudeCodeTest/second-rise/frontend/node_modules/@capacitor/browser/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/@capacitor/browser/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/@capacitor/browser/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..2f057db
+Binary files /dev/null and b/node_modules/@capacitor/browser/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ

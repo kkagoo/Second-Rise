@@ -2,7 +2,5 @@ import UIKit
 import Capacitor
 
 class ViewController: CAPBridgeViewController {
-    override open func capacitorDidLoad() {
-        bridge?.registerPluginInstance(HealthKitPlugin())
-    }
+    // Plugin registered via packageClassList in capacitor.config.json
 }

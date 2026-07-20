@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import client from './api/client';
-import { setupDailyNotifications } from './services/notificationService';
+import { setupDailyNotifications, setupNotificationTapHandler } from './services/notificationService';
 
 // Fire-and-forget warmup: pings the backend immediately on app open so Railway
 // is warm by the time the user attempts to log in. Silently ignored if it fails.
@@ -83,11 +83,20 @@ function BareAuthGuard({ children }) {
   return <>{children}</>;
 }
 
+function NotificationRouter() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    setupNotificationTapHandler(navigate);
+  }, [navigate]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <CheckinProvider>
+          <NotificationRouter />
           <OAuthRedirectGuard />
           <Routes>
             {/* Public */}

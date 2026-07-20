@@ -29,30 +29,32 @@ public class HealthKitPlugin: CAPPlugin {
 
     // MARK: - checkAvailability
 
-    @objc func checkAvailability(_ call: CAPPluginCall) {
+    @objc public func checkAvailability(_ call: CAPPluginCall) {
         let available = HKHealthStore.isHealthDataAvailable()
         call.resolve(["available": available])
     }
 
-    // MARK: - requestPermissions
+    // MARK: - requestHKPermissions
 
-    @objc func requestPermissions(_ call: CAPPluginCall) {
+    @objc public func requestHKPermissions(_ call: CAPPluginCall) {
         guard HKHealthStore.isHealthDataAvailable() else {
             call.reject("HealthKit is not available on this device")
             return
         }
-        healthStore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
-            if let error = error {
-                call.reject("HealthKit authorization failed: \(error.localizedDescription)")
-            } else {
-                call.resolve(["granted": success])
+        healthStore.requestAuthorization(toShare: Set<HKSampleType>(), read: readTypes) { success, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    call.reject("HealthKit authorization failed: \(error.localizedDescription)")
+                } else {
+                    call.resolve(["granted": success])
+                }
             }
         }
     }
 
     // MARK: - syncToday
 
-    @objc func syncToday(_ call: CAPPluginCall) {
+    @objc public func syncToday(_ call: CAPPluginCall) {
         guard HKHealthStore.isHealthDataAvailable() else {
             call.reject("HealthKit not available")
             return
@@ -189,16 +191,16 @@ public class HealthKitPlugin: CAPPlugin {
         // ── Collect results ────────────────────────────────────────────────
         group.notify(queue: .main) {
             var result = JSObject()
-            result["resting_hr"]      = restingHR    as Any
-            result["hrv_rmssd"]       = hrvSDNN      as Any  // SDNN used as HRV proxy
-            result["spo2"]            = spo2         as Any
-            result["steps"]           = steps        as Any
-            result["total_sleep_min"] = totalSleepMin as Any
-            result["deep_sleep_min"]  = deepSleepMin  as Any
-            result["rem_sleep_min"]   = remSleepMin   as Any
-            result["light_sleep_min"] = lightSleepMin as Any
-            result["sleep_score"]     = sleepScore    as Any
-            result["hrv_type"]        = "sdnn"        // so backend knows this is SDNN not RMSSD
+            if let v = restingHR    { result["resting_hr"]      = v }
+            if let v = hrvSDNN      { result["hrv_rmssd"]       = v }
+            if let v = spo2         { result["spo2"]            = v }
+            if let v = steps        { result["steps"]           = v }
+            if let v = totalSleepMin { result["total_sleep_min"] = v }
+            if let v = deepSleepMin  { result["deep_sleep_min"]  = v }
+            if let v = remSleepMin   { result["rem_sleep_min"]   = v }
+            if let v = lightSleepMin { result["light_sleep_min"] = v }
+            if let v = sleepScore    { result["sleep_score"]     = v }
+            result["hrv_type"] = "sdnn"
             call.resolve(result)
         }
     }

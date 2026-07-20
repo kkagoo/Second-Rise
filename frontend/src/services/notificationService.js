@@ -1,6 +1,18 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 
+/**
+ * Call once at app startup (after router is ready).
+ * When the user taps a notification, navigate to the route in its extra.route payload.
+ */
+export function setupNotificationTapHandler(navigate) {
+  if (!Capacitor.isNativePlatform()) return;
+  LocalNotifications.addListener('localNotificationActionPerformed', (action) => {
+    const route = action?.notification?.extra?.route;
+    if (route) navigate(route);
+  });
+}
+
 const DAILY_ID   = 1;
 const WEEKLY_ID  = 2;
 
@@ -51,11 +63,11 @@ export async function setupDailyNotifications() {
             repeats: true,
             allowWhileIdle: true,
           },
-          smallIcon: 'ic_stat_icon_config_sample',
+          smallIcon: 'ic_stat_second_rise',
           iconColor: '#4BA3E3',
         },
         {
-          // Weekly Sunday 8:00 AM — progress summary
+          // Weekly Sunday 8:00 AM — progress summary → deep links to /history
           id: WEEKLY_ID,
           title: 'Your week in review 📊',
           body: 'See how you moved, recovered, and showed up for yourself this week.',
@@ -64,8 +76,9 @@ export async function setupDailyNotifications() {
             repeats: true,
             allowWhileIdle: true,
           },
-          smallIcon: 'ic_stat_icon_config_sample',
+          smallIcon: 'ic_stat_second_rise',
           iconColor: '#4BA3E3',
+          extra: { route: '/history' },
         },
       ],
     });
