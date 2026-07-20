@@ -1,6 +1,6 @@
 const { ENERGY_SCORES } = require('../utils/constants');
 
-function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = [], biometricTrend = null) {
+function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableVideos, biometrics = null, history = [], baseline = null, weeklySchedule = [], checkinTrend = [], biometricTrend = null, recentManualActivities = []) {
   const energyInfo  = ENERGY_SCORES[checkin.layer1_energy] || { label: 'Unknown', emoji: '' };
   const bodyFlags   = Array.isArray(checkin.body_map_flags)
     ? checkin.body_map_flags
@@ -113,6 +113,28 @@ PERSONAL BASELINE (last ${baseline.days_of_data} days avg):
         }
       }
     }
+  }
+
+  // Manual activities section — hikes, walks, gym sessions logged via the + button
+  let manualActivitiesSection = '';
+  if (recentManualActivities.length > 0) {
+    const lines = recentManualActivities.map((a) => {
+      const parts = [
+        a.activity_date,
+        a.activity,
+        a.duration_min ? `${a.duration_min} min` : null,
+        a.intensity ? `${a.intensity} intensity` : null,
+        a.notes ? `(${a.notes})` : null,
+      ].filter(Boolean);
+      return `  ${parts.join(' | ')}`;
+    }).join('\n');
+
+    manualActivitiesSection = `
+MANUAL ACTIVITIES LOGGED THIS WEEK (outside of Second Rise sessions):
+${lines}
+
+⚠️ Factor these into your recommendation. If the user did a long hike or hard gym session recently, reduce today's intensity or prioritise recovery. These are REAL physical efforts that affect fatigue even if no wearable data is present.
+`;
   }
 
   // Weekly workout schedule section for balance tracking
@@ -311,7 +333,7 @@ ${workoutPrefText}
 COMPUTED READINESS: ${readiness} / 85
 ${biometricsSection}${biometricTrendSection}${checkinTrendSection}${trendsSection}${weeklyScheduleSection}
 PRIOR SESSION: ${priorText}
-
+${manualActivitiesSection}
 AVAILABLE VIDEOS FOR TODAY (already filtered for time and condition):
 ${videoListText || '  No videos available. Do not pick a video. Return primary.video_id as null and explain why in reasoning.'}
 

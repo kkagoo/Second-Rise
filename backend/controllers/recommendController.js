@@ -59,6 +59,17 @@ function getWeeklySchedule(userId) {
   return rows;
 }
 
+function getRecentManualActivities(userId) {
+  return db.prepare(`
+    SELECT activity_date, category, activity, duration_min, intensity, notes
+    FROM activity_log
+    WHERE user_id = ?
+      AND source = 'manual'
+      AND activity_date >= date('now', '-7 days')
+    ORDER BY activity_date DESC
+  `).all(userId);
+}
+
 async function getRecommendation(req, res, next) {
   try {
     const checkin = db.prepare(`
@@ -244,6 +255,12 @@ async function getRecommendation(req, res, next) {
       weeklySchedule = getWeeklySchedule(req.userId);
     } catch { /* no history */ }
 
+    // Pull recent manual activities (hikes, walks, gym sessions logged via the + button)
+    let recentManualActivities = [];
+    try {
+      recentManualActivities = getRecentManualActivities(req.userId);
+    } catch { /* no manual activities */ }
+
     // 7-day checkin trend (available for all users, not just Oura)
     const checkinTrend = getCheckinTrend(req.userId);
 
@@ -260,7 +277,7 @@ async function getRecommendation(req, res, next) {
 
     const { primary, alternatives } = await generateRecommendation(
       profile, parsedCheckin, checkin.computed_readiness, priorFeedback, availableVideos,
-      biometrics, history, baseline, weeklySchedule, checkinTrend, biometricTrend
+      biometrics, history, baseline, weeklySchedule, checkinTrend, biometricTrend, recentManualActivities
     );
 
     const bodyFocus = deriveBodyFocus(primary);
