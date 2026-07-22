@@ -42,7 +42,11 @@ function updateProfile(req, res, next) {
         dinner_cooks_interest   = COALESCE(?, dinner_cooks_interest),
         onboarding_complete     = COALESCE(?, onboarding_complete),
         oura_access_token       = COALESCE(?, oura_access_token),
-        cycle_tracking_consent  = COALESCE(?, cycle_tracking_consent),
+        cycle_tracking_consent  = CASE
+                                  WHEN ? IS NOT NULL THEN ?
+                                  WHEN ? IN ('perimenopause', 'not_sure') THEN 1
+                                  ELSE cycle_tracking_consent
+                                END,
         goal                    = CASE WHEN ? IS NOT NULL THEN ? ELSE goal END,
         goal_details            = COALESCE(?, goal_details),
         goal_set_at             = CASE WHEN ? IS NOT NULL THEN datetime('now') ELSE goal_set_at END,
@@ -62,7 +66,10 @@ function updateProfile(req, res, next) {
       dinner_cooks_interest !== undefined ? (dinner_cooks_interest ? 1 : 0) : null,
       onboarding_complete !== undefined ? (onboarding_complete ? 1 : 0) : null,
       oura_access_token ?? null,
+      // cycle_tracking_consent: explicit value, explicit value again, menopause_stage fallback check
       cycle_tracking_consent !== undefined ? (cycle_tracking_consent ? 1 : 0) : null,
+      cycle_tracking_consent !== undefined ? (cycle_tracking_consent ? 1 : 0) : null,
+      menopause_stage ?? null,
       // goal: pass twice for CASE WHEN ? IS NOT NULL THEN ? ELSE goal END
       goal !== undefined ? (goal ?? null) : null,
       goal !== undefined ? (goal ?? null) : null,
