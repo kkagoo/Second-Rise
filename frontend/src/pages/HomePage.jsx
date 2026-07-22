@@ -252,7 +252,7 @@ export default function HomePage() {
                 <StatPill icon={<span className="text-[10px]">👟</span>} label="Steps" value={biometrics.steps.toLocaleString()} source={null} />
               )}
               {biometrics.strain_score != null && (
-                <StatPill icon={<FlameIcon />} label="Strain" value={biometrics.strain_score?.toFixed(1)} source={null} />
+                <StatPill icon={<FlameIcon />} label="Prev. strain" value={biometrics.strain_score?.toFixed(1)} source={null} />
               )}
               {biometrics.body_battery != null && (
                 <StatPill icon={<BoltIcon />} label="Battery" value={biometrics.body_battery} source={null} />
