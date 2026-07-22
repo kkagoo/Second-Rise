@@ -207,6 +207,10 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN cycle_tracking_consent INTEG
 // Auto-enable cycle tracking for perimenopause / not_sure users (they still have periods)
 try { db.exec("UPDATE user_profiles SET cycle_tracking_consent = 1 WHERE menopause_stage IN ('perimenopause', 'not_sure') AND cycle_tracking_consent = 0"); } catch (_) {}
 
+// Clear stale wearable review cache rows that used old strain-based copy.
+// They'll be regenerated automatically with the new recovery-based copy on next page load.
+try { db.exec("DELETE FROM daily_wearable_reviews WHERE summary LIKE '%strain ended at%'"); } catch (_) {}
+
 // Streak tracking on user_profiles
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN current_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN longest_streak INTEGER NOT NULL DEFAULT 0"); }  catch (_) {}
