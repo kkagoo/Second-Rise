@@ -34,7 +34,7 @@ function getHistory(req, res, next) {
 function getStats(req, res, next) {
   try {
     const completed = db.prepare(
-      'SELECT COUNT(*) as count FROM post_session_feedback WHERE user_id = ?'
+      'SELECT COUNT(*) as count FROM recommendations WHERE user_id = ? AND selected_session_type IS NOT NULL'
     ).get(req.userId);
 
     const avgReadiness = db.prepare(
@@ -66,11 +66,14 @@ function getWeekStats(req, res, next) {
     const sundayISO = sunday.toISOString().slice(0, 10);
 
     const rows = db.prepare(`
-      SELECT date(psf.timestamp) AS workout_date
-      FROM post_session_feedback psf
-      WHERE psf.user_id = ?
-        AND date(psf.timestamp) BETWEEN ? AND ?
-      GROUP BY date(psf.timestamp)
+      SELECT date(COALESCE(psf.timestamp, r.timestamp)) AS workout_date
+      FROM recommendations r
+      JOIN daily_checkins dc ON dc.checkin_id = r.checkin_id AND dc.user_id = r.user_id
+      LEFT JOIN post_session_feedback psf ON psf.rec_id = r.rec_id AND psf.user_id = r.user_id
+      WHERE r.user_id = ?
+        AND r.selected_session_type IS NOT NULL
+        AND date(COALESCE(psf.timestamp, r.timestamp)) BETWEEN ? AND ?
+      GROUP BY date(COALESCE(psf.timestamp, r.timestamp))
       ORDER BY workout_date ASC
     `).all(req.userId, mondayISO, sundayISO);
 
@@ -91,24 +94,32 @@ function getUnifiedHistory(req, res, next) {
     const limit  = 30;
     const offset = parseInt(req.query.offset || '0', 10);
 
+    // Guided sessions: driven by recommendations WHERE selected_session_type IS NOT NULL
+    // (user tapped "Start Session"). Feedback is LEFT-JOINed so sessions appear in
+    // history even when the user skips the rating step.
     const rows = db.prepare(`
       SELECT
-        'guided'                       AS source,
-        date(psf.timestamp)            AS activity_date,
-        r.primary_session_type         AS title,
-        r.primary_session_type         AS category,
-        NULL                           AS duration_min,
-        NULL                           AS intensity,
-        dc.layer1_energy               AS energy,
-        dc.computed_readiness          AS readiness,
-        psf.effort_rating              AS effort,
-        psf.notes                      AS notes,
-        psf.timestamp                  AS sort_ts,
-        CAST(psf.feedback_id AS TEXT)  AS item_id
-      FROM post_session_feedback psf
-      JOIN recommendations r  ON r.rec_id     = psf.rec_id  AND r.user_id  = psf.user_id
-      JOIN daily_checkins  dc ON dc.checkin_id = r.checkin_id AND dc.user_id = psf.user_id
-      WHERE psf.user_id = ?
+        'guided'                                           AS source,
+        date(COALESCE(psf.timestamp, r.timestamp))        AS activity_date,
+        COALESCE(r.selected_session_type, r.primary_session_type) AS title,
+        COALESCE(r.selected_session_type, r.primary_session_type) AS category,
+        NULL                                               AS duration_min,
+        NULL                                               AS intensity,
+        dc.layer1_energy                                   AS energy,
+        dc.computed_readiness                              AS readiness,
+        psf.effort_rating                                  AS effort,
+        psf.notes                                          AS notes,
+        COALESCE(psf.timestamp, r.timestamp)               AS sort_ts,
+        CAST(r.rec_id AS TEXT)                             AS item_id
+      FROM recommendations r
+      JOIN daily_checkins dc ON dc.checkin_id = r.checkin_id AND dc.user_id = r.user_id
+      LEFT JOIN (
+        SELECT rec_id, user_id, effort_rating, notes, timestamp, feedback_id
+        FROM post_session_feedback
+        GROUP BY rec_id, user_id
+      ) psf ON psf.rec_id = r.rec_id AND psf.user_id = r.user_id
+      WHERE r.user_id = ?
+        AND r.selected_session_type IS NOT NULL
 
       UNION ALL
 
@@ -132,7 +143,9 @@ function getUnifiedHistory(req, res, next) {
       LIMIT ? OFFSET ?
     `).all(req.userId, req.userId, limit, offset);
 
-    const totalGuided = db.prepare('SELECT COUNT(*) as n FROM post_session_feedback WHERE user_id = ?').get(req.userId).n;
+    const totalGuided = db.prepare(
+      'SELECT COUNT(*) as n FROM recommendations WHERE user_id = ? AND selected_session_type IS NOT NULL'
+    ).get(req.userId).n;
     const totalActivities = db.prepare('SELECT COUNT(*) as n FROM activity_log WHERE user_id = ?').get(req.userId).n;
 
     res.json({ items: rows, total: totalGuided + totalActivities, offset });

@@ -126,30 +126,37 @@ function evaluateStatus(planned, actual, feedback) {
   return 'followed';
 }
 
-function buildCopy({ status, planned, strain, steps, feedback, hasWearable }) {
-  const metric = strain != null
-    ? `WHOOP strain ended at ${strain}.`
+function buildCopy({ status, planned, recovery, steps, feedback, hasWearable }) {
+  // recovery = this morning's readiness score (0–100) — how the user feels going into the day
+  // steps = fallback activity signal when no recovery score is available
+  // We intentionally do NOT cite strain here: WHOOP strain_score is from the last
+  // *completed* cycle (yesterday's activity), not today's workout, so it would mislead.
+
+  const recoveryContext = recovery != null
+    ? (recovery >= 67 ? 'Your recovery was high going into today.' :
+       recovery >= 34 ? 'Your recovery was moderate going into today.' :
+                        'Your recovery was low going into today.')
     : steps != null
-      ? `Steps ended at ${steps}.`
+      ? `Steps for the day: ${steps.toLocaleString()}.`
       : null;
 
   if (status === 'over') {
     return {
-      summary: `You went above the ${planned} plan.${metric ? ` ${metric}` : ''}`,
+      summary: `You went above the ${planned} plan.${recoveryContext ? ` ${recoveryContext}` : ''}`,
       recommendation: 'Treat tomorrow as recovery-focused unless your morning readiness is clearly high.',
     };
   }
 
   if (status === 'under') {
     return {
-      summary: `You stayed below the ${planned} plan.${metric ? ` ${metric}` : ''}`,
+      summary: `You stayed below the ${planned} plan.${recoveryContext ? ` ${recoveryContext}` : ''}`,
       recommendation: 'Keep tomorrow flexible and avoid making up missed work in one session.',
     };
   }
 
   if (status === 'followed') {
     return {
-      summary: `You stayed close to the ${planned} plan.${metric ? ` ${metric}` : ''}`,
+      summary: `You stayed close to the ${planned} plan.${recoveryContext ? ` ${recoveryContext}` : ''}`,
       recommendation: 'Use this as a positive signal for tomorrow, while still checking sleep and soreness.',
     };
   }
@@ -231,7 +238,7 @@ function evaluateDay(userId, rawDate) {
   const copy = buildCopy({
     status,
     planned: plannedIntensity,
-    strain: strainScore,
+    recovery: recoveryScore,
     steps: stepCount,
     feedback,
     hasWearable,

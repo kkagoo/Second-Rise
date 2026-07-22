@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import client from '../api/client';
+import { storage } from '../lib/storage';
 
 const AuthContext = createContext(null);
 
+const TOKEN_KEY        = 'sr_token';
 const PROFILE_CACHE_KEY = 'sr_profile_cache';
 
 function loadCachedProfile() {
@@ -10,12 +12,33 @@ function loadCachedProfile() {
 }
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('sr_token'));
-  // Seed from cache so UI renders immediately on repeat launches
+  // Seed synchronously from localStorage for instant render (avoids flash).
+  // On native, the real source of truth is @capacitor/preferences — we reconcile
+  // that asynchronously in the mount effect below.
+  const [token, setToken]     = useState(() => localStorage.getItem(TOKEN_KEY));
   const [profile, setProfile] = useState(() => loadCachedProfile());
-  // Only show loading spinner if we have a token but NO cached profile (true first launch)
-  const [loading, setLoading] = useState(!!localStorage.getItem('sr_token') && !loadCachedProfile());
+  const [loading, setLoading] = useState(true);
 
+  // On mount: read from native Preferences (survives iOS WebKit cache wipes).
+  // If Preferences has a token that localStorage lost, we recover silently.
+  useEffect(() => {
+    storage.get(TOKEN_KEY).then((nativeToken) => {
+      const resolved = nativeToken ?? localStorage.getItem(TOKEN_KEY);
+      if (resolved) {
+        // Keep localStorage in sync with native storage
+        try { localStorage.setItem(TOKEN_KEY, resolved); } catch {}
+        setToken(resolved);
+      } else {
+        setToken(null);
+        setLoading(false);
+      }
+    }).catch(() => {
+      // If storage read fails, fall through with whatever we got from localStorage
+      if (!localStorage.getItem(TOKEN_KEY)) setLoading(false);
+    });
+  }, []);
+
+  // Fetch profile whenever token changes
   useEffect(() => {
     if (token) {
       client.get('/profile')
@@ -26,18 +49,19 @@ export function AuthProvider({ children }) {
         .catch(() => logout())
         .finally(() => setLoading(false));
     } else {
+      setProfile(null);
       setLoading(false);
     }
   }, [token]);
 
-  function login(newToken) {
-    localStorage.setItem('sr_token', newToken);
+  async function login(newToken) {
+    await storage.set(TOKEN_KEY, newToken);
     setToken(newToken);
   }
 
-  function logout() {
-    localStorage.removeItem('sr_token');
-    localStorage.removeItem(PROFILE_CACHE_KEY);
+  async function logout() {
+    await storage.remove(TOKEN_KEY);
+    try { localStorage.removeItem(PROFILE_CACHE_KEY); } catch {}
     setToken(null);
     setProfile(null);
   }

@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
 
-function VideoThumb({ youtubeId, title }) {
+function VideoThumb({ youtubeId, title, onClick }) {
   return (
-    <div className="w-full aspect-video rounded-2xl overflow-hidden bg-gray-100 relative">
+    <div
+      className={`w-full aspect-video rounded-2xl overflow-hidden bg-gray-100 relative${onClick ? ' cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       <img
         src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
         alt={title}
@@ -12,7 +15,7 @@ function VideoThumb({ youtubeId, title }) {
       />
       {/* Play overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg active:scale-95 transition-transform">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#4BA3E3">
             <path d="M8 5v14l11-7z" />
           </svg>
@@ -97,7 +100,7 @@ export default function RecommendationPage() {
           <>
             {/* Primary card */}
             <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-              <VideoThumb youtubeId={video.youtube_id} title={video.title} />
+              <VideoThumb youtubeId={video.youtube_id} title={video.title} onClick={() => handleStart(video)} />
 
               <div className="p-4 flex flex-col gap-3">
                 {/* Tags */}
