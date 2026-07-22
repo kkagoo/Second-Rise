@@ -8,10 +8,44 @@ function energySuggestionFromReadiness(score) {
   return 85;
 }
 
-function getToday(req, res, next) {
+async function getToday(req, res, next) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+
+    // Auto-refresh all pull-based wearables if data is >15 min stale.
+    // Runs in parallel; individual failures never block the response.
+    // (Garmin = webhook-push only; Apple Health / Health Connect = native device sync — skip those.)
+    {
+      const STALE_MS = 15 * 60 * 1000;
+      const profile  = db.prepare(
+        `SELECT whoop_access_token, oura_access_token, fitbit_access_token,
+                withings_access_token, google_fit_access_token
+         FROM user_profiles WHERE user_id = ?`
+      ).get(req.userId);
+
+      const isStale = (table) => {
+        const row = db.prepare(
+          `SELECT synced_at FROM ${table} WHERE user_id = ? AND date = ?`
+        ).get(req.userId, today);
+        const t = row?.synced_at ? new Date(row.synced_at + 'Z') : null;
+        return !t || Date.now() - t.getTime() > STALE_MS;
+      };
+
+      const syncs = [];
+      if (profile?.whoop_access_token       && isStale('whoop_daily_data'))
+        syncs.push(require('../services/whoopService').syncToday(req.userId));
+      if (profile?.oura_access_token        && isStale('oura_daily_data'))
+        syncs.push(require('../services/ouraService').syncToday(req.userId));
+      if (profile?.fitbit_access_token      && isStale('fitbit_daily_data'))
+        syncs.push(require('../services/fitbitService').syncToday(req.userId));
+      if (profile?.withings_access_token    && isStale('withings_daily_data'))
+        syncs.push(require('../services/withingsService').syncToday(req.userId));
+      if (profile?.google_fit_access_token  && isStale('google_fit_daily_data'))
+        syncs.push(require('../services/googleFitService').syncToday(req.userId));
+
+      if (syncs.length) await Promise.allSettled(syncs);
+    }
 
     // Fetch all sources unconditionally
     const oura = db.prepare(
