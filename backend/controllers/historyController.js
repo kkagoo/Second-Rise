@@ -99,18 +99,26 @@ function getUnifiedHistory(req, res, next) {
     // history even when the user skips the rating step.
     const rows = db.prepare(`
       SELECT
-        'guided'                                           AS source,
-        date(COALESCE(psf.timestamp, r.timestamp))        AS activity_date,
-        COALESCE(r.selected_session_type, r.primary_session_type) AS title,
-        COALESCE(r.selected_session_type, r.primary_session_type) AS category,
-        NULL                                               AS duration_min,
-        NULL                                               AS intensity,
-        dc.layer1_energy                                   AS energy,
-        dc.computed_readiness                              AS readiness,
-        psf.effort_rating                                  AS effort,
-        psf.notes                                          AS notes,
-        COALESCE(psf.timestamp, r.timestamp)               AS sort_ts,
-        CAST(r.rec_id AS TEXT)                             AS item_id
+        'guided'                                                        AS source,
+        date(COALESCE(psf.timestamp, r.timestamp))                      AS activity_date,
+        COALESCE(r.selected_video_title,
+          json_extract(r.primary_workout, '$.title'),
+          r.selected_session_type,
+          r.primary_session_type)                                        AS title,
+        COALESCE(r.selected_session_type, r.primary_session_type)       AS category,
+        COALESCE(r.selected_video_duration_min,
+          json_extract(r.primary_workout, '$.duration_min'))             AS duration_min,
+        NULL                                                             AS intensity,
+        dc.layer1_energy                                                 AS energy,
+        dc.computed_readiness                                            AS readiness,
+        psf.effort_rating                                                AS effort,
+        psf.notes                                                        AS notes,
+        COALESCE(psf.timestamp, r.timestamp)                             AS sort_ts,
+        CAST(r.rec_id AS TEXT)                                           AS item_id,
+        COALESCE(r.selected_video_youtube_id,
+          json_extract(r.primary_workout, '$.youtube_id'))               AS youtube_id,
+        COALESCE(r.selected_video_creator,
+          json_extract(r.primary_workout, '$.creator'))                  AS creator
       FROM recommendations r
       JOIN daily_checkins dc ON dc.checkin_id = r.checkin_id AND dc.user_id = r.user_id
       LEFT JOIN (
@@ -135,7 +143,9 @@ function getUnifiedHistory(req, res, next) {
         NULL                            AS effort,
         notes,
         logged_at                       AS sort_ts,
-        CAST(id AS TEXT)                AS item_id
+        CAST(id AS TEXT)                AS item_id,
+        NULL                            AS youtube_id,
+        NULL                            AS creator
       FROM activity_log
       WHERE user_id = ?
 

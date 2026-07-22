@@ -35,57 +35,94 @@ async function downloadCSV(path, filename) {
   }
 }
 
+const SESSION_TYPE_LABEL = {
+  yoga:              'Yoga',
+  strength:          'Strength',
+  low_impact_cardio: 'Cardio',
+  mobility:          'Mobility',
+  pilates:           'Pilates',
+  gentle:            'Gentle',
+};
+
 function ActivityItem({ item, onDelete }) {
   const src = SOURCE_CONFIG[item.source] || SOURCE_CONFIG.manual;
+  // Resolve display title: prefer stored video title, fall back to session type label
+  const displayTitle = item.title
+    ? (SESSION_TYPE_LABEL[item.title] || item.title)
+    : (SESSION_TYPE_LABEL[item.category] || item.category || 'Session');
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-3.5 shadow-sm">
-      <div className="flex items-start gap-2">
-        <div className="flex-1 min-w-0">
-          {/* Title row */}
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-2 py-0.5 flex-shrink-0 ${src.color}`}>
-              {src.label}
+    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+      {/* YouTube thumbnail for guided/video sessions */}
+      {item.youtube_id && (
+        <div className="relative w-full aspect-video bg-gray-100">
+          <img
+            src={`https://img.youtube.com/vi/${item.youtube_id}/hqdefault.jpg`}
+            alt={displayTitle}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/20" />
+          {item.duration_min && (
+            <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-bold rounded px-1.5 py-0.5">
+              {item.duration_min} min
             </span>
-            <span className="text-sm font-semibold text-gray-900 truncate">{item.title}</span>
-          </div>
-
-          {/* Meta row */}
-          <div className="flex items-center gap-2 text-xs text-gray-400 flex-wrap">
-            {item.energy && (
-              <span className="bg-gray-100 rounded-full px-2 py-0.5 text-gray-600 font-medium">
-                {ENERGY_LABEL[item.energy] || `Energy ${item.energy}`}
-              </span>
-            )}
-            {item.duration_min && <span>{item.duration_min} min</span>}
-            {item.intensity && (
-              <span className={`font-semibold ${INTENSITY_COLOR[item.intensity] || 'text-gray-500'}`}>
-                {item.intensity}
-              </span>
-            )}
-            {item.effort && (
-              <span className="text-gray-400">{item.effort.replace(/_/g, ' ')}</span>
-            )}
-          </div>
-
-          {item.notes && (
-            <p className="text-xs text-gray-400 italic mt-1 line-clamp-1">{item.notes}</p>
           )}
         </div>
+      )}
 
-        {/* Delete — only for manual/video entries */}
-        {item.source !== 'guided' && (
-          <button
-            onClick={() => onDelete(item)}
-            className="flex-shrink-0 text-gray-300 hover:text-red-400 tap-target transition-colors p-1"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-              <path d="M10 11v6M14 11v6M9 6V4h6v2" />
-            </svg>
-          </button>
-        )}
+      <div className="p-3.5">
+        <div className="flex items-start gap-2">
+          <div className="flex-1 min-w-0">
+            {/* Title row */}
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className={`text-[10px] font-bold uppercase tracking-wide rounded-full px-2 py-0.5 flex-shrink-0 ${src.color}`}>
+                {src.label}
+              </span>
+              <span className="text-sm font-semibold text-gray-900 leading-snug">{displayTitle}</span>
+            </div>
+
+            {/* Creator */}
+            {item.creator && (
+              <p className="text-xs text-gray-400 mb-1">{item.creator}</p>
+            )}
+
+            {/* Meta row */}
+            <div className="flex items-center gap-2 text-xs text-gray-400 flex-wrap">
+              {item.energy && (
+                <span className="bg-gray-100 rounded-full px-2 py-0.5 text-gray-600 font-medium">
+                  {ENERGY_LABEL[item.energy] || `Energy ${item.energy}`}
+                </span>
+              )}
+              {!item.youtube_id && item.duration_min && <span>{item.duration_min} min</span>}
+              {item.intensity && (
+                <span className={`font-semibold ${INTENSITY_COLOR[item.intensity] || 'text-gray-500'}`}>
+                  {item.intensity}
+                </span>
+              )}
+              {item.effort && (
+                <span className="text-gray-400">{item.effort.replace(/_/g, ' ')}</span>
+              )}
+            </div>
+
+            {item.notes && (
+              <p className="text-xs text-gray-400 italic mt-1 line-clamp-1">{item.notes}</p>
+            )}
+          </div>
+
+          {/* Delete — only for manual/video entries */}
+          {item.source !== 'guided' && (
+            <button
+              onClick={() => onDelete(item)}
+              className="flex-shrink-0 text-gray-300 hover:text-red-400 tap-target transition-colors p-1"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6M9 6V4h6v2" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

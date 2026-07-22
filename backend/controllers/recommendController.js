@@ -347,10 +347,24 @@ async function getRecommendation(req, res, next) {
 
 function selectSession(req, res, next) {
   try {
-    const { rec_id, session_type } = req.body;
-    db.prepare(
-      'UPDATE recommendations SET selected_session_type = ? WHERE rec_id = ? AND user_id = ?'
-    ).run(session_type, rec_id, req.userId);
+    const { rec_id, session_type, video_title, video_youtube_id, video_creator, video_duration_min } = req.body;
+    db.prepare(`
+      UPDATE recommendations
+      SET selected_session_type      = ?,
+          selected_video_title       = ?,
+          selected_video_youtube_id  = ?,
+          selected_video_creator     = ?,
+          selected_video_duration_min = ?
+      WHERE rec_id = ? AND user_id = ?
+    `).run(
+      session_type,
+      video_title          ?? null,
+      video_youtube_id     ?? null,
+      video_creator        ?? null,
+      video_duration_min   ?? null,
+      rec_id,
+      req.userId,
+    );
     res.json({ success: true });
   } catch (err) {
     next(err);

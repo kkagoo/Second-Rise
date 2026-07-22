@@ -228,6 +228,12 @@ try {
   `);
 } catch (_) {}
 
+// Store selected video metadata on recommendations (for history display)
+try { db.exec("ALTER TABLE recommendations ADD COLUMN selected_video_title TEXT"); }       catch (_) {}
+try { db.exec("ALTER TABLE recommendations ADD COLUMN selected_video_youtube_id TEXT"); }  catch (_) {}
+try { db.exec("ALTER TABLE recommendations ADD COLUMN selected_video_creator TEXT"); }     catch (_) {}
+try { db.exec("ALTER TABLE recommendations ADD COLUMN selected_video_duration_min INTEGER"); } catch (_) {}
+
 // Goal tracking on user_profiles
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal TEXT"); }              catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_details TEXT"); }      catch (_) {}

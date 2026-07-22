@@ -57,7 +57,14 @@ export default function RecommendationPage() {
   ].filter(Boolean) : [];
 
   async function handleStart(selectedVideo) {
-    await client.post('/recommend/select', { rec_id: rec.rec_id, session_type: selectedVideo.id || selectedVideo.session_type });
+    await client.post('/recommend/select', {
+      rec_id:             rec.rec_id,
+      session_type:       selectedVideo.id || selectedVideo.session_type,
+      video_title:        selectedVideo.title        ?? null,
+      video_youtube_id:   selectedVideo.youtube_id   ?? null,
+      video_creator:      selectedVideo.creator      ?? null,
+      video_duration_min: selectedVideo.duration_min ?? null,
+    });
     navigate('/session', { state: { rec, video: selectedVideo, session_type: selectedVideo.session_type } });
   }
 

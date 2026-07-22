@@ -158,7 +158,7 @@ export default function CheckinPage() {
                   tempFlag={biometrics?.temp_flag}
                   menopauseStage={profile?.menopause_stage ?? null}
                   hasBiometrics={!!biometrics}
-                  hasCycleConsent={!!profile?.cycle_tracking_consent}
+                  hasCycleConsent={!!profile?.cycle_tracking_consent || ['perimenopause', 'not_sure'].includes(profile?.menopause_stage)}
                 />
               </>
             ) : (
