@@ -17,7 +17,6 @@ async function openOAuth(url) {
 const WEARABLE_ENDPOINTS = {
   oura:         '/oura/connect',
   whoop:        '/whoop/connect',
-  google_fit:   '/googlefit/connect',
   withings:     '/withings/connect',
   apple_health: null, // native HealthKit — connect from Profile
 };
@@ -89,7 +88,6 @@ const WEARABLES = [
   { id: 'oura',         label: 'Oura Ring',    badge: 'O', bg: '#1a1a2e', fg: '#fff' },
   { id: 'whoop',        label: 'Whoop',         badge: 'W', bg: '#111827', fg: '#fff' },
   ...(!isAndroid ? [{ id: 'apple_health', label: 'Apple Health', badge: 'A', bg: '#ef4444', fg: '#fff', note: isIOS ? null : 'file import' }] : []),
-  { id: 'google_fit',   label: 'Google Health', badge: 'G', bg: '#4285F4', fg: '#fff', note: 'incl. Fitbit' },
   { id: 'withings',     label: 'Withings',      badge: 'W', bg: '#0070CC', fg: '#fff' },
 ];
 

@@ -50,7 +50,6 @@ function loadWearableData(userId, date) {
     oura:      db.prepare('SELECT * FROM oura_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
     apple:     db.prepare('SELECT * FROM apple_health_data WHERE user_id = ? AND date = ?').get(userId, date),
     fitbit:    db.prepare('SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
-    googleFit: db.prepare('SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
     garmin:    db.prepare('SELECT * FROM garmin_daily_data WHERE user_id = ? AND date = ?').get(userId, date),
   };
 }
@@ -64,7 +63,6 @@ function plannedIntensityFor(recommendation) {
 function getStepCount(wearable) {
   return wearable.apple?.step_count
     ?? wearable.fitbit?.step_count
-    ?? wearable.googleFit?.step_count
     ?? wearable.garmin?.steps
     ?? wearable.oura?.steps
     ?? null;
@@ -77,7 +75,6 @@ function getSleepMin(wearable) {
     ?? wearable.oura?.total_sleep_min
     ?? wearable.apple?.sleep_min
     ?? wearable.fitbit?.total_sleep_min
-    ?? wearable.googleFit?.total_sleep_min
     ?? garminSleepMin
     ?? null;
 }
@@ -209,7 +206,6 @@ function buildEvidence({ recommendation, feedback, wearable }) {
     oura_synced_at: wearable.oura?.synced_at ?? null,
     apple_imported_at: wearable.apple?.imported_at ?? null,
     fitbit_synced_at: wearable.fitbit?.synced_at ?? null,
-    google_fit_synced_at: wearable.googleFit?.synced_at ?? null,
   };
 }
 

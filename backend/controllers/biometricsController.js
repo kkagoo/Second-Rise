@@ -20,7 +20,7 @@ async function getToday(req, res, next) {
       const STALE_MS = 15 * 60 * 1000;
       const profile  = db.prepare(
         `SELECT whoop_access_token, oura_access_token, fitbit_access_token,
-                withings_access_token, google_fit_access_token
+                withings_access_token
          FROM user_profiles WHERE user_id = ?`
       ).get(req.userId);
 
@@ -41,8 +41,6 @@ async function getToday(req, res, next) {
         syncs.push(require('../services/fitbitService').syncToday(req.userId));
       if (profile?.withings_access_token    && isStale('withings_daily_data'))
         syncs.push(require('../services/withingsService').syncToday(req.userId));
-      if (profile?.google_fit_access_token  && isStale('google_fit_daily_data'))
-        syncs.push(require('../services/googleFitService').syncToday(req.userId));
 
       if (syncs.length) await Promise.allSettled(syncs);
     }
@@ -74,10 +72,6 @@ async function getToday(req, res, next) {
       'SELECT * FROM health_connect_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
 
-    const googleFit = db.prepare(
-      'SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?'
-    ).get(req.userId, today);
-
     const fitbit = db.prepare(
       'SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?'
     ).get(req.userId, today);
@@ -107,7 +101,7 @@ async function getToday(req, res, next) {
     } : appleYesterday;
 
     // Nothing at all
-    if (!oura && !whoop && !hc && !googleFit && !fitbit && !withings && !garmin && !apple) {
+    if (!oura && !whoop && !hc && !fitbit && !withings && !garmin && !apple) {
       return res.json({ source: null });
     }
 
@@ -121,14 +115,13 @@ async function getToday(req, res, next) {
       garmin?.sleep_score ??
       null;
 
-    // Sleep duration + stages: Oura > WHOOP > Health Connect > Garmin > Google Fit > Fitbit > Withings
+    // Sleep duration + stages: Oura > WHOOP > Health Connect > Garmin > Fitbit > Withings
     const garminSleepMin = garmin?.total_sleep_sec != null ? Math.round(garmin.total_sleep_sec / 60) : null;
     const totalSleepMin =
       oura?.total_sleep_min ??
       whoop?.total_sleep_min ??
       hc?.total_sleep_min ??
       garminSleepMin ??
-      googleFit?.total_sleep_min ??
       fitbit?.total_sleep_min ??
       withings?.total_sleep_min ??
       apple?.sleep_min ??
@@ -139,7 +132,6 @@ async function getToday(req, res, next) {
       whoop?.rem_sleep_min ??
       hc?.rem_sleep_min ??
       (garmin?.rem_sleep_sec != null ? Math.round(garmin.rem_sleep_sec / 60) : null) ??
-      googleFit?.rem_sleep_min ??
       fitbit?.rem_sleep_min ??
       null;
 
@@ -148,7 +140,6 @@ async function getToday(req, res, next) {
       whoop?.deep_sleep_min ??
       hc?.deep_sleep_min ??
       (garmin?.deep_sleep_sec != null ? Math.round(garmin.deep_sleep_sec / 60) : null) ??
-      googleFit?.deep_sleep_min ??
       fitbit?.deep_sleep_min ??
       null;
 
@@ -163,7 +154,7 @@ async function getToday(req, res, next) {
       apple?.hrv_ms ??
       null;
 
-    // Resting HR: Oura > WHOOP > Health Connect > Fitbit > Withings > Garmin > Google Fit > Apple
+    // Resting HR: Oura > WHOOP > Health Connect > Fitbit > Withings > Garmin > Apple
     const restingHr =
       oura?.resting_hr ??
       whoop?.resting_hr ??
@@ -171,16 +162,14 @@ async function getToday(req, res, next) {
       fitbit?.resting_hr ??
       withings?.resting_hr ??
       garmin?.resting_hr ??
-      googleFit?.resting_hr ??
       apple?.resting_hr ??
       null;
 
-    // Steps: Oura > Health Connect > Garmin > Google Fit > Fitbit > Apple (WHOOP doesn't track)
+    // Steps: Oura > Health Connect > Garmin > Fitbit > Apple (WHOOP doesn't track)
     const steps =
       oura?.steps ??
       hc?.steps ??
       garmin?.steps ??
-      googleFit?.step_count ??
       fitbit?.step_count ??
       apple?.step_count ??
       null;
@@ -209,7 +198,6 @@ async function getToday(req, res, next) {
     if (hasData(whoop,    ['recovery_score','sleep_performance','hrv_rmssd_ms','resting_hr','strain_score'])) sources.push('whoop');
     if (hasData(hc,       ['sleep_score','total_sleep_min','hrv_rmssd','resting_hr','steps','spo2'])) sources.push('health_connect');
     if (hasData(garmin,   ['sleep_score','total_sleep_sec','resting_hr','steps','avg_stress'])) sources.push('garmin');
-    if (hasData(googleFit,['total_sleep_min','resting_hr','step_count'])) sources.push('google_fit');
     if (hasData(fitbit,   ['total_sleep_min','resting_hr','step_count'])) sources.push('fitbit');
     if (hasData(withings, ['total_sleep_min','resting_hr'])) sources.push('withings');
     if (hasData(apple,    ['sleep_min','resting_hr','hrv_ms','step_count'])) sources.push('apple_health');
@@ -221,7 +209,6 @@ async function getToday(req, res, next) {
       whoop   ? 'whoop'          :
       hc      ? 'health_connect' :
       garmin  ? 'garmin'         :
-      googleFit ? 'google_fit'   :
       fitbit  ? 'fitbit'         :
       withings ? 'withings'      :
       apple   ? 'apple_health'   : null;

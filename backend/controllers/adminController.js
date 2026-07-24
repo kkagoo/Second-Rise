@@ -48,7 +48,6 @@ function getStats(req, res, next) {
         UNION SELECT user_id FROM whoop_daily_data WHERE date >= date('now', '-7 days')
         UNION SELECT user_id FROM garmin_daily_data WHERE date >= date('now', '-7 days')
         UNION SELECT user_id FROM fitbit_daily_data WHERE date >= date('now', '-7 days')
-        UNION SELECT user_id FROM google_fit_daily_data WHERE date >= date('now', '-7 days')
         UNION SELECT user_id FROM health_connect_daily_data WHERE date >= date('now', '-7 days')
         UNION SELECT user_id FROM withings_daily_data WHERE date >= date('now', '-7 days')
         UNION SELECT user_id FROM apple_health_data WHERE date >= date('now', '-7 days')
@@ -153,7 +152,6 @@ function getUsers(req, res, next) {
         CASE WHEN (
           up.oura_access_token IS NOT NULL OR
           up.whoop_access_token IS NOT NULL OR
-          up.google_fit_access_token IS NOT NULL OR
           up.fitbit_access_token IS NOT NULL OR
           up.withings_access_token IS NOT NULL OR
           up.garmin_oauth_token IS NOT NULL

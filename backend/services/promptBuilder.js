@@ -46,8 +46,6 @@ function buildVideoPrompt(profile, checkin, readiness, priorFeedback, availableV
             ? 'Oura Ring'
             : biometrics.sleep_source === 'whoop'
               ? 'Whoop'
-              : biometrics.sleep_source === 'google_fit'
-                ? 'Google Fit'
               : biometrics.sleep_source === 'fitbit'
                 ? 'Fitbit / Pixel Watch'
               : biometrics.sleep_source === 'withings'

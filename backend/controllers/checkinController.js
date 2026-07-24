@@ -54,16 +54,6 @@ function submitCheckin(req, res, next) {
               temp_flag:       false,
             };
           } else {
-          const googleFit = db.prepare('SELECT * FROM google_fit_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
-          if (googleFit) {
-            biometrics = {
-              source:          'google_fit',
-              hrv_balance:     null,
-              sleep_score:     null,
-              total_sleep_min: googleFit.total_sleep_min,
-              temp_flag:       false,
-            };
-          } else {
           const fitbit = db.prepare('SELECT * FROM fitbit_daily_data WHERE user_id = ? AND date = ?').get(req.userId, today);
           if (fitbit) {
             biometrics = {
@@ -83,7 +73,6 @@ function submitCheckin(req, res, next) {
               total_sleep_min: apple.sleep_min,
               temp_flag:       false,
             };
-          }
           }
           }
           }

@@ -94,10 +94,18 @@ async function fetchWhoopToday(token) {
     cycleRes.ok ? cycleRes.json() : Promise.resolve({ records: [] }),
   ]);
 
-  const recovery = recoveryJson.records?.[0]?.score ?? {};
-  const sleep    = sleepJson.records?.[0]?.score ?? {};
-  const stages   = sleep.stage_summary ?? {};
-  const cycle    = cycleJson.records?.[0]?.score ?? {};
+  const recovery    = recoveryJson.records?.[0]?.score ?? {};
+  const sleep       = sleepJson.records?.[0]?.score ?? {};
+  const stages      = sleep.stage_summary ?? {};
+  const cycleRecord = cycleJson.records?.[0] ?? {};
+  const cycle       = cycleRecord.score ?? {};
+
+  // Only use strain if the cycle is still open (today's accumulating load).
+  // WHOOP returns the most recent cycle regardless of completion — a closed
+  // cycle with an end timestamp belongs to a previous day and must not be
+  // shown as today's data.
+  const cycleIsOpen = !cycleRecord.end || new Date(cycleRecord.end) > new Date();
+  const strainScore = cycleIsOpen ? (cycle.strain ?? null) : null;
 
   // Convert milliseconds to minutes
   const msToMin = (ms) => ms != null ? Math.round(ms / 60000) : null;
@@ -117,7 +125,7 @@ async function fetchWhoopToday(token) {
     rem_sleep_min:     msToMin(stages.total_rem_sleep_time_milli),
     deep_sleep_min:    msToMin(stages.total_slow_wave_sleep_time_milli),
     light_sleep_min:   msToMin(stages.total_light_sleep_time_milli),
-    strain_score:      cycle.strain                   ?? null,
+    strain_score:      strainScore,
   };
 }
 

@@ -255,10 +255,6 @@ export default function ProfilePage() {
   const [appleDays, setAppleDays]         = useState(null);
   const [appleError, setAppleError]       = useState('');
 
-  // Google Fit state
-  const [googleFitStatus, setGoogleFitStatus] = useState(null);
-  const [googleFitLastSync, setGoogleFitLastSync] = useState(null);
-  const [googleFitError, setGoogleFitError] = useState('');
 
   // Fitbit state
   const [fitbitStatus, setFitbitStatus] = useState(null);
@@ -320,14 +316,6 @@ export default function ProfilePage() {
         }
       }).catch(() => {});
 
-      client.get('/googlefit/status').then((r) => {
-        if (r.data?.connected) {
-          setGoogleFitStatus('connected');
-          client.get('/googlefit/today').then((t) => {
-            if (t.data?.synced_at) setGoogleFitLastSync(t.data.synced_at);
-          }).catch(() => {});
-        }
-      }).catch(() => {});
 
       client.get('/fitbit/status').then((r) => {
         if (r.data?.connected) {
@@ -399,18 +387,6 @@ export default function ProfilePage() {
         window.history.replaceState({}, '', window.location.pathname);
       }
 
-      const googleFitResult = params.get('googlefit');
-      if (googleFitResult === 'connected') {
-        setGoogleFitStatus('connected');
-        window.history.replaceState({}, '', window.location.pathname);
-      } else if (googleFitResult === 'denied') {
-        setGoogleFitStatus('denied');
-        window.history.replaceState({}, '', window.location.pathname);
-      } else if (googleFitResult === 'error') {
-        setGoogleFitStatus('error');
-        setGoogleFitError('Something went wrong during Google Fit authorization.');
-        window.history.replaceState({}, '', window.location.pathname);
-      }
 
       const fitbitResult = params.get('fitbit');
       if (fitbitResult === 'connected') {
@@ -437,7 +413,6 @@ export default function ProfilePage() {
     const t = setTimeout(() => {
       if (autoconnect === 'oura')              handleOuraConnect();
       else if (autoconnect === 'whoop')        handleWhoopConnect();
-      else if (autoconnect === 'google_fit')   handleGoogleFitConnect();
       else if (autoconnect === 'withings')     handleWithingsConnect();
       else if (autoconnect === 'garmin')       handleGarminConnect();
       else if (autoconnect === 'apple_health') handleHealthKitSync();
@@ -450,7 +425,6 @@ export default function ProfilePage() {
     function refreshStatuses() {
       client.get('/oura/status').then((r) => { if (r.data?.connected) setOuraStatus('connected'); }).catch(() => {});
       client.get('/whoop/status').then((r) => { if (r.data?.connected) setWhoopStatus('connected'); }).catch(() => {});
-      client.get('/googlefit/status').then((r) => { if (r.data?.connected) setGoogleFitStatus('connected'); }).catch(() => {});
       client.get('/fitbit/status').then((r) => { if (r.data?.connected) setFitbitStatus('connected'); }).catch(() => {});
       client.get('/withings/status').then((r) => { if (r.data?.connected) setWithingsStatus('connected'); }).catch(() => {});
       client.get('/garmin/status').then((r) => { if (r.data?.connected) setGarminStatus('connected'); }).catch(() => {});
@@ -545,31 +519,6 @@ export default function ProfilePage() {
     }
   }
 
-  async function handleGoogleFitConnect() {
-    setGoogleFitStatus('connecting');
-    setGoogleFitError('');
-    try {
-      const res = await client.get('/googlefit/connect', { params: { returnTo: '/profile' } });
-      await openOAuth(res.data.url);
-      setGoogleFitStatus(null);
-    } catch (err) {
-      setGoogleFitStatus('error');
-      setGoogleFitError(err.response?.data?.error || 'Could not start Google Fit authorization.');
-    }
-  }
-
-  async function handleGoogleFitSync() {
-    setGoogleFitStatus('connecting');
-    setGoogleFitError('');
-    try {
-      const syncRes = await client.post('/googlefit/sync');
-      setGoogleFitStatus('connected');
-      setGoogleFitLastSync(syncRes.data?.synced_at ?? null);
-    } catch (err) {
-      setGoogleFitStatus('error');
-      setGoogleFitError(err.response?.data?.error || 'Sync failed. Please try again.');
-    }
-  }
 
   async function handleHealthConnectSync() {
     setHcError('');
@@ -883,57 +832,6 @@ export default function ProfilePage() {
         </Section>
         </div>
 
-        {/* Google Health (cloud sync) — hidden on Android where Health Connect is used instead */}
-        {!isAndroid && (
-          <div id="googlefit-section">
-          <Section title="Google Health" subtitle="Syncs steps, heart rate, and sleep via Google Health — covers Pixel Watch, Fitbit, and other Android wearables">
-            {googleFitStatus === 'connected' || fitbitStatus === 'connected' ? (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                  <p className="text-sm text-green-600 font-semibold">
-                    Connected{(googleFitLastSync || fitbitLastSync) ? ` — synced ${new Date(googleFitLastSync || fitbitLastSync).toLocaleString()}` : ''}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleGoogleFitSync}
-                  disabled={googleFitStatus === 'connecting'}
-                  className="w-full border-2 border-emerald-300 text-emerald-600 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-emerald-50 disabled:opacity-50"
-                >
-                  {googleFitStatus === 'connecting' ? 'Syncing…' : 'Sync now'}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleGoogleFitConnect}
-                  disabled={googleFitStatus === 'connecting'}
-                  className="w-full bg-gray-50 text-gray-500 font-semibold rounded-2xl py-3 text-sm transition-colors hover:bg-gray-100 disabled:opacity-50"
-                >
-                  Reconnect Google Health
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {googleFitStatus === 'denied' && (
-                  <p className="text-xs text-amber-600">Authorization cancelled — try again when ready.</p>
-                )}
-                <button
-                  type="button"
-                  onClick={handleGoogleFitConnect}
-                  disabled={googleFitStatus === 'connecting'}
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-2xl py-3 text-sm transition-colors disabled:opacity-50"
-                >
-                  {googleFitStatus === 'connecting' ? 'Redirecting…' : 'Connect with Google Health'}
-                </button>
-              </div>
-            )}
-            {googleFitError && (
-              <p className="text-red-500 text-xs">{googleFitError}</p>
-            )}
-
-          </Section>
-          </div>
-        )}
 
         {/* Apple Health — iOS native HealthKit */}
         {isIOS && (
