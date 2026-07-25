@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await client.post('/auth/login', { email, password });
-      login(res.data.token);
+      await login(res.data.token);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Please try again.');
@@ -41,7 +41,7 @@ export default function LoginPage() {
           throw signupErr;
         }
       }
-      login(res.data.token);
+      await login(res.data.token);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Demo login failed — is the server running?');

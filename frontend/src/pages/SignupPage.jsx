@@ -21,7 +21,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const res = await client.post('/auth/signup', { email, password });
-      login(res.data.token);
+      await login(res.data.token);
       navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.error || 'Sign up failed. Please try again.');
