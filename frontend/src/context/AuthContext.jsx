@@ -54,9 +54,13 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
-  async function login(newToken) {
-    await storage.set(TOKEN_KEY, newToken);
+  function login(newToken) {
+    // Update state synchronously — lets navigate() happen immediately
     setToken(newToken);
+    // Mirror to localStorage so the synchronous seed on next boot works
+    try { localStorage.setItem(TOKEN_KEY, newToken); } catch {}
+    // Persist to Capacitor Preferences in background (survives iOS WebKit wipes)
+    storage.set(TOKEN_KEY, newToken).catch(() => {});
   }
 
   async function logout() {
