@@ -56,6 +56,7 @@ import PrivacyPage          from './pages/PrivacyPage';
 import TermsPage            from './pages/TermsPage';
 import AdminPage            from './pages/AdminPage';
 import ChallengePage        from './pages/ChallengePage';
+import CreateChallengePage  from './pages/CreateChallengePage';
 
 const Spinner = () => (
   <div className="min-h-screen bg-white flex items-center justify-center">
@@ -128,8 +129,9 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms"   element={<TermsPage />} />
 
-            {/* Group challenges — public, works for logged-in and logged-out users */}
-            <Route path="/c/:code" element={<ChallengePage />} />
+            {/* Group challenges */}
+            <Route path="/challenges/new" element={<AuthGuard><CreateChallengePage /></AuthGuard>} />
+            <Route path="/c/:code"        element={<ChallengePage />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

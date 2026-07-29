@@ -10,11 +10,13 @@ function HomeIcon({ active }) {
   );
 }
 
-function ResourcesIcon({ active }) {
+function ChallengesIcon({ active }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
@@ -45,13 +47,13 @@ function ProfileIcon({ active }) {
   );
 }
 
-// Home | Resources | [+ FAB] | History | Profile
+// Home | Challenges | [+ FAB] | History | Profile
 const TABS = [
-  { label: 'Home',      path: '/',          Icon: HomeIcon },
-  { label: 'Resources', path: '/resources', Icon: ResourcesIcon },
-  { label: null,        path: '/move',      Icon: PlusIcon },
-  { label: 'History',   path: '/history',   Icon: HistoryIcon },
-  { label: 'Profile',   path: '/profile',   Icon: ProfileIcon },
+  { label: 'Home',       path: '/',                Icon: HomeIcon },
+  { label: 'Challenges', path: '/challenges/new',  Icon: ChallengesIcon },
+  { label: null,         path: '/move',            Icon: PlusIcon },
+  { label: 'History',    path: '/history',         Icon: HistoryIcon },
+  { label: 'Profile',    path: '/profile',         Icon: ProfileIcon },
 ];
 
 export default function BottomNav() {
