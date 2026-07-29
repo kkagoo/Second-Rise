@@ -246,6 +246,46 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_details TEXT"); }      
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_set_at TEXT"); }       catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_target_date TEXT"); }  catch (_) {}
 
+// Group challenges
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS challenges (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      creator_id   INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      short_code   TEXT NOT NULL UNIQUE,
+      name         TEXT NOT NULL,
+      duration_days INTEGER NOT NULL DEFAULT 5,
+      start_date   TEXT NOT NULL,
+      created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+} catch (_) {}
+
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS challenge_participants (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      challenge_id INTEGER NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+      user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      joined_at    TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(challenge_id, user_id)
+    )
+  `);
+} catch (_) {}
+
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS challenge_checkins (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      challenge_id INTEGER NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+      user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      checkin_date TEXT NOT NULL,
+      checked_at   TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(challenge_id, user_id, checkin_date)
+    )
+  `);
+} catch (_) {}
+
 // Seed admin from environment variable — set ADMIN_EMAIL in Railway to promote an account on boot.
 // Safe to run on every startup (no-op if user doesn't exist or is already admin).
 const adminEmail = process.env.ADMIN_EMAIL;

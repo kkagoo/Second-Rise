@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 
@@ -10,6 +10,8 @@ export default function SignupPage() {
   const [loading, setLoading]   = useState(false);
   const { login }               = useAuth();
   const navigate                = useNavigate();
+  const [searchParams]          = useSearchParams();
+  const nextPath                = searchParams.get('next') || '/profile';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,7 +24,7 @@ export default function SignupPage() {
     try {
       const res = await client.post('/auth/signup', { email, password });
       login(res.data.token);
-      navigate('/profile');
+      navigate(nextPath);
     } catch (err) {
       setError(err.response?.data?.error || 'Sign up failed. Please try again.');
     } finally {

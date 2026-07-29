@@ -29,6 +29,7 @@ const garminRoutes              = require('./routes/garminRoutes');
 const healthConnectRoutes       = require('./routes/healthConnectRoutes');
 const healthKitRoutes           = require('./routes/healthKitRoutes');
 const waitlistRoutes            = require('./routes/waitlistRoutes');
+const challengeRoutes           = require('./routes/challengeRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -82,6 +83,7 @@ app.use('/api/garmin',         garminRoutes);
 app.use('/api/health-connect', healthConnectRoutes);
 app.use('/api/healthkit',      healthKitRoutes);
 app.use('/api/waitlist',       waitlistRoutes);
+app.use('/api/challenges',    challengeRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
