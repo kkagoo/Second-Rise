@@ -27,6 +27,7 @@ function VideoThumb({ youtubeId, title, onClick }) {
 
 export default function RecommendationPage() {
   const location = useLocation();
+  const challengeCode         = location.state?.challengeCode || null;
   const [rec, setRec]         = useState(location.state?.rec || null);
   const [loading, setLoading] = useState(!location.state?.rec);
   const [error, setError]     = useState('');
@@ -90,6 +91,19 @@ export default function RecommendationPage() {
           <h1 className="text-xl font-bold text-gray-900">Your workout</h1>
         </div>
       </div>
+
+      {/* Challenge banner */}
+      {challengeCode && (
+        <div className="mx-5 mb-1 rounded-2xl bg-orange-50 border border-orange-200 px-4 py-3 flex items-center justify-between">
+          <p className="text-sm font-medium text-orange-700">Challenge check-in logged ✓</p>
+          <button
+            onClick={() => navigate(`/c/${challengeCode}`)}
+            className="text-sm font-semibold text-orange-500"
+          >
+            See group →
+          </button>
+        </div>
+      )}
 
       <div className="px-5 flex flex-col gap-4">
         {loading && (

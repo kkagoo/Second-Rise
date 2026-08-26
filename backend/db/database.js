@@ -246,6 +246,26 @@ try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_details TEXT"); }      
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_set_at TEXT"); }       catch (_) {}
 try { db.exec("ALTER TABLE user_profiles ADD COLUMN goal_target_date TEXT"); }  catch (_) {}
 
+// WhatsApp opt-in
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN phone_number TEXT"); }        catch (_) {}
+try { db.exec("ALTER TABLE user_profiles ADD COLUMN whatsapp_opted_in INTEGER NOT NULL DEFAULT 0"); } catch (_) {}
+
+// WhatsApp conversation sessions — tracks where each user is in the check-in flow
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS whatsapp_sessions (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      phone        TEXT NOT NULL UNIQUE,
+      user_id      INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      state        TEXT NOT NULL DEFAULT 'idle',
+      energy       INTEGER,
+      time_avail   INTEGER,
+      challenge_id INTEGER REFERENCES challenges(id) ON DELETE SET NULL,
+      updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+} catch (_) {}
+
 // Group challenges
 try {
   db.exec(`

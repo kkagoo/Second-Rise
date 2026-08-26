@@ -30,6 +30,7 @@ const healthConnectRoutes       = require('./routes/healthConnectRoutes');
 const healthKitRoutes           = require('./routes/healthKitRoutes');
 const waitlistRoutes            = require('./routes/waitlistRoutes');
 const challengeRoutes           = require('./routes/challengeRoutes');
+const whatsappRoutes            = require('./routes/whatsappRoutes');
 const errorHandler      = require('./middleware/errorHandler');
 
 const app = express();
@@ -84,6 +85,7 @@ app.use('/api/health-connect', healthConnectRoutes);
 app.use('/api/healthkit',      healthKitRoutes);
 app.use('/api/waitlist',       waitlistRoutes);
 app.use('/api/challenges',    challengeRoutes);
+app.use('/api/whatsapp',      whatsappRoutes);
 
 // Serve built React frontend (production)
 const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');

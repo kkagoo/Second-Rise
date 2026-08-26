@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import Layer1Form from '../components/checkin/Layer1Form';
@@ -43,6 +43,8 @@ export default function CheckinPage() {
   const [biometrics, setBiometrics] = useState(null);
   const navigate = useNavigate();
   const { profile } = useAuth();
+  const [searchParams] = useSearchParams();
+  const challengeCode  = searchParams.get('challenge') || null;
 
   useEffect(() => {
     client.get('/biometrics/today')
@@ -86,7 +88,14 @@ export default function CheckinPage() {
       });
       const res = await client.get('/recommend');
       clearInterval(msgTimer);
-      navigate('/recommend', { state: { rec: res.data } });
+
+      // If arriving from a challenge, join + log the challenge check-in (fire-and-forget)
+      if (challengeCode) {
+        client.post(`/challenges/${challengeCode}/join`).catch(() => {});
+        client.post(`/challenges/${challengeCode}/checkin`).catch(() => {});
+      }
+
+      navigate('/recommend', { state: { rec: res.data, challengeCode } });
     } catch (err) {
       clearInterval(msgTimer);
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');

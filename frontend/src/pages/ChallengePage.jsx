@@ -45,20 +45,10 @@ export default function ChallengePage() {
     }
   }
 
-  async function handleCheckin() {
-    setCheckingIn(true);
-    try {
-      const res = await client.post(`/challenges/${code}/checkin`);
-      setChallenge(prev => ({
-        ...prev,
-        user_checked_in_today:  true,
-        today_checkin_count:    res.data.today_checkin_count,
-      }));
-    } catch (err) {
-      setError(err.response?.data?.error || 'Check-in failed. Try again.');
-    } finally {
-      setCheckingIn(false);
-    }
+  function handleCheckin() {
+    // Send user through the real Second Rise check-in flow.
+    // CheckinPage will auto-join + log the challenge check-in on completion.
+    navigate(`/checkin?challenge=${code}`);
   }
 
   async function handleShare() {
@@ -148,14 +138,11 @@ export default function ChallengePage() {
           )
         )}
 
-        {/* Recommendation nudge */}
+        {/* Recommendation nudge — shown below the I moved button */}
         {challenge.user_is_participant && !ended && !challenge.user_checked_in_today && (
-          <Link
-            to="/checkin"
-            className="block w-full text-center text-sm text-blue-400 font-medium mb-4 py-2"
-          >
-            Get today's personalised recommendation →
-          </Link>
+          <p className="text-center text-xs text-gray-400 mb-2">
+            Tapping the button takes you through your daily check-in and picks today's workout.
+          </p>
         )}
 
         {/* Share */}
