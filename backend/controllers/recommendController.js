@@ -240,6 +240,22 @@ async function getRecommendation(req, res, next) {
       console.warn(`[recommend] time budget relaxed for user ${req.userId} (usedSafeDefaults=${usedSafeDefaults})`);
     }
 
+    // Exclude videos recommended in the last 7 days to force variety
+    try {
+      const recentVideoIds = db.prepare(`
+        SELECT DISTINCT json_extract(primary_workout, '$.id') as vid_id
+        FROM recommendations
+        WHERE user_id = ? AND timestamp >= date('now', '-7 days')
+          AND primary_workout IS NOT NULL
+      `).all(req.userId).map(r => r.vid_id).filter(Boolean);
+      if (recentVideoIds.length > 0 && availableVideos.length > recentVideoIds.length + 3) {
+        const filtered = availableVideos.filter(v => !recentVideoIds.includes(v.id));
+        if (filtered.length >= 3) {
+          availableVideos.splice(0, availableVideos.length, ...filtered);
+        }
+      }
+    } catch { /* non-blocking */ }
+
     // Pull 7-day history and 30-day personal baseline for trend-aware recommendations
     let history = [];
     let baseline = null;
