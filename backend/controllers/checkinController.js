@@ -83,14 +83,13 @@ function submitCheckin(req, res, next) {
     const readiness = computeReadiness(req.userId, checkinData, profile, biometrics);
 
     // Delete any existing recommendation for today so a fresh one is generated
-    const todayStr = checkinData.checkin_date || new Date().toISOString().slice(0, 10);
     db.prepare(`
       DELETE FROM recommendations WHERE user_id = ?
         AND checkin_id IN (
           SELECT checkin_id FROM daily_checkins
           WHERE user_id = ? AND COALESCE(checkin_date, date(timestamp)) = ?
         )
-    `).run(req.userId, req.userId, todayStr);
+    `).run(req.userId, req.userId, today);
 
     const result = db.prepare(`
       INSERT INTO daily_checkins

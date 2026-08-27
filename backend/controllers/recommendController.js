@@ -74,7 +74,7 @@ async function getRecommendation(req, res, next) {
   try {
     const checkin = db.prepare(`
       SELECT * FROM daily_checkins
-      WHERE user_id = ? AND date(timestamp) = date('now')
+      WHERE user_id = ? AND COALESCE(checkin_date, date(timestamp)) = date('now')
       ORDER BY timestamp DESC LIMIT 1
     `).get(req.userId);
 
