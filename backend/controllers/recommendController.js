@@ -52,7 +52,6 @@ function getWeeklySchedule(userId) {
     FROM recommendations r
     JOIN daily_checkins dc ON r.checkin_id = dc.checkin_id
     WHERE r.user_id = ?
-      AND r.selected_session_type IS NOT NULL
       AND dc.timestamp >= date('now', '-7 days')
     ORDER BY dc.timestamp DESC
   `).all(userId);
