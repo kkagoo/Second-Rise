@@ -71,11 +71,12 @@ function getRecentManualActivities(userId) {
 
 async function getRecommendation(req, res, next) {
   try {
+    const today = req.query.localDate || new Date().toISOString().slice(0, 10);
     const checkin = db.prepare(`
       SELECT * FROM daily_checkins
-      WHERE user_id = ? AND COALESCE(checkin_date, date(timestamp)) = date('now')
+      WHERE user_id = ? AND COALESCE(checkin_date, date(timestamp)) = ?
       ORDER BY timestamp DESC LIMIT 1
-    `).get(req.userId);
+    `).get(req.userId, today);
 
     if (!checkin) return res.status(400).json({ error: "Complete today's check-in first" });
 

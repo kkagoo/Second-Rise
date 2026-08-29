@@ -99,28 +99,41 @@ case $PR in
   *) echo "Invalid"; exit 1 ;;
 esac
 
-DEFAULT_DATE=$(date +%Y-%m-%d)
-echo ""
-read -p "Date [$DEFAULT_DATE]: " DATE_INPUT
-DATE=${DATE_INPUT:-$DEFAULT_DATE}
+DATE=$(date +%Y-%m-%d)
 
 # ── Submit check-in ──────────────────────────────────────────────────
 echo ""
 echo "Submitting check-in..."
-curl -s -X POST "$BASE/checkin" \
+CHECKIN_RESP=$(curl -s -X POST "$BASE/checkin" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"layer1_energy\": $ENERGY, \"layer1_time_avail\": $TIME, \"pain_flagged\": $PAIN_FLAGGED, \"body_map_flags\": [$PAIN_FLAGS], \"workout_preference\": \"$PREF\", \"localDate\": \"$DATE\"}" > /dev/null
+  -d "{\"layer1_energy\": $ENERGY, \"layer1_time_avail\": $TIME, \"pain_flagged\": $PAIN_FLAGGED, \"body_map_flags\": [$PAIN_FLAGS], \"workout_preference\": \"$PREF\", \"localDate\": \"$DATE\"}")
+
+CHECKIN_ERROR=$(echo "$CHECKIN_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('error',''))" 2>/dev/null)
+if [ ! -z "$CHECKIN_ERROR" ]; then
+  echo "❌ Check-in failed: $CHECKIN_ERROR"
+  echo "Raw: $CHECKIN_RESP"
+  exit 1
+fi
 
 # ── Get recommendation ───────────────────────────────────────────────
 echo "Getting recommendation..."
-RESPONSE=$(curl -s "$BASE/recommend" -H "Authorization: Bearer $TOKEN")
+RESPONSE=$(curl -s "$BASE/recommend?localDate=$DATE" -H "Authorization: Bearer $TOKEN")
 
-TITLE=$(echo $RESPONSE | grep -o '"title":"[^"]*"' | head -1 | cut -d'"' -f4)
-YOUTUBE=$(echo $RESPONSE | grep -o '"youtube_id":"[^"]*"' | head -1 | cut -d'"' -f4)
-DURATION=$(echo $RESPONSE | grep -o '"duration_min":[0-9]*' | head -1 | cut -d':' -f2)
-REASONING=$(echo $RESPONSE | grep -o '"primary_reasoning":"[^"]*"' | cut -d'"' -f4)
-WEIGHT=$(echo $RESPONSE | grep -o '"weight_note":"[^"]*"' | cut -d'"' -f4)
+# Check for API error first
+REC_ERROR=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('error',''))" 2>/dev/null)
+if [ ! -z "$REC_ERROR" ]; then
+  echo "❌ Recommendation failed: $REC_ERROR"
+  echo "Raw: $RESPONSE"
+  exit 1
+fi
+
+# Parse with Python (handles escaped chars, nested JSON, apostrophes)
+TITLE=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('primary_workout',{}).get('title',''))" 2>/dev/null)
+YOUTUBE=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('primary_workout',{}).get('youtube_id',''))" 2>/dev/null)
+DURATION=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('primary_workout',{}).get('duration_min',''))" 2>/dev/null)
+REASONING=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('primary_reasoning',''))" 2>/dev/null)
+WEIGHT=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('primary_workout',{}).get('weight_note','') or '')" 2>/dev/null)
 
 # ── WhatsApp message ─────────────────────────────────────────────────
 echo ""
