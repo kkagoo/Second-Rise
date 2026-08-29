@@ -6,6 +6,7 @@ const {
   getUsers, deleteUser,
   getResources, createResource, updateResource, deleteResource,
   getWaitlist,
+  overrideRecommendation,
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.post('/resources',          createResource);
 router.put('/resources/:id',       updateResource);
 router.delete('/resources/:id',    deleteResource);
 router.get('/waitlist',            getWaitlist);
+router.post('/override-rec',       overrideRecommendation);
 
 module.exports = router;

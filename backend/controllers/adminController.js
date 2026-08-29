@@ -293,9 +293,73 @@ function getWaitlist(req, res, next) {
   } catch (err) { next(err); }
 }
 
+// ── Admin: override a user's recommendation for today ────────────────────────
+// Body: { user_id, youtube_id, title, creator, duration_min, session_type, reasoning, body_focus, localDate }
+function overrideRecommendation(req, res, next) {
+  try {
+    const {
+      user_id,
+      youtube_id, title, creator,
+      duration_min = 20,
+      session_type = 'strength',
+      reasoning = 'Admin override',
+      body_focus = 'strength_upper',
+      localDate,
+    } = req.body;
+
+    if (!user_id || !youtube_id || !title) {
+      return res.status(400).json({ error: 'user_id, youtube_id, and title are required' });
+    }
+
+    const today = localDate || new Date().toISOString().slice(0, 10);
+
+    // Find today's latest checkin for the target user
+    const checkin = db.prepare(`
+      SELECT checkin_id FROM daily_checkins
+      WHERE user_id = ? AND COALESCE(checkin_date, date(timestamp)) = ?
+      ORDER BY timestamp DESC LIMIT 1
+    `).get(user_id, today);
+
+    if (!checkin) {
+      return res.status(404).json({ error: 'No checkin found for that user today' });
+    }
+
+    const primaryWorkout = JSON.stringify({
+      type: 'video',
+      id: youtube_id,
+      youtube_id,
+      title,
+      creator: creator || '',
+      duration_min: Number(duration_min),
+      session_type,
+    });
+
+    // UPDATE if recommendation exists, INSERT if not
+    const existing = db.prepare('SELECT rec_id FROM recommendations WHERE checkin_id = ?').get(checkin.checkin_id);
+    if (existing) {
+      db.prepare(`
+        UPDATE recommendations
+        SET primary_session_type = ?,
+            primary_reasoning    = ?,
+            primary_workout      = ?,
+            body_focus           = ?
+        WHERE rec_id = ?
+      `).run(session_type, reasoning, primaryWorkout, body_focus, existing.rec_id);
+      return res.json({ updated: true, rec_id: existing.rec_id });
+    } else {
+      const result = db.prepare(`
+        INSERT INTO recommendations (checkin_id, user_id, primary_session_type, primary_reasoning, primary_workout, body_focus)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(checkin.checkin_id, user_id, session_type, reasoning, primaryWorkout, body_focus);
+      return res.json({ inserted: true, rec_id: result.lastInsertRowid });
+    }
+  } catch (err) { next(err); }
+}
+
 module.exports = {
   getStats, getCohortTrends,
   getUsers, deleteUser,
   getResources, createResource, updateResource, deleteResource,
   getWaitlist,
+  overrideRecommendation,
 };
