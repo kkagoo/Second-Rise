@@ -92,7 +92,6 @@ async function getRecommendation(req, res, next) {
 
     // Fetch today's biometrics: query both Oura AND Whoop simultaneously
     // Sleep data: Oura priority; Recovery data: Whoop priority
-    const today = new Date().toISOString().slice(0, 10);
     let biometrics = null;
     try {
       const oura  = db.prepare('SELECT * FROM oura_daily_data  WHERE user_id = ? AND date = ?').get(req.userId, today);
